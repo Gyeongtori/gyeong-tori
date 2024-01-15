@@ -1,0 +1,3 @@
+[submodule "backend/secure-settings"]
+	path = backend/secure-settings
+	url = https://github.com/KimDahui42/jackpot-settings.git
