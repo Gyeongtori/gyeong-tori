@@ -1,8 +1,8 @@
 def component = [
-        front: true,
-        back: false,
-        nginx: false,
-        redis: false
+     'front': false,
+     'back': true,
+     'nginx': true,
+     'redis': true
 ]
 pipeline {
     agent any
@@ -25,7 +25,6 @@ pipeline {
             steps {
                 script {
                     sh "chmod +x gradlew"
-                    sh ""
                     def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                     version = version_value.split(/:/)[1].trim()
                     //Jenkins 파이프라인의 환경 변수 TAG
@@ -46,7 +45,7 @@ pipeline {
             steps {
                 component.each{ entry ->
                     stage ("${entry.key} Push"){
-                        var = entry.key
+                        def var = entry.key
                         if(entry.value){
                             sh "docker compose build ${var.toLowerCase()}"
                         }
@@ -60,7 +59,7 @@ pipeline {
                     component.each{ entry ->
                         stage ("${entry.key} Push"){
                             if(entry.value){
-                                var = entry.key
+                                def var = entry.key
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                                                   credentialsId: 'Docker-hub',
                                                   usernameVariable: 'DOCKER_USER_ID',
@@ -88,7 +87,7 @@ pipeline {
                     component.each{ entry ->
                         stage ("${entry.key} Push"){
                             if(entry.value){
-                                var = entry.key
+                                def var = entry.key
                                 try {
                                     sh "docker compose pull "
                                     sh "docker compose up -d ${var.toLowerCase()}"

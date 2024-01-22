@@ -1,8 +1,8 @@
 def component = [
-        front: false,
-        back: true,
-        nginx: true,
-        redis: true
+     'front': true,
+     'back': false,
+     'nginx': false,
+     'redis': false
 ]
 pipeline {
     agent any
@@ -29,7 +29,6 @@ pipeline {
             steps {
                 script {
                     sh "chmod +x gradlew"
-                    sh ""
                     def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                     version = version_value.split(/:/)[1].trim()
                     //Jenkins 파이프라인의 환경 변수 TAG
@@ -50,7 +49,7 @@ pipeline {
             steps {
                 component.each{ entry ->
                     stage ("${entry.key} Push"){
-                        var = entry.key
+                        def var = entry.key
                         if(entry.value){
                             sh "docker compose build ${var.toLowerCase()}"
                         }
@@ -64,7 +63,7 @@ pipeline {
                     component.each{ entry ->
                         stage ("${entry.key} Push"){
                             if(entry.value){
-                                var = entry.key
+                                def var = entry.key
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                                                   credentialsId: 'Docker-hub',
                                                   usernameVariable: 'DOCKER_USER_ID',
@@ -91,15 +90,16 @@ pipeline {
                 script {
                     component.each{ entry ->
                         stage ("${entry.key} Push"){
-                        if(entry.value){
-                            var = entry.key
-                            try {
-                                sh "docker compose pull "
-                                sh "docker compose up -d ${entry.key}"
-                            } catch (Exception e) {
-                                // 'docker compose up -d' 명령이 실패한 경우
-                                echo "Failed to up. Starting 'docker compose start'..."
-                                sh "docker compose restart ${entry.key}"
+                            if(entry.value){
+                                def var = entry.key
+                                try {
+                                    sh "docker compose pull "
+                                    sh "docker compose up -d ${entry.key}"
+                                } catch (Exception e) {
+                                    // 'docker compose up -d' 명령이 실패한 경우
+                                    echo "Failed to up. Starting 'docker compose start'..."
+                                    sh "docker compose restart ${entry.key}"
+                                }
                             }
                         }
                     }
