@@ -1,7 +1,7 @@
 # 빌드 스테이지
 FROM amazoncorretto:17.0.7-alpine AS builder
 USER root
-WORKDIR /app
+WORKDIR /back
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
@@ -13,7 +13,7 @@ RUN ./gradlew bootJar
 
 # 실행 스테이지
 FROM openjdk:17
-WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar app.jar
+WORKDIR /back
+COPY --from=builder /back/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
 VOLUME /tmp

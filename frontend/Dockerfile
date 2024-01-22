@@ -1,10 +1,10 @@
 FROM node:lts-alpine as builder
 
-WORKDIR /app
+WORKDIR /front
 
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH /front/node_modules/.bin:$PATH
 
-COPY package.json /app/package.json
+COPY package.json /front/package.json
 
 
 RUN npm install
