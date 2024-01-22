@@ -47,11 +47,14 @@ pipeline {
 //		}
         stage("Build") {
             steps {
-                component.each{ entry ->
-                    stage ("${entry.key} Push"){
-                        def var = entry.key
-                        if(entry.value){
-                            sh "docker compose build ${var.toLowerCase()}"
+                script{
+                    component.each{ entry ->
+                        stage ("${entry.key} Push"){
+                            def var = entry.key
+                                if(entry.value){
+                                    sh "docker compose build ${var.toLowerCase()}"
+                                }
+                            }
                         }
                     }
                 }
