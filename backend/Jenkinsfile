@@ -79,10 +79,16 @@ pipeline {
                 }
             }
         }
+        stage('Prune old images'){
+            steps{
+                script{
+                    sh "docker image prune --filter until=1h"
+                }
+            }
+        }
         stage('Pull and Up') {
             steps {
                 script {
-                    sh "docker image prune --filter until=1h"
                     component.each{ entry ->
                         stage ("${entry.key} Push"){
                         if(entry.value){
