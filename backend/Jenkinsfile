@@ -1,8 +1,8 @@
 def component = [
-     'front': true,
-     'back': false,
-     'nginx': false,
-     'redis': false
+        front: false,
+        back: true,
+        nginx: true,
+        redis: true
 ]
 pipeline {
     agent any
@@ -59,7 +59,6 @@ pipeline {
                     }
                 }
             }
-        }
         stage("Tag and Push") {
             steps {
                 script {
@@ -97,11 +96,11 @@ pipeline {
                                 def var = entry.key
                                 try {
                                     sh "docker compose pull "
-                                    sh "docker compose up -d ${entry.key}"
+                                    sh "docker compose up -d ${var.toLowerCase()}"
                                 } catch (Exception e) {
                                     // 'docker compose up -d' 명령이 실패한 경우
                                     echo "Failed to up. Starting 'docker compose start'..."
-                                    sh "docker compose restart ${entry.key}"
+                                    sh "docker compose restart ${var.toLowerCase()}"
                                 }
                             }
                         }
@@ -110,3 +109,4 @@ pipeline {
             }
         }
     }
+}

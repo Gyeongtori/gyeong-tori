@@ -12,8 +12,8 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-        	    checkout scm
-        	}
+                checkout scm
+            }
         }
         stage('Move .env File') {
             steps {
@@ -43,13 +43,12 @@ pipeline {
 //		}
         stage("Build") {
             steps {
-                script{
-                    component.each{ entry ->
-                        stage ("${entry.key} Push"){
+                script {
+                    component.each { entry ->
+                        stage("${entry.key} Push") {
                             def var = entry.key
-                                if(entry.value){
-                                    sh "docker compose build ${var.toLowerCase()}"
-                                }
+                            if (entry.value) {
+                                sh "docker compose build ${var.toLowerCase()}"
                             }
                         }
                     }
@@ -59,15 +58,15 @@ pipeline {
         stage("Tag and Push") {
             steps {
                 script {
-                    component.each{ entry ->
-                        stage ("${entry.key} Push"){
-                            if(entry.value){
+                    component.each { entry ->
+                        stage("${entry.key} Push") {
+                            if (entry.value) {
                                 def var = entry.key
-                                withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                                                  credentialsId: 'Docker-hub',
+                                withCredentials([[$class          : 'UsernamePasswordMultiBinding',
+                                                  credentialsId   : 'Docker-hub',
                                                   usernameVariable: 'DOCKER_USER_ID',
                                                   passwordVariable: 'DOCKER_USER_PASSWORD'
-                                                 ]]){
+                                                 ]]) {
                                     sh "docker login -u ${DOCKER_USER_ID} -p ${DOCKER_USER_PASSWORD}"
                                     sh "docker push ${DOCKER_USER_ID}/toritest-${var.toLowerCase()}:${env.TAG}"
                                 }
@@ -77,9 +76,9 @@ pipeline {
                 }
             }
         }
-        stage('Prune old images'){
-            steps{
-                script{
+        stage('Prune old images') {
+            steps {
+                script {
                     sh "docker image prune --filter until=1h"
                 }
             }
@@ -87,9 +86,9 @@ pipeline {
         stage('Pull and Up') {
             steps {
                 script {
-                    component.each{ entry ->
-                        stage ("${entry.key} Push"){
-                            if(entry.value){
+                    component.each { entry ->
+                        stage("${entry.key} Push") {
+                            if (entry.value) {
                                 def var = entry.key
                                 try {
                                     sh "docker compose pull "
