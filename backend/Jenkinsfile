@@ -30,6 +30,7 @@ pipeline {
             steps {
                 script {
                     sh "cd backend"
+                    sh "ls . -al"
                     sh "chmod +x gradlew"
                     def version_value = sh(returnStdout: true, script: "gradlew properties -q | grep 'version:'").trim()
                     version = version_value.split(/:/)[1].trim()
