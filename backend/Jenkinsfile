@@ -60,18 +60,22 @@ pipeline {
                 }
             }
         }
+        stage("Login") {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                sh """
+                    set +x
+                    echo $DOCKER_USER_PASSWORD | docker login -u $DOCKER_USER_ID --password-stdin
+                    set -x
+                """
+            }
+        }
         stage("Tag and Push") {
             steps {
                 script {
                     component.each{ entry ->
-                        if(entry.value){
+                        if(entry.value&&entry.key!="redis"){
                             def var = entry.key
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
-                                sh """
-                                        set +x
-                                        echo $DOCKER_USER_PASSWORD | docker login -u $DOCKER_USER_ID --password-stdin
-                                        set -x
-                                    """
                                 sh "docker push ${DOCKER_USER_ID}/toritest-${var.toLowerCase()}:${env.TAG}"
                             }
                         }

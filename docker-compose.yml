@@ -35,6 +35,7 @@ services:
   back:
     container_name: back
     image: kimdahui/toritest-back:${TAG}
+#    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
     build:
       context: backend
       dockerfile: Dockerfile
@@ -57,6 +58,7 @@ services:
       - ~/redis/data:/data
     user: root
     command: redis-server --requirepass ${REDIS_PASSWORD}
+#    command: redis-server --requirepass REDISPASSWORD
     ports:
       - "6379:6379"
 
