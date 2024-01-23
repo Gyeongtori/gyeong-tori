@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     sh "chmod +x backend/gradlew"
-                    def version_value = sh(returnStdout: true, script: "./backend/gradlew properties -q | grep 'version:'").trim()
+                    def version_value = sh(returnStdout: true, script: "backend/gradlew properties -q | grep 'version:'").trim()
                     version = version_value.split(/:/)[1].trim()
                     //Jenkins 파이프라인의 환경 변수 TAG
                     env.TAG = version
