@@ -31,6 +31,19 @@ services:
       - "3000:3000"
     networks:
       - jenkins-network
+  back:
+    container_name: back
+    image: kimdahui/toritest-back:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - jenkins-network
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
 
   redis:
     container_name: redis
