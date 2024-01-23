@@ -31,8 +31,8 @@ pipeline {
                 dir("${env.WORKSPACE}/backend"){
                     script {
                         sh "ls . -al"
-                        sh "chmod +x gradlew"
-                        def version_value = sh(returnStdout: true, script: "gradlew properties -q | grep 'version:'").trim()
+                        sh "chmod +x ./gradlew"
+                        def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                         version = version_value.split(/:/)[1].trim()
                         env.TAG = version
                         //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
