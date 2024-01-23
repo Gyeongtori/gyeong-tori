@@ -51,6 +51,7 @@ pipeline {
         stage("Build") {
             steps {
                 script {
+                    sh "echo\$(pwd)"
                     component.each { entry ->
                         if (entry.value) {
                             sh "docker compose build ${entry.key.toLowerCase()}"
