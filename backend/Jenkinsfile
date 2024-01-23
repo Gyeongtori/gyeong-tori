@@ -29,13 +29,15 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 script {
-                    sh "chmod +x backend/gradlew"
-                    def version_value = sh(returnStdout: true, script: "backend/gradlew properties -q | grep 'version:'").trim()
+                    sh "cd backend"
+                    sh "chmod +x gradlew"
+                    def version_value = sh(returnStdout: true, script: "gradlew properties -q | grep 'version:'").trim()
                     version = version_value.split(/:/)[1].trim()
                     //Jenkins 파이프라인의 환경 변수 TAG
                     env.TAG = version
                     //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
                     //docker에 동적으로 tag를 지정하기 위해 사용했다.
+                    sh "cd ../"
                     sh "echo TAG=$version >> .env"
                     sh "cat .env"
                 }
