@@ -49,10 +49,8 @@ pipeline {
             steps {
                 script {
                     component.each { entry ->
-                        {
-                            if (entry.value) {
-                                sh "docker compose build ${entry.key.toLowerCase()}"
-                            }
+                        if (entry.value) {
+                            sh "docker compose build ${entry.key.toLowerCase()}"
                         }
                     }
                 }
