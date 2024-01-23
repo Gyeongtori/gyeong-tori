@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import AllCard from "./AllCard";
 import { IoChevronDownCircleOutline } from "react-icons/io5";
+import { FaArrowUp } from "react-icons/fa";
 let Division = styled.span`
     display: inline-block;
     width: 50%;
@@ -26,17 +27,19 @@ let Scroll = styled.div`
   z-index: 1;
 `
 let TopBtn = styled.button`
-  font-weight: bold;
-  font-size: 15px;
-  padding :15px 10px;
-  background-color: #000;
-  color:#fff;
-  border: 1px solid rgb(210, 204, 193);
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  color:#000;
+  border: 1px solid #000;
   border-radius: 50%;
   outline: none;
   cursor: pointer;
   &:hover{
-    color: rgb(142, 26,26);
+    color: rgba(229, 154, 89, 100);
+  }
+  svg {
+    font-size: 20px;
   }
 `
 
@@ -62,7 +65,7 @@ const Card = () => {
       </div>
       {divis ? (<><AllCard /><div>전체</div></>):<div>컬렉션</div>}
       <Scroll>
-        <TopBtn onClick={scrollToTop}>Top</TopBtn>
+        <TopBtn onClick={scrollToTop}><FaArrowUp /></TopBtn>
       </Scroll>
     </div>
   );
