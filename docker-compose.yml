@@ -17,10 +17,11 @@ services:
       - /policy:/usr/share/nginx/html
     depends_on:
       - back
+#      - front
 
   front:
     container_name: front
-    image: kimdahui/toritest-front:${TAG}
+    image: kimdahui/toritest-front
 #    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
     build:
       context: frontend

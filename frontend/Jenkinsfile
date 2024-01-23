@@ -1,8 +1,8 @@
 def component = [
-     'front': false,
-     'back': true,
-     'nginx': true,
-     'redis': true
+     'front': true,
+     'back': false,
+     'nginx': false,
+     'redis': false
 ]
 pipeline {
     agent any
@@ -15,32 +15,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Move .env File') {
-            steps {
-                // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
-                sh 'cp secure-settings/.env .env'
-            }
-        }
-        stage('Setup Environment') {
-            steps {
-                script {
-                    sh "chmod +x gradlew"
-                    def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
-                    version = version_value.split(/:/)[1].trim()
-                    //Jenkins 파이프라인의 환경 변수 TAG
-                    env.TAG = version
-                    //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
-                    //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                    sh "echo TAG=$version >> .env"
-                    sh "cat .env"
-                }
-            }
-        }
-//		stage('Junit Test') {
-//			steps {
-//				sh "./gradlew test"
-//			}
-//		}
         stage("Build") {
             steps {
                 script {
@@ -68,7 +42,7 @@ pipeline {
                                                   passwordVariable: 'DOCKER_USER_PASSWORD'
                                                  ]]) {
                                     sh "docker login -u ${DOCKER_USER_ID} -p ${DOCKER_USER_PASSWORD}"
-                                    sh "docker push ${DOCKER_USER_ID}/toritest-${var.toLowerCase()}:${env.TAG}"
+                                    sh "docker push ${DOCKER_USER_ID}/toritest-${var.toLowerCase()}"
                                 }
                             }
                         }
