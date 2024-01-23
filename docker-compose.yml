@@ -17,7 +17,6 @@ services:
       - /policy:/usr/share/nginx/html
     depends_on:
       - back
-      - front
 
   front:
     container_name: front
