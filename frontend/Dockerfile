@@ -8,7 +8,6 @@ COPY package.json /front/package.json
 
 
 RUN npm install
-RUN npm install react-scripts@3.0.1 -g
 
 
 CMD ["npm", "start"]
