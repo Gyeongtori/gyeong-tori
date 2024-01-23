@@ -21,15 +21,16 @@ pipeline {
         }
         stage('Move .env File') {
             steps {
+                sh "ls backend/secure-settings"
                 // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
-                sh 'cp secure-settings/.env .env'
+                sh 'cp backend/secure-settings/.env .env'
             }
         }
         stage('Setup Environment') {
             steps {
                 script {
-                    sh "chmod +x gradlew"
-                    def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
+                    sh "chmod +x backend/gradlew"
+                    def version_value = sh(returnStdout: true, script: "./backend/gradlew properties -q | grep 'version:'").trim()
                     version = version_value.split(/:/)[1].trim()
                     //Jenkins 파이프라인의 환경 변수 TAG
                     env.TAG = version
