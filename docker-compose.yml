@@ -36,7 +36,7 @@ services:
     container_name: back
     image: kimdahui/toritest-back:${TAG}
     build:
-      context: .
+      context: backend
       dockerfile: Dockerfile
     restart: always
     ports:
