@@ -7,7 +7,10 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @SpringBootApplication
 public class BackApplication {
-
+    @Bean
+    ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
+    }
     public static void main(String[] args) {
 
         SpringApplication.run(BackApplication.class, args);
