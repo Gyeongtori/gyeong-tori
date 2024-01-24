@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Cards from "./pages/Cards";
+import Main from "./pages/Main";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       </header> */}
       <Routes>
         <Route path="/cards" element={<Cards />} />
+        <Route path="/main" element={<Main />} />
       </Routes>
     </div>
   );
