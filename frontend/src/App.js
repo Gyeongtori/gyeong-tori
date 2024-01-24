@@ -3,6 +3,8 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Cards from "./pages/Cards";
+import SearchPage from "./pages/SearchPage";
+import MobileDiv from "./components/common/MobileDiv";
 
 function App() {
   return (
@@ -22,7 +24,10 @@ function App() {
         </a>
       </header> */}
       <Routes>
-        <Route path="/cards" element={<Cards />} />
+        <Route path="/" element={<MobileDiv />}>
+          <Route path="cards" element={<Cards />} />
+          <Route path="search" element={<SearchPage />} />
+        </Route>
       </Routes>
     </div>
   );

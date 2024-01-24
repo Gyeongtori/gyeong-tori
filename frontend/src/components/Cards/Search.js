@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 let SearchBar = styled.div`
   border-radius: 64px;
@@ -52,11 +53,22 @@ let ResetBtn = styled.button`
 const Search = () => {
   let [text, setText] = useState('');
   let [resetBtn, setResetBtn] = useState(false);
+  const inputRef = useRef(null);
+  const locationNow = useLocation();
+
+  useEffect(() => {
+    // '/search'에서만 컴포넌트가 마운트될 때 input 요소에 포커스 맞추기
+    if (locationNow.pathname === '/search' && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []); // 빈 종속성 배열은 이 효과가 컴포넌트가 마운트될 때 한 번만 실행됨
+
   return (
     <SearchBar>
       <div>
       <FaSearch />
       <SearchInput
+        ref={inputRef}
         type="text"
         placeholder="검색"
         value={text}
