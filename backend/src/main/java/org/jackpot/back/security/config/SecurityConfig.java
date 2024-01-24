@@ -25,7 +25,9 @@ public class SecurityConfig {
             "/error",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            //health check
+            "/actuator"
     };
 //    private static final String[] ALLOWED_URIS={"/**"};
     private final JwtFilter jwtFilter;
