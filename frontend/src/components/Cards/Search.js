@@ -50,7 +50,7 @@ let ResetBtn = styled.button`
     font-size: 18px;
   }
 `
-const Search = () => {
+const Search = ({selectedTags}) => {
   let [text, setText] = useState('');
   let [resetBtn, setResetBtn] = useState(false);
   const inputRef = useRef(null);
@@ -62,6 +62,14 @@ const Search = () => {
       inputRef.current.focus();
     }
   }, []); // 빈 종속성 배열은 이 효과가 컴포넌트가 마운트될 때 한 번만 실행됨
+
+  useEffect(() => {
+    // '/search'에서만 컴포넌트가 마운트될 때 선택된 태그 값 가져오기
+    if (locationNow.pathname === '/search') {
+      console.log(selectedTags);
+    }
+  }, [selectedTags] // selectedTags 값이 변경 될 때 실행
+  );
 
   return (
     <SearchBar>

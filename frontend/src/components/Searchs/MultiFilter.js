@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const TagBtn = styled.button`
@@ -8,7 +8,7 @@ const TagBtn = styled.button`
   font-weight: bold;
   background-color: ${(props) => props.bg};
 `;
-const MultiFilter = (prop) => {
+const MultiFilter = ({ handleStatusChange }) => {
   const [filterState, setFilterState] = useState({
     passingTags: [
       {
@@ -131,26 +131,13 @@ const MultiFilter = (prop) => {
         return tag;
       });
 
+      // 부모 컴포넌트로 콜백 함수 호출
+      handleStatusChange(newPassingTags);
+
       // 새로운 passingTags로 상태 업데이트
       return { passingTags: newPassingTags };
     });
   };
-
-  const filteredCollect = useCallback(() => {
-    const selected = [];
-    const now = filterState.passingTags;
-
-    for(let i in now) {
-      if(now[i].status) {
-        selected.push(now[i].id);
-      }
-    }
-    
-    // props.setSelectTag(selected);
-    return selected;
-  }, [filterState.passingTags]);
-
-  const result = filteredCollect();
   
   return (
     <>
