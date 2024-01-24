@@ -11,11 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(title = "JACKPOT API",
                 description = "jackpot api명세",
-                version = "v1"),
-        servers = {
-                @Server(url = "${server.servlet.context-path}",
-                        description = "Default Server URL")
-        }
+                version = "v1")
 )
 @Configuration
 @RequiredArgsConstructor
