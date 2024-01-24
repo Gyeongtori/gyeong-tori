@@ -27,7 +27,8 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v3/api-docs/**",
             //health check
-            "/actuator"
+            "/actuator",
+            "/api/",
     };
 //    private static final String[] ALLOWED_URIS={"/**"};
     private final JwtFilter jwtFilter;
