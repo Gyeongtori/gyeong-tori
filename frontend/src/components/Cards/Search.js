@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
+import { IoCloseOutline } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 let SearchBar = styled.div`
@@ -44,18 +45,37 @@ let ResetBtn = styled.button`
   outline: none;
   background-color: transparent;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   svg {
     font-size: 18px;
   }
 `
-const Search = ({selectedTags}) => {
+const SearchTag = styled.button`
+  svg {
+    display : inline-flex;
+    align-items: center;
+    justify-content: center;
+    width : 15px;
+    height : 15px;
+  }
+  margin: 0px 5px 5px 15px;
+  border: 1px solid black;
+  border-radius: 10px;
+  font-weight: bold;
+  /* display: flex-row;
+  justify-content: start; */
+  display : inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.bg};
+`
+const Search = (props) => {
   let [text, setText] = useState('');
   let [resetBtn, setResetBtn] = useState(false);
   const inputRef = useRef(null);
   const locationNow = useLocation();
-
+  let [category, setCategory] = useState([]);
   useEffect(() => {
     // '/search'에서만 컴포넌트가 마운트될 때 input 요소에 포커스 맞추기
     if (locationNow.pathname === '/search' && inputRef.current) {
@@ -66,12 +86,20 @@ const Search = ({selectedTags}) => {
   useEffect(() => {
     // '/search'에서만 컴포넌트가 마운트될 때 선택된 태그 값 가져오기
     if (locationNow.pathname === '/search') {
-      console.log(selectedTags);
+      // console.log(selectedTags);
+      setCategory(props.filterState.passingTags.filter((tag) => tag.status === true))
     }
-  }, [selectedTags] // selectedTags 값이 변경 될 때 실행
+  }, [props.filterState] // filterState 값이 변경 될 때 실행
   );
 
+  const handleEnter = (e) => {
+    if(e.key === "Enter") {
+      console.log(text, category);
+    }
+  }
+
   return (
+    <>
     <SearchBar>
       <div>
       <FaSearch />
@@ -88,6 +116,7 @@ const Search = ({selectedTags}) => {
           }
           setText(e.target.value);
           }}
+        onKeyDown={handleEnter}
         />
       </div>
       {resetBtn ? <ResetBtn onClick={() => {
@@ -95,6 +124,21 @@ const Search = ({selectedTags}) => {
         setResetBtn(false);
       }}><TiDelete /></ResetBtn> : null}
     </SearchBar>
+    <div>
+    {category.length !== 0 ?
+        category.map((val) => (
+        <SearchTag 
+          key={val.id} 
+          id={val.id} 
+          bg={val.color} 
+          onClick={props.handleFilter}
+        >
+          {val.name}
+          <IoCloseOutline id={val.id}/>
+        </SearchTag>
+      )) : <div style={{height: "28.3px"}}></div>}
+    </div>
+    </>
   );
 };
 export default Search;
