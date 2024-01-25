@@ -24,9 +24,11 @@ public class RegistUserRequest {
     public User toEntity(){
         return User.builder()
                 .id(null)
-                .name(name)
                 .email(email)
+                .nickname(name)
                 .password(password)
+                .profileImage(null)
+                .grade(1)
                 .provider(AuthProvider.JACKPOT)
                 .role(UserRole.USER)
                 .status(UserStatus.ACTIVE)

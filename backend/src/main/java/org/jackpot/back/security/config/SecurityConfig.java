@@ -28,22 +28,14 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v3/api-docs/**",
-            "/api/v3/api-docs/**",
             //health check
             "/actuator",
             "/api/",
-            //dummy
-            "/v1/dummy/**"
     };
-//    private static final String[] ALLOWED_URIS={"/**"};
+    //    private static final String[] ALLOWED_URIS={"/**"};
     private final JwtFilter jwtFilter;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final CustomOauth2UserService customOauth2UserService;
-    
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
@@ -57,7 +49,7 @@ public class SecurityConfig {
 
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2Login -> oauth2Login //소셜 로그인
-                    .successHandler(oauth2AuthenticationSuccessHandler) // 로그인 성공했을 경우 handelr 처리
+                        .successHandler(oauth2AuthenticationSuccessHandler) // 로그인 성공했을 경우 handelr 처리
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(customOauth2UserService)) //회원가입 or 업데이트 처리
                 );

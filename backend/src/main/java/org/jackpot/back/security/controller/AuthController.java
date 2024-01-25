@@ -1,5 +1,8 @@
 package org.jackpot.back.security.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.global.utils.MessageUtils;
@@ -31,11 +34,10 @@ public class AuthController {
      * @return GeneratedToken
      */
     @PostMapping("/login")
-    public ResponseEntity generateToken(
-            @RequestBody LoginRequest loginRequest
-            ){
+    public ResponseEntity generateToken(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         log.debug(loginRequest.toString());
-        return ResponseEntity.ok(MessageUtils.success(authService.login(loginRequest.getEmail(),loginRequest.getPassword())));
+        authService.login(response, loginRequest.getEmail(),loginRequest.getPassword());
+        return ResponseEntity.ok(MessageUtils.success());
     }
 
     /**
@@ -43,10 +45,18 @@ public class AuthController {
      * @return GeneratedToken
      */
     @PostMapping("/refresh")
-    public ResponseEntity<MessageUtils> refreshToken(
-            @RequestBody RefreshTokenRequest refreshTokenRequest
-            ){
-        return ResponseEntity.ok(MessageUtils.success(tokenService.republishToken(refreshTokenRequest.getRefreshToken())));
+    public ResponseEntity<MessageUtils> refreshToken(HttpServletRequest request){
+        String refreshToken=null;
+
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies){
+            if("refreshToken".equals(cookie.getName())){
+                refreshToken = cookie.getValue();
+                break;
+
+            }
+        }
+        return ResponseEntity.ok(MessageUtils.success(tokenService.republishToken(refreshToken)));
     }
 
     /**
@@ -57,7 +67,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<MessageUtils> logout(
             @AuthenticationPrincipal User user
-            ){
+    ){
         log.debug("userDto={}",user);
         tokenService.removeToken(user.getId());
         return ResponseEntity.ok(MessageUtils.success());
