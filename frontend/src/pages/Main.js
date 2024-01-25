@@ -9,11 +9,18 @@ const Main = () => {
 
 
   return (
-    <div>
+    <Mobile>
       <InfoTop />
 
-    </div>
+    </Mobile>
   )
   }
 
 export default Main
+
+const Mobile = styled.div`
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f2f2f2;
+`;

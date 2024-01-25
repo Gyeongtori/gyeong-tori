@@ -4,6 +4,7 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Cards from "./pages/Cards";
 import Main from "./pages/Main";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route path="/cards" element={<Cards />} />
         <Route path="/main" element={<Main />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>
   );

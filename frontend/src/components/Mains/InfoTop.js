@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
+import Toggle from './Toggle';
 
+import { IoSettingsOutline } from "react-icons/io5";
+import { GiHandBag } from "react-icons/gi";
+import { FaTrophy } from "react-icons/fa";
 
 const InfoTop = () => {
+  const navigate = useNavigate()
+
   // 초기 온도 상태 설정
   const [temp, setTemp] = useState(null)
   const [icon, setIcon] = useState(null)
 
+  const [isOn, setIsOn] = useState(false);
+  
+  // const onSetisOn = (isOn) => {
+  //   setIsOn(isOn)
+  //   console.log(isOn, '00')
+  // }
 
 
   const getCurrentLocation=()=>{
@@ -37,6 +50,9 @@ const InfoTop = () => {
 
   }
 
+  const goProfile = () => {
+    navigate("/profile")
+  }
 
   // 주소 바꾸기 XX
   // const alterAddress = (lat, lon) => {
@@ -58,13 +74,27 @@ const InfoTop = () => {
   return (
     <div>
       <Info>
-
+        <InfoHeader>
           <img src={`https://openweathermap.com/img/w/${icon}.png`} alt="" />
-          <div>{ temp }</div>
+          <div>{ temp }°C</div>
           <div>00동</div>
-         
-      
+        </InfoHeader>
+
+        <InfoHeaderRight>
+          < Toggle setIsOn={setIsOn} />
+          <IoSettingsOutline 
+          size={25} 
+          onClick={goProfile}
+          
+          />
+        </InfoHeaderRight>
       </Info>
+
+      <InfoSide>
+        <GiHandBag size={25} />
+        
+        {isOn && <FaTrophy size={25} />}
+      </InfoSide>
 
     </div>
   )
@@ -86,6 +116,37 @@ export default InfoTop
 
 const Info = styled.div`
 
-  background-color: wheat;
+  /* background-color: wheat; */
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 세로 중앙 정렬 */
+`
+
+const InfoHeader = styled.div`
+  
+`
+
+
+const InfoHeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+
+  & > :first-child {
+    margin-right: 10px;
+  }
 
 `
+
+const InfoSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 10px;
+
+  & > :first-child {
+    margin-bottom: 10px;
+  }
+`
+
