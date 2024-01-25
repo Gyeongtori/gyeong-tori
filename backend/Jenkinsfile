@@ -1,8 +1,8 @@
 def component = [
         front: false,
         back: true,
-        nginx: true,
-        redis: true
+        nginx: false,
+        redis: false
 ]
 pipeline {
     agent any
