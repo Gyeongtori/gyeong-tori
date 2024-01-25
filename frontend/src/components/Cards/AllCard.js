@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
+import Detail from './Detail';
 
 const CardGrid = styled.div`
   display: grid;
@@ -34,7 +35,7 @@ const Overlay = styled.div`
   transition: all 0.1s;
 `;
 
-const Card = styled.div`
+const CardImg = styled.div`
   width: 175px;
   height: 250px;
   background-image: url('https://picsum.photos/seed/picsum/175/250');
@@ -44,6 +45,7 @@ const Card = styled.div`
 
 const AllCard = () => {
   const [states, setStates] = useState(Array(5).fill({rotation: '', position: '50%', filter: 'opacity(0)'}));
+  const [getdetail, setDetail] = useState(Array(5).fill(false));
   // const [rotation, setRotation] = useState('');
   // const [position, setPosition] = useState('50%');
   // const [filter, setFilter] = useState('brightness(1.1) opacity(0.8);');
@@ -78,7 +80,16 @@ const AllCard = () => {
     })
   };
 
+  const handleDetail = (e) => {
+    const cardId = e.target.id;
+    console.log(cardId);
+    console.log('클릭됐땅');
+    setDetail(true);
+  }
   return (
+    <>
+    <div>
+    {getdetail ? <Detail setDetail={setDetail}/> : null}
     <CardGrid >
         {states.map((state, index) => (
         <Container
@@ -87,11 +98,12 @@ const AllCard = () => {
           onMouseMove={(e) => handleMouseMove(index, e)}
           onMouseOut={() => handleMouseOut(index)}
         >
-          <Overlay position={state.position} filter={state.filter} />
-          <Card />
+          <Overlay id={index} onClick={handleDetail} position={state.position} filter={state.filter} />
+          <CardImg />
         </Container>
       ))}
     </CardGrid>
+    </div></>
   );
 };
 
