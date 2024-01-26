@@ -16,12 +16,12 @@ import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "card_id")
-    private Long id; //카드 번호
+    @Column
+    private Long number; //카드 번호
 
     @ManyToOne
     @JoinColumn(name="cultural_heritage_no")
-    private CulturalHeritage no; //등급
+    private CulturalHeritage culturalHeritage; //등급
 
     @Column
     @NotNull
