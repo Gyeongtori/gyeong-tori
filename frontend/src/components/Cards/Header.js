@@ -2,11 +2,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FaChevronLeft } from "react-icons/fa6";
 let Head = styled.div`
-  height: 6vh;
+  /* height: 6vh; */
   position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
+  /* left: 0;
+  right: 0; */
+  width: 20.8125rem;
+  height: 2.8125rem;
   background-color: white;
   color: white;
   display: flex;

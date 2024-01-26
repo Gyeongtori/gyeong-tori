@@ -63,7 +63,7 @@ const Card = () => {
       <div>
         <SortTitle>기본순&nbsp;<IoChevronDownCircleOutline/></SortTitle>
       </div>
-      {divis ? (<><AllCard /><div>전체</div></>):<div>컬렉션</div>}
+      {divis ? (<><AllCard /></>):<div>컬렉션</div>}
       <Scroll>
         <TopBtn onClick={scrollToTop}><FaArrowUp /></TopBtn>
       </Scroll>
