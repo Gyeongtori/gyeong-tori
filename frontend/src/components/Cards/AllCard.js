@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Detail from "./Detail";
 import { db } from "../../firebase";
+import axios from "axios";
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -46,13 +47,34 @@ const CardImg = styled.div`
 `;
 
 const AllCard = () => {
+  const [states, setStates] = useState([]);
+  const [cardList, setCardList] = useState([]);
+  const [getdetail, setDetail] = useState(false);
   useEffect(() => {
     console.log(db);
+    // await axios.get('https://jsonplaceholder.typicode.com/users')
+    // .then(response => {
+      //   console.log(response.data);
+      // });
+    getCards();
   }, []);
-  const [states, setStates] = useState(
-    Array(5).fill({ rotation: "", position: "50%", filter: "opacity(0)" })
-  );
-  const [getdetail, setDetail] = useState(false);
+  const getCards = async() => {
+    try {
+      const res = await axios.post('/v1/dummy/cards', ({"offset": 1}));
+      
+        // console.log(res)
+        const total = res.data.data_body.total;
+        const currnet = res.data.data_body.currnet;
+        let setting = Array(currnet).fill({ rotation: "", position: "50%", filter: "opacity(0)" });
+        setCardList(res.data.data_body.card_list);
+        setStates((pre) => {
+          return [...pre, ...Array(currnet-1).fill({ rotation: "", position: "50%", filter: "opacity(0)" })];
+        });
+      
+    } catch(e) {
+      console.log(e.response);
+    }
+  }
   // const [rotation, setRotation] = useState('');
   // const [position, setPosition] = useState('50%');
   // const [filter, setFilter] = useState('brightness(1.1) opacity(0.8);');
@@ -94,7 +116,6 @@ const AllCard = () => {
   const handleDetail = (e) => {
     const cardId = e.target.id;
     console.log(cardId);
-    console.log("클릭됐땅");
     setDetail(true);
   };
   return (
@@ -102,7 +123,7 @@ const AllCard = () => {
       <div>
         {getdetail ? <Detail setDetail={setDetail} /> : null}
         <CardGrid>
-          {states.map((state, index) => (
+          {states.length !== 'undefined' ? states.map((state, index) => (
             <Container
               key={index}
               rotation={state.rotation}
@@ -117,7 +138,7 @@ const AllCard = () => {
               />
               <CardImg />
             </Container>
-          ))}
+          )) : null}
         </CardGrid>
       </div>
     </>
