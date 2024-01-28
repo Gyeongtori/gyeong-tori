@@ -46,17 +46,18 @@ const StyledButton = styled.button`
 
 `;
 
-function Button({ children, color, activecolor, ...rest }) {
+const ButtonFull = ({ children, color, activecolor, ...rest }) => {
   return <StyledButton 
             {...rest}
             color={color}
             activecolor={activecolor}
-          >{children}</StyledButton>;
+          >{children}
+          </StyledButton>;
 }
 
-Button.defaultProps = {
+ButtonFull.defaultProps = {
   color: 'white',
   activecolor : 'white'
 };
 
-export default Button;
+export default ButtonFull;

@@ -6,6 +6,7 @@ import Cards from "./pages/Cards";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/main" element={<Main />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </div>
   );
