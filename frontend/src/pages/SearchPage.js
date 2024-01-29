@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import Header from "../components/Cards/Header";
 import Search from "../components/Cards/Search";
 import MultiFilter from "../components/Searchs/MultiFilter";
+import styled from "styled-components";
+
+const Frame = styled.div`
+/* display: inline-flex; */
+flex-direction: column;
+/* gap: 1.25rem; */
+/* margin: 2.75rem 0.78rem -23rem 0.78rem; */
+`;
 
 const SearchPage = () => {
   const [filterState, setFilterState] = useState({
@@ -131,9 +139,11 @@ const SearchPage = () => {
 
   return (
     <>
-      <Header />
-      <Search filterState={filterState} handleFilter={handleFilter}/>
-      <MultiFilter filterState={filterState} handleFilter={handleFilter}/>
+      <Frame>
+        <Header />
+        <Search filterState={filterState} handleFilter={handleFilter}/>
+        <MultiFilter filterState={filterState} handleFilter={handleFilter}/>
+      </Frame>
     </>
   )
 }

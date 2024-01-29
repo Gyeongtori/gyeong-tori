@@ -22,7 +22,7 @@ let SortTitle = styled.div`
 `
 let Scroll = styled.div`
   position: fixed;
-  right: 20%;
+  /* right: 20%; */
   bottom: 5%;
   z-index: 1;
 `
@@ -63,7 +63,7 @@ const Card = () => {
       <div>
         <SortTitle>기본순&nbsp;<IoChevronDownCircleOutline/></SortTitle>
       </div>
-      {divis ? (<><AllCard /></>):<div>컬렉션</div>}
+      {divis ? (<AllCard />):<div>컬렉션</div>}
       <Scroll>
         <TopBtn onClick={scrollToTop}><FaArrowUp /></TopBtn>
       </Scroll>

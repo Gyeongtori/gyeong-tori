@@ -47,6 +47,7 @@ const Header = () => {
   };
 
   return (
+    <>
     <Head>
       <Back>
         <FaChevronLeft onClick={goPerv} />
@@ -56,6 +57,7 @@ const Header = () => {
       </Title>
       <Rank>랭킹</Rank>
     </Head>
+    </>
   );
 };
 
