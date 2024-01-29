@@ -54,27 +54,37 @@ const AllCard = () => {
     console.log(db);
     // await axios.get('https://jsonplaceholder.typicode.com/users')
     // .then(response => {
-      //   console.log(response.data);
-      // });
+    //   console.log(response.data);
+    // });
     getCards();
   }, []);
-  const getCards = async() => {
+  const getCards = async () => {
     try {
-      const res = await axios.post('/v1/dummy/cards', ({"offset": 1}));
-      
-        // console.log(res)
-        const total = res.data.data_body.total;
-        const currnet = res.data.data_body.currnet;
-        let setting = Array(currnet).fill({ rotation: "", position: "50%", filter: "opacity(0)" });
-        setCardList(res.data.data_body.card_list);
-        setStates((pre) => {
-          return [...pre, ...Array(currnet-1).fill({ rotation: "", position: "50%", filter: "opacity(0)" })];
-        });
-      
-    } catch(e) {
+      const res = await axios.post("/v1/dummy/cards", { offset: 1 });
+
+      // console.log(res)
+      const total = res.data.data_body.total;
+      const currnet = res.data.data_body.currnet;
+      let setting = Array(currnet).fill({
+        rotation: "",
+        position: "50%",
+        filter: "opacity(0)",
+      });
+      setCardList(res.data.data_body.card_list);
+      setStates((pre) => {
+        return [
+          ...pre,
+          ...Array(currnet - 1).fill({
+            rotation: "",
+            position: "50%",
+            filter: "opacity(0)",
+          }),
+        ];
+      });
+    } catch (e) {
       console.log(e.response);
     }
-  }
+  };
   // const [rotation, setRotation] = useState('');
   // const [position, setPosition] = useState('50%');
   // const [filter, setFilter] = useState('brightness(1.1) opacity(0.8);');
@@ -123,22 +133,24 @@ const AllCard = () => {
       <div>
         {getdetail ? <Detail setDetail={setDetail} /> : null}
         <CardGrid>
-          {states.length !== 'undefined' ? states.map((state, index) => (
-            <Container
-              key={index}
-              rotation={state.rotation}
-              onMouseMove={(e) => handleMouseMove(index, e)}
-              onMouseOut={() => handleMouseOut(index)}
-            >
-              <Overlay
-                id={index}
-                onClick={handleDetail}
-                position={state.position}
-                filter={state.filter}
-              />
-              <CardImg />
-            </Container>
-          )) : null}
+          {states.length !== "undefined"
+            ? states.map((state, index) => (
+                <Container
+                  key={index}
+                  rotation={state.rotation}
+                  onMouseMove={(e) => handleMouseMove(index, e)}
+                  onMouseOut={() => handleMouseOut(index)}
+                >
+                  <Overlay
+                    id={index}
+                    onClick={handleDetail}
+                    position={state.position}
+                    filter={state.filter}
+                  />
+                  <CardImg />
+                </Container>
+              ))
+            : null}
         </CardGrid>
       </div>
     </>

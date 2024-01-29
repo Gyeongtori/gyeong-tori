@@ -5,10 +5,9 @@ import MultiFilter from "../components/Searchs/MultiFilter";
 import styled from "styled-components";
 
 const Frame = styled.div`
-/* display: inline-flex; */
-flex-direction: column;
-/* gap: 1.25rem; */
-/* margin: 2.75rem 0.78rem -23rem 0.78rem; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SearchPage = () => {
@@ -121,11 +120,11 @@ const SearchPage = () => {
         // 현재 태그의 category에 해당하는 key가 있다면 값을 변경
         if (tag.id == category) {
           // 해당 category의 값 변경
-          let bg = '';
-          if(tag.status == false) {
+          let bg = "";
+          if (tag.status == false) {
             bg = "rgba(229, 154, 89, 100)";
           } else {
-            bg = 'transparent';
+            bg = "transparent";
           }
           return { ...tag, status: !tag.status, color: bg };
         }
@@ -140,11 +139,13 @@ const SearchPage = () => {
   return (
     <>
       <Frame>
-        <Header />
-        <Search filterState={filterState} handleFilter={handleFilter}/>
-        <MultiFilter filterState={filterState} handleFilter={handleFilter}/>
+        <div>
+          <Header />
+          <Search filterState={filterState} handleFilter={handleFilter} />
+          <MultiFilter filterState={filterState} handleFilter={handleFilter} />
+        </div>
       </Frame>
     </>
-  )
-}
+  );
+};
 export default SearchPage;
