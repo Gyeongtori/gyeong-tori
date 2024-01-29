@@ -3,12 +3,20 @@ import styled, { css } from 'styled-components';
 
 import ButtonFull from '../components/ButtonFull';
 import ButtonBlank from '../components/ButtonBlank';
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
+  const navigate = useNavigate()
+
+  const goSignUp = () => {
+    navigate('/signup')
+  }
+
   return (
     <Main>
-      <h1>TEST</h1>
+      {/* <h1>TEST</h1> */}
+
       <Body>
         <h2>로그인</h2>
         <ButtonBlank 
@@ -34,7 +42,7 @@ const Login = () => {
         <div>
 
         </div>
-        <p>아직 회원이 아니신가요? 회원가입</p>
+        <p>아직 회원이 아니신가요? <a onClick={goSignUp}>회원가입</a></p>
       </Body>
     </Main>
   );
@@ -44,6 +52,7 @@ export default Login;
 
 const Main = styled.div`
   background-color: beige;
+  height: 100vh;
 
 `
 
@@ -62,7 +71,7 @@ const Body = styled.div`
   background-color: white;
 
 
-
-  border: 1px solid black;
+  /* 경계 테스트 */
+  /* border: 1px solid black; */
 
 `;

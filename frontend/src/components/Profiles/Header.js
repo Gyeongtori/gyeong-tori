@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { FaChevronLeft } from "react-icons/fa6";
 
-const Header = () => {
+const Header = ({ children, content, ...rest }) => {
   const navigate = useNavigate();
 
   // 이전 페이지 이동
@@ -18,7 +18,7 @@ const Header = () => {
         <FaChevronLeft onClick={goPerv} />
       </Back>
       <Title>
-        내정보
+        { children }
       </Title>
     </Head>
   )
@@ -27,7 +27,15 @@ const Header = () => {
 export default Header
 
 
-let Head = styled.div`
+const Title = styled.div`
+  font-size: 15px;
+  color: black;
+  /* font-weight: bold; */
+  
+
+`;
+
+const Head = styled.div`
   height: 6vh;
   position: sticky;
   top: 0;
@@ -41,7 +49,8 @@ let Head = styled.div`
   /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); */
   z-index: 100;
 `;
-let Back = styled.div`
+
+const Back = styled.div`
   margin-left: 5px;
   svg {
     color: rgba(128, 128, 128, 0.623);
@@ -50,10 +59,4 @@ let Back = styled.div`
       transform: scale(1.1);
     }
   }
-`;
-
-const Title = styled.div`
-  font-size: 15px;
-  color: black;
-  /* font-weight: bold; */
 `;
