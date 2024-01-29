@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 
-const Blurs =styled.div`
+const Blurs = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,25 +14,13 @@ const Blurs =styled.div`
   background: rgba(0, 0, 0, 0.5);
   /* background-color: rgba(0,0,0, 0.4); */
   z-index: 200;
-`
+`;
 const CardDetail = styled.div`
-  /* z-index: 1000; */
-  /* background-color: white; */
-  /* width: 50%;
-  height: 50%; */
-  /* position: absolute; */
-  /* top: 35%;
-  left: 50%; */
-  /* transform: translate(-50%, -50%); */
   width: 50%;
   max-width: 300px;
   height: 400px;
   background-color: white;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 0, 0.5),
-    rgba(0, 0, 255, 0.5)
-  ),url('https://picsum.photos/seed/picsum/300/400');
+  background-image: url(${(props) => props.cardImg});
   background-size: cover;
   padding: 20px;
   border-radius: 10px;
@@ -43,9 +31,12 @@ const CardDetail = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+  color: white;
+  font-weight: bold;
 
   div {
     position: absolute;
+    color: black;
     top: 5%;
     left: 50%;
     transform: translateX(-50%);
@@ -54,22 +45,25 @@ const CardDetail = styled.div`
 
 const Detail = (props) => {
   const cardRef = useRef(null);
-  
-  useEffect(() => { 
+  useEffect(() => {
     const handleDetail = (e) => {
-      if(cardRef.current && !cardRef.current.contains(e.target)) {
+      if (cardRef.current && !cardRef.current.contains(e.target)) {
         props.setDetail(false);
       }
-    }
+    };
     document.addEventListener("mousedown", handleDetail);
-    return () => {document.removeEventListener("mousedown", handleDetail);}
-  }, [cardRef])
+    return () => {
+      document.removeEventListener("mousedown", handleDetail);
+    };
+  }, [cardRef]);
   return (
     <Blurs>
-      <CardDetail id="detail" ref={cardRef} ><div>여기에서 설명해요</div>뇽</CardDetail>
-
+      <CardDetail id="detail" cardImg={props.cardImg} ref={cardRef}>
+        <div>여기에서 설명해요</div>
+        {props.des}
+      </CardDetail>
     </Blurs>
-  )
-}
+  );
+};
 
 export default Detail;

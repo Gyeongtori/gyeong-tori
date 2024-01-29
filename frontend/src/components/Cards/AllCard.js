@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Detail from "./Detail";
 import { db } from "../../firebase";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import axios from "axios";
 const CardGrid = styled.div`
   display: grid;
@@ -41,15 +42,17 @@ const Overlay = styled.div`
 const CardImg = styled.div`
   width: 175px;
   height: 250px;
-  background-image: url("https://picsum.photos/seed/picsum/175/250");
+  background-image: ${(props) => `url("${props.url}")`};
   background-size: cover;
   margin: 0 auto;
 `;
 
 const AllCard = () => {
   const [states, setStates] = useState([]);
-  const [cardList, setCardList] = useState([]);
+  const [cardDes, setCardDes] = useState([]);
+  const [cardImgList, setCardImgList] = useState([]);
   const [getdetail, setDetail] = useState(false);
+  const [cardId, setCardId] = useState();
   useEffect(() => {
     console.log(db);
     // await axios.get('https://jsonplaceholder.typicode.com/users')
@@ -61,7 +64,7 @@ const AllCard = () => {
   const getCards = async () => {
     try {
       const res = await axios.post("/v1/dummy/cards", { offset: 1 });
-
+      // console.log(cardDes);
       // console.log(res)
       const total = res.data.data_body.total;
       const currnet = res.data.data_body.currnet;
@@ -70,17 +73,26 @@ const AllCard = () => {
         position: "50%",
         filter: "opacity(0)",
       });
-      setCardList(res.data.data_body.card_list);
-      setStates((pre) => {
-        return [
-          ...pre,
-          ...Array(currnet - 1).fill({
-            rotation: "",
-            position: "50%",
-            filter: "opacity(0)",
-          }),
-        ];
+      let cardImgs = [];
+      let des = [];
+      const promises = res.data.data_body.card_list.map(async (card, index) => {
+        const storage = getStorage();
+        const imageUrl = await getDownloadURL(ref(storage, card.img));
+        // console.log(imageUrl);
+        cardImgs[index] = imageUrl;
+        des[index] = card.description;
+        // console.log(cardImgs[index], cardImgs);
       });
+      await Promise.all(promises);
+
+      setStates((pre) => {
+        return setting;
+      });
+      setCardImgList((pre) => {
+        return [...cardImgs];
+      });
+      setCardDes(des);
+      // console.log(cardImgList, states);
     } catch (e) {
       console.log(e.response);
     }
@@ -124,14 +136,21 @@ const AllCard = () => {
   };
 
   const handleDetail = (e) => {
-    const cardId = e.target.id;
-    console.log(cardId);
+    const id = e.target.id;
+    console.log(id);
+    setCardId(id);
     setDetail(true);
   };
   return (
     <>
       <div>
-        {getdetail ? <Detail setDetail={setDetail} /> : null}
+        {getdetail ? (
+          <Detail
+            setDetail={setDetail}
+            cardImg={cardImgList[cardId]}
+            des={cardDes[cardId]}
+          />
+        ) : null}
         <CardGrid>
           {states.length !== "undefined"
             ? states.map((state, index) => (
@@ -147,7 +166,7 @@ const AllCard = () => {
                     position={state.position}
                     filter={state.filter}
                   />
-                  <CardImg />
+                  <CardImg url={cardImgList[index]} />
                 </Container>
               ))
             : null}
