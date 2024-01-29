@@ -1,38 +1,18 @@
 package org.jackpot.back.culturalHeritage.model.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.jdom2.JDOMException;
 
-import java.util.Map;
+import java.io.IOException;
 
-@Service
-@Slf4j
-public class WebClientService {
-    public void get() {
-        // webClient 기본 설정
-        WebClient webClient =
-                WebClient
-                        .builder()
-                        .baseUrl("https://www.cha.go.kr/")
-                        .build();
-
-        // api 요청
-        String response =
-                webClient
-                        .get()
-                        .uri(uriBuilder ->
-                                uriBuilder
-                                        .path("cha/SearchKindOpenapiList.do")
-                                        .queryParam("ccbaCtcd", 37)
-                                        .queryParam("ccbaLcto", 12)
-                                        .queryParam("ccbaKdcd", 11)
-                                        .build())
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
-
-        // 결과 확인
-        log.info("test: " + response.toString());
-    }
+public interface WebClientService {
+    //문화재 검색
+    void search() throws IOException, JDOMException;
+    //문화재 검색 상세조회
+    void detailSearch();
+    //문화재 이미지 검색
+    void imageSearch();
+    //문화재 동영상 검색
+    void videoSearch();
+    //문화재 나레이션 검색
+    void voiceSearch();
 }
