@@ -18,11 +18,19 @@ public class CulturalHeritage {
 
     @Column(length = 30)
     @NotNull
+    private String asno; //관리번호
+
+    @Column(length = 30)
+    @NotNull
     private String name_kr; //문화재명(국문)
 
     @Column(length = 30)
     @NotNull
     private String name_hanja; //문화재명(한자)
+
+    @Column(length = 5000)
+    @NotNull
+    private String content; //설명
 
     @Column(length = 10)
     @NotNull
@@ -36,11 +44,11 @@ public class CulturalHeritage {
     @NotNull
     private String division; //종목코드(카테고리)
 
-    @Column(length = 10)
+    @Column(length = 20)
     @NotNull
     private String lng; //경도
 
-    @Column(length = 10)
+    @Column(length = 20)
     @NotNull
     private String lat; //위도
 
@@ -48,7 +56,7 @@ public class CulturalHeritage {
     @NotNull
     private String image_source; //이미지 주소
 
-    @Column(length = 512)
+    @Column
     @NotNull
     private String image_detail; //이미지 설명
 
