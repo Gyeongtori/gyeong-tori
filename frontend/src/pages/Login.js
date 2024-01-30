@@ -22,12 +22,14 @@ const Login = () => {
         <ButtonBlank 
           color='#E4E7EC'
           activecolor='#BCBCBD'
-        >이메일</ButtonBlank>
+          placeholder='이메일'
+        ></ButtonBlank>
 
         <ButtonBlank 
           color='#E4E7EC'
           activecolor='#BCBCBD'
-        >비밀번호</ButtonBlank>
+          placeholder='비밀번호'
+        ></ButtonBlank>
 
         <ButtonFull 
           color="#888870" 

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const StyledButton = styled.button`
+const StyledButton = styled.input`
   /* 공통 스타일 */
   display: inline-block;
   outline: none;
@@ -15,9 +15,9 @@ const StyledButton = styled.button`
 
   /* 크기 */
   height: 3.125rem;
-  width: 20rem;
+  width: 17.5rem;
   font-size: 0.875rem;
-  
+
   
   /* 색상 */
   ${( props ) => {
@@ -32,13 +32,14 @@ const StyledButton = styled.button`
 `;
 
 
-const ButtonBlank = ({ children, color, activecolor, borderwidth, ...rest }) => {
+const ButtonBlank = ({  color, activecolor, borderwidth,  ...rest }) => {
     return <StyledButton 
         {...rest}
         color={color}
         activecolor={activecolor}
         borderwidth={borderwidth}
-      >{children}
+       
+      >
       </StyledButton>;
 };
 

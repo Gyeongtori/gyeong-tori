@@ -26,28 +26,32 @@ const Signup = () => {
             color='#722D1E'
             activecolor='#A94C36'
             borderwidth='2'
-            >ssafy@gmail.com</ButtonBlank>
+            placeholder='ssafy@gmail.com'
+            ></ButtonBlank>
             
             <InputText>닉네임</InputText>
             <ButtonBlank 
             color='#722D1E'
             activecolor='#A94C36'
             borderwidth='2'
-            >오뉴오뉴</ButtonBlank>
+            placeholder='오뉴오뉴'
+            ></ButtonBlank>
 
             <InputText>비밀번호</InputText>
             <ButtonBlank 
             color='#722D1E'
             activecolor='#A94C36'
             borderwidth='2'
-            >**********</ButtonBlank>
+            placeholder='*********'
+            ></ButtonBlank>
 
             <InputText>비밀번호 확인</InputText>
             <ButtonBlank 
             color='#722D1E'
             activecolor='#A94C36'
             borderwidth='2'
-            >**********</ButtonBlank>
+            placeholder='*********'
+            ></ButtonBlank>
 
             <SignupBtn>
                 <ButtonFull
