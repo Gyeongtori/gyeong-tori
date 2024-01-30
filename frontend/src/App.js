@@ -7,6 +7,7 @@ import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Maps from "./pages/Maps";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/maps" element={<Maps/>} />
       </Routes>
     </div>
   );
