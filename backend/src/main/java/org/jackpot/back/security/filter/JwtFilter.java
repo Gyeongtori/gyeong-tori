@@ -2,6 +2,7 @@ package org.jackpot.back.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,19 @@ public class JwtFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader=request.getHeader(AUTHORIZATION_HEADER);
+        String authHeader=null;
+
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null){
+            for(Cookie cookie : cookies){
+                if("accessToken".equals(cookie.getName())){
+                    authHeader = cookie.getValue();
+                    break;
+
+                }
+            }
+        }
+
         //access token이 없는 경우
         if(!StringUtils.hasText(authHeader)){
             log.debug("ACCESS DENIED : "+"헤더가 없습니다.");
@@ -59,5 +72,6 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request,response);
+
     }
 }

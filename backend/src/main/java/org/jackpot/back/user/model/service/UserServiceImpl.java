@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService{
     public void registUser(RegistUserRequest registUserRequest) {
         log.debug("error={}",registUserRequest);
         userRepository.findByEmail(registUserRequest.getEmail())
-                        .ifPresent(value -> {throw new UserException(ALREADY_IN_EMAIL);});
+                .ifPresent(value -> {throw new UserException(ALREADY_IN_EMAIL);});
         registUserRequest.setPassword(passwordEncoder.encode(registUserRequest.getPassword()));
         userRepository.save(registUserRequest.toEntity());
     }
