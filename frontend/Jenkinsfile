@@ -22,6 +22,7 @@ pipeline {
         stage("Copy Env") {
             steps {
                 script {
+                    sh 'ls -al'
                     // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
                     sh 'cp backend/secure-settings/front/* front'
                     sh 'ls front -al'
