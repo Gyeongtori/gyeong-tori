@@ -12,7 +12,20 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                checkout scm
+                checkout scmGit(
+                        branches: [[name: 'develop-fe']],
+                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
+                        userRemoteConfigs: [[credentialsId: 'Github-access-token', url: 'https://github.com/KimDahui42/jackpot-settings']]
+                )
+            }
+        }
+        stage("Copy Env") {
+            steps {
+                script {
+                    // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
+                    sh 'cp backend/secure-settings/front/* front/'
+                    sh 'ls front -al'
+                }
             }
         }
         stage("Build") {
