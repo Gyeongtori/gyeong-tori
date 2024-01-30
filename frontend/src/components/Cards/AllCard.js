@@ -65,7 +65,10 @@ const AllCard = () => {
     try {
       // CORS 오류 존재
       // console.log(`${process.env.REACT_APP_PUBLIC_URL}/v1/dummy/cards`);
-      const res = await axios.post(`${process.env.REACT_APP_PUBLIC_URL}v1/dummy/cards`, { offset: 1 });
+      // const res = await axios.post(`${process.env.REACT_APP_PUBLIC_URL}v1/dummy/cards`, { offset: 1 });
+      const res = await axios.post("http://backend:8080/v1/dummy/cards", {
+        offset: 1,
+      });
       // const res = await axios.post('/v1/dummy/cards', { offset: 1 });
       // console.log(cardDes);
       // console.log(res)
