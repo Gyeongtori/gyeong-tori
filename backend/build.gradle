@@ -48,26 +48,26 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-//tasks.register('copyPrivate', Copy) {
-//    copy {
-//        from 'secure-settings/back'
-//        include "*.yml"
-//        include "*.json"
-//        include "*.sql"
-//        into 'src/main/resources'
-//    }
-//}
-//tasks.named('copyPrivate'){(type: Copy){
-//
-//}
 tasks.register('copyPrivate', Copy) {
-    from("secure-settings/back") {
+    copy {
+        from 'secure-settings/back'
         include "*.yml"
         include "*.json"
         include "*.sql"
+        into 'src/main/resources'
     }
-    into "src/main/resources"
 }
+//tasks.named('copyPrivate'){(type: Copy){
+//
+//}
+//tasks.register('copyPrivate', Copy) {
+//    from("secure-settings/back") {
+//        include "*.yml"
+//        include "*.json"
+//        include "*.sql"
+//    }
+//    into "src/main/resources"
+//}
 processResources {
     dependsOn tasks.copyPrivate
 }
