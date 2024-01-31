@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Move .env File') {
             steps {
-                sh "ls backend/secure-settings"
+                sh "ls backend/secure-settings/back"
                 // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
                 sh 'cp backend/secure-settings/back/.env .env'
             }
@@ -30,7 +30,6 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/backend"){
                     script {
-                        sh "ls . -al"
                         sh "chmod +x ./gradlew"
                         def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                         version = version_value.split(/:/)[1].trim()
@@ -51,15 +50,32 @@ pipeline {
         stage("Build") {
             steps {
                 script {
-                    sh "ls -al"
                     component.each { entry ->
-//                        if (entry.value && entry.key=="back") {
-//                            sh "docker compose -p test-server build ${entry.key.toLowerCase()}"
-//                        }else if(entry.value){
-                        if (entry.value) {
+                        if (entry.value&&entry.key!="back") {
                             sh "docker compose -p test-server build ${entry.key.toLowerCase()}"
                         }
                     }
+                }
+            }
+        }
+        stage("Blue-Green Test & Build"){
+            steps {
+                script{
+                    def IS_GREEN=sh returnStdout: true, script: "docker ps | grep green"
+                    def var=IS_GREEN.equals(null)
+                    sh "echo ${IS_GREEN}"
+                    sh "echo ${var}"
+                    if(IS_GREEN.equlas(null)){//blue
+                        // BLUE -> GREEN
+                        sh "docker compose -p test-server build green"
+
+
+                    }
+                    echo "### BLUE => GREEN ###"
+                    echo "1. get green image"
+                    docker-compose pull green
+                    echo "2. green container up"
+                    docker-compose up -d green
                 }
             }
         }
@@ -91,7 +107,7 @@ pipeline {
         stage('Prune old images'){
             steps{
                 script{
-                    sh "docker image prune --filter until=1h"
+                    sh "docker system prune --filter until=1h"
                 }
             }
         }

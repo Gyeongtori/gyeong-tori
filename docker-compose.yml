@@ -20,7 +20,7 @@ services:
 
   front:
     container_name: front
-    image: kimdahui/toritest-front:${TAG}
+    image: kimdahui/toritest-front
 #    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
     build:
       context: frontend
@@ -41,10 +41,44 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+      - "8085:8085"
     networks:
       - jenkins-network
     environment:
       - "SPRING_PROFILES_ACTIVE=prod"
+  # blue:
+  #     container_name: blue
+  #     image: kimdahui/toritest-back:${TAG}
+  # #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+  #     build:
+  #       context: backend
+  #       dockerfile: Dockerfile
+  #     restart: unless-stopped
+  #     ports:
+  #       - "8080:8080"
+  #     networks:
+  #       - jenkins-network
+  #     environment:
+  #       - "SPRING_PROFILES_ACTIVE=prod,blue"
+  #     depends_on:
+  #       - redis
+
+  # green:
+  #     container_name: green
+  #     image: kimdahui/toritest-back:${TAG}
+  # #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+  #     build:
+  #       context: backend
+  #       dockerfile: Dockerfile
+  #     restart: unless-stopped
+  #     ports:
+  #       - "8080:8080"
+  #     networks:
+  #       - jenkins-network
+  #     environment:
+  #       - "SPRING_PROFILES_ACTIVE=prod,blue"
+  #     depends_on:
+  #       - redis
 
   redis:
     container_name: redis
