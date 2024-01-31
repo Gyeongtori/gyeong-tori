@@ -13,6 +13,7 @@
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.21.2",
     "react-scripts": "5.0.1",
+    "socket.io-client": "^4.7.4",
     "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4",
     "workbox-background-sync": "^6.6.0",
@@ -52,5 +53,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy" : "http://i10c107.p.ssafy.io/api"
+  "proxy": "http://i10c107.p.ssafy.io/api"
 }
