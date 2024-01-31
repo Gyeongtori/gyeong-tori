@@ -53,9 +53,9 @@ pipeline {
                 script {
                     sh "ls -al"
                     component.each { entry ->
-                        if (entry.value && entry.key=="back") {
-                            sh "docker compose -p test-server build --no-cache ${entry.key.toLowerCase()}"
-                        }
+//                        if (entry.value && entry.key=="back") {
+//                            sh "docker compose -p test-server build ${entry.key.toLowerCase()}"
+//                        }else if(entry.value){
                         if (entry.value) {
                             sh "docker compose -p test-server build ${entry.key.toLowerCase()}"
                         }
