@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 const OuterCircle = styled.div`
   width: 240px;
@@ -50,6 +51,9 @@ const GreenScanner = styled.div`
   }
 `;
 const Radar = () => {
+  const [username, setUsername] = useState("");
+  const [room, setRoom] = useState("");
+  
   return (
     <OuterCircle>
       <GreenScanner></GreenScanner>
