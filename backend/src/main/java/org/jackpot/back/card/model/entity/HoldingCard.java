@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 import org.jackpot.back.user.model.entity.User;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
@@ -23,13 +24,14 @@ public class HoldingCard {
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User user; //사용자 아이디
+    private User user; //사용자 외래키
 
     @ManyToOne
     @JoinColumn(name="card_number")
     private Card card; //카드 번호
 
     @Column(length = 512)
+    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date date; //카드 획득일

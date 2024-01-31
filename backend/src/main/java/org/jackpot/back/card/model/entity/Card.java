@@ -21,7 +21,7 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name="cultural_heritage_no")
-    private CulturalHeritage culturalHeritage; //등급
+    private CulturalHeritage culturalHeritage; //문화재 외래키
 
     @Column
     @NotNull

@@ -23,6 +23,7 @@ public class SecurityConfig {
             "/v1/user/regist",
             "/v1/auth/refresh",
             "/v1/culturalheritage/list",
+            "/v1/card/add",
             //swagger 접근 위한 whitelist
             "/favicon.ico",
             "/error",
