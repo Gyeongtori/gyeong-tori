@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'com.corundumstudio.socketio:netty-socketio:2.0.8'
+    implementation 'org.jdom:jdom2:2.0.6'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -46,16 +48,26 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+//tasks.register('copyPrivate', Copy) {
+//    copy {
+//        from 'secure-settings/back'
+//        include "*.yml"
+//        include "*.json"
+//        include "*.sql"
+//        into 'src/main/resources'
+//    }
+//}
+//tasks.named('copyPrivate'){(type: Copy){
+//
+//}
 tasks.register('copyPrivate', Copy) {
-    copy {
-        from './secure-settings'
+    from("secure-settings/back") {
         include "*.yml"
         include "*.json"
         include "*.sql"
-        into 'src/main/resources'
     }
+    into "src/main/resources"
 }
-
 processResources {
-    dependsOn copyPrivate
+    dependsOn tasks.copyPrivate
 }

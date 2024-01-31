@@ -10,6 +10,6 @@ import lombok.*;
 public class Location {
     private String lng;
     private String lat;
-    private String username;
+    private String nickname;
     private Long userId;
 }

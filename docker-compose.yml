@@ -45,39 +45,39 @@ services:
       - jenkins-network
     environment:
       - "SPRING_PROFILES_ACTIVE=prod"
-  blue:
-      container_name: blue
-      image: kimdahui/toritest-back:${TAG}
-  #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
-      build:
-        context: backend
-        dockerfile: Dockerfile
-      restart: unless-stopped
-      ports:
-        - "8080:8080"
-      networks:
-        - jenkins-network
-      environment:
-        - "SPRING_PROFILES_ACTIVE=prod,blue"
-      depends_on:
-        - redis
+  # blue:
+  #     container_name: blue
+  #     image: kimdahui/toritest-back:${TAG}
+  # #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+  #     build:
+  #       context: backend
+  #       dockerfile: Dockerfile
+  #     restart: unless-stopped
+  #     ports:
+  #       - "8080:8080"
+  #     networks:
+  #       - jenkins-network
+  #     environment:
+  #       - "SPRING_PROFILES_ACTIVE=prod,blue"
+  #     depends_on:
+  #       - redis
 
-  green:
-      container_name: green
-      image: kimdahui/toritest-back:${TAG}
-  #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
-      build:
-        context: backend
-        dockerfile: Dockerfile
-      restart: unless-stopped
-      ports:
-        - "8080:8080"
-      networks:
-        - jenkins-network
-      environment:
-        - "SPRING_PROFILES_ACTIVE=prod,blue"
-      depends_on:
-        - redis
+  # green:
+  #     container_name: green
+  #     image: kimdahui/toritest-back:${TAG}
+  # #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+  #     build:
+  #       context: backend
+  #       dockerfile: Dockerfile
+  #     restart: unless-stopped
+  #     ports:
+  #       - "8080:8080"
+  #     networks:
+  #       - jenkins-network
+  #     environment:
+  #       - "SPRING_PROFILES_ACTIVE=prod,blue"
+  #     depends_on:
+  #       - redis
 
   redis:
     container_name: redis
