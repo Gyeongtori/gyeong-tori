@@ -1,6 +1,7 @@
 package org.jackpot.back.user.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.jackpot.back.user.model.entity.enums.AuthProvider;
 import org.jackpot.back.user.model.entity.enums.UserRole;
@@ -27,31 +28,37 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(unique = true, length = 50)
+    @NotNull
     private String email;
 
-    @Column(nullable = false, length = 255)
+    @Column
+    @NotNull
     private String nickname;
 
-    @Column(nullable = true, length = 255)
+    @Column
     private String password;
 
-    @Column(name = "profile_image", nullable = true, length = 512)
+    @Column(name = "profile_image", length = 512)
     private String profileImage;
 
     @Column(columnDefinition = "int not null default 1")
+    @NotNull
     private Integer grade; // 골품제 1~8
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(10) not null default 'JACKPOT'")
+    @NotNull
     private AuthProvider provider;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(10) not null default 'USER'")
+    @NotNull
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(10) not null default 'ACTIVE'")
+    @NotNull
     private UserStatus status;
 
     @Override
