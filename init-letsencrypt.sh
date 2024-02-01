@@ -61,7 +61,7 @@ email_arg="--email $email"
 if [ -z "$email" ]; then email_arg="--register-unsafely-without-email"; fi
 
 staging_arg=""
-if [ "$staging" != "0" ]; then staging_arg="--staging"; fi
+if [ "$staging" != "1" ]; then staging_arg="--staging"; fi
 
 docker-compose -p test-server run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
