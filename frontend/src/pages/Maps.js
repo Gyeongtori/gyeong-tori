@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { GoogleMap, Circle, useJsApiLoader, MarkerF } from "@react-google-maps/api";
+import { GoogleMap, Circle, useJsApiLoader, MarkerF, MarkerClustererF } from "@react-google-maps/api";
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
 import { Sample1 } from "../components/Mains/MapStyles"
@@ -31,6 +31,7 @@ export default function Maps () {
       }, function(error) {
         console.error(error);
       }, {
+        // 정확도는 높지만 배터리 소모량up
         enableHighAccuracy: true,
         maximumAge: 0,
         timeout: Infinity
@@ -41,8 +42,9 @@ export default function Maps () {
   }, []);
 
   const getLocation = (event) => {
-    console.log('버튼 클릭')
-    console.log(event)
+    // console.log('버튼 클릭')
+    // console.log(event)
+    console.log('count')
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         const latNow = position.coords.latitude
@@ -52,7 +54,7 @@ export default function Maps () {
       }, function(error) {
         console.error(error);
       }, {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         maximumAge: 0,
         timeout: Infinity
       });
@@ -60,6 +62,24 @@ export default function Maps () {
       alert('GPS를 지원하지 않습니다');
     }
   }
+
+  const places = [
+    ['1', 35.202018, 126.811782],
+    ['2', 35.201121, 126.807993],
+    ['3', 35.203164, 126.813467]
+  ]
+
+  // const places = [
+  //   [ key = '1',
+  //     lat = 35.202018, 
+  //     lng = 126.811782],
+  //   [ key = '2',
+  //     lat = 35.201121,
+  //     lng = 126.807993],
+  //   [ key = '3',
+  //     lat = 35.203164, 126.813467]
+  // ]
+
 
   const circleRangeOptions = {
     strokeColor: '#FF7575',
@@ -100,12 +120,33 @@ export default function Maps () {
           }}
           mapContainerStyle={{ width: '100%', height: '100vh' }}
         > 
+
+        {/* 중심 레이더 옵션 */}
           <Circle center={center} options={circleRangeOptions} />
           <Circle center={center} options={markerCircleOptions} />
+
+        {/* 문화재 마커 */}
+          < MarkerClustererF options={{}}>
+            {(clusterer) => (
+              <>
+                {places.map((place) => (
+                  <MarkerF 
+                    key={place[0]}
+                    position={{lat: place[1], lng: place[2]}}
+                    
+                  />
+
+                ))}
+              </>
+            )}
+          </MarkerClustererF>
+
+        {/* 메인기능 버튼 */}
           <Body>
             <button onClick={getLocation}>버튼</button>
             <InfoTop ></InfoTop>
           </Body>
+
         </GoogleMap>
       </div>
     </div>
