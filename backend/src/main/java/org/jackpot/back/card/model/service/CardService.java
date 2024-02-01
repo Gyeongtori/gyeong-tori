@@ -8,5 +8,5 @@ import java.util.List;
 public interface CardService {
     void redisSave(); //카드 redis 저장
     void addCardToCollection(AddCardToCollectionRequest addCardToCollectionRequest);
-    List<ReadCardResponse> readCard(Long userEmail);
+    List<ReadCardResponse> getCardList(String userEmail);
 }

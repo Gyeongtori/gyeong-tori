@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -15,6 +16,7 @@ import java.util.List;
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CardGradeDto {
+    private Long cardNumber;
     private int grade;
-    private List<HoldingCardDto> holdingCards; //보유 카드 정보
+    private List<String> holdingCards; //보유 카드 정보
 }

@@ -18,6 +18,10 @@ import java.util.List;
 public class CardController {
     private final CardService cardService;
 
+    /**
+     * 카드 Redis 저장
+     * @return
+     */
     @GetMapping("/redis_save")
     public ResponseEntity redisSave() {
         cardService.redisSave();
@@ -27,7 +31,7 @@ public class CardController {
     /**
      * 카드 수집
      * @param addCardToCollectionRequest
-     * @return card
+     * @return
      */
     @PostMapping("/add")
     public ResponseEntity addCardToCollection(@RequestBody AddCardToCollectionRequest addCardToCollectionRequest) {
@@ -35,9 +39,15 @@ public class CardController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-    @PostMapping("/read")
-    public ResponseEntity readCard(@RequestBody Long userEmail) {
-        List<ReadCardResponse> readCardResponse = cardService.readCard(userEmail);
+    /**
+     * 카드 조회 (전체, 상세)
+     * @param userEmail
+     * @return List<ReadCardResponse>
+     */
+    @PostMapping("/list")
+    public ResponseEntity getCardList(@RequestBody String userEmail) {
+        System.out.println("실행@@@@!!!!!!!");
+        List<ReadCardResponse> readCardResponse = cardService.getCardList(userEmail);
         return ResponseEntity.ok().body(MessageUtils.success(readCardResponse));
     }
 }

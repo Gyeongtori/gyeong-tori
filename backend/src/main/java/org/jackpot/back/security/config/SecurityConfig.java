@@ -27,7 +27,7 @@ public class SecurityConfig {
             "/v1/culturalheritage/redis_save",
             "/v1/card/redis_save",
             "/v1/card/add",
-            "/v1/card/read",
+            "/v1/card/list",
             "/v1/dummy/list",
             //swagger 접근 위한 whitelist
             "/favicon.ico",
