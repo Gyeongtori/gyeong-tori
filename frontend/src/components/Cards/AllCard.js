@@ -51,47 +51,78 @@ const AllCard = () => {
   const [states, setStates] = useState([]); // 카드 CSS 적용 모두 담기
   const [cardDes, setCardDes] = useState([]); // 카드 설명 모두 담기
   const [cardImgList, setCardImgList] = useState([]); // 카드 이미지 모두 담기
-  const [card, setCard] = useState({}); // !추가 : 카드 CSS 빼고 나머지(주소, 설명, 이미지주소, 등급 등등)
+  const [card, setCard] = useState([]); // 카드 CSS 빼고 나머지(주소, 설명, 이미지주소, 등급 등등)
   const [getdetail, setDetail] = useState(false); // 카그 상세 설명 팝업 컴포넌트 열고 닫기
   const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
 
   useEffect(() => {
-    console.log(db);  // firebase 연결 테스트
+    // console.log(db); // firebase 연결 테스트
     getCards();
   }, []);
-  
+
   const getCards = async () => {
     try {
-      const res = await axios.post("api/v1/dummy/cards", {
+      const res = await axios.post("/v1/dummy/list", {
         offset: 1,
       });
-      const total = res.data.data_body.total;
-      const currnet = res.data.data_body.currnet;
+      console.log(res);
+      const data = await res.data.data_body;
+      const currnet = data.length;
       let setting = Array(currnet).fill({
         rotation: "",
         position: "50%",
         filter: "opacity(0)",
-      });
-      let cardImgs = [];
-      let des = [];
-      // Firebase Img 불러오기
-      const promises = res.data.data_body.card_list.map(async (card, index) => {
-        const storage = getStorage();
-        const imageUrl = await getDownloadURL(ref(storage, card.img));
-        // console.log(imageUrl);
-        cardImgs[index] = imageUrl;
-        des[index] = card.description;
-        // console.log(cardImgs[index], cardImgs);
-      });
-      await Promise.all(promises);
+      }); // CSS 적용
+      console.log(res.data.data_body[0].image);
 
+      // let cardId = []; // 카드 아이디 배열
+      let heritageName = []; // 문화재 이름 배열
+      let address = []; // 문화재 위치
+      let cardImg = []; // 카드 이미지 배열
+      let des = []; // 카드 설명 배열
+      let field = []; // 속성
+      let grade1 = []; // 1성 획득일들 배열
+      let grade2 = []; // 2성 획득일들 배열
+      let grade3 = []; // 3성 획득일들 배열
+      let grade4 = []; // 4성 획득일들 배열
+      let grade5 = []; // 5성 획득일들 배열
+      let highGrade = []; // 가장 높은 등급
+
+      Object.values(res.data.data_body).map((item, index) => {
+        // cardId[index] = { item }.card_number;
+        // heritageName[index] = { item }.cultural_heritage_name;
+        // address[index] = { item }.address;
+        // cardImg[index] = { item }.image;
+        // des[index] = { item }.description;
+        // field[index] = { item }.field;
+        console.log(Object.values(item));
+      });
+      res.data.data_body.grade_cards.map((item, index) => {
+        let id = item.card_number;
+        if (index === 0) grade1[id] = item.holding_cards;
+      });
+      // console.log(cardImg, des);
+      // Firebase Img 불러오기
+      // const promises = res.data.data_body.card_list.map(async (card, index) => {
+      //   const storage = getStorage();
+      //   const imageUrl = await getDownloadURL(ref(storage, card.img));
+      //   // console.log(imageUrl);
+      //   cardImgs[index] = imageUrl;
+      //   des[index] = card.description;
+      //   // console.log(cardImgs[index], cardImgs);
+      // });
+      // await Promise.all(promises);
+      // for (let i = 0; i < currnet; i++) {
+      //   cardImg[i] = res.data.data_body[i].image;
+      // }
       setStates((pre) => {
         return setting;
       });
       setCardImgList((pre) => {
-        return [...cardImgs];
+        return [...cardImg];
       });
       setCardDes(des);
+      console.log(cardImgList, cardDes);
     } catch (e) {
       console.log(e.response);
     }
@@ -133,7 +164,7 @@ const AllCard = () => {
       newStates[index] = newState;
       return newStates;
     });
-  }
+  };
   const handleMouseOut = (index) => {
     setStates((pre) => {
       const newStates = [...pre];
