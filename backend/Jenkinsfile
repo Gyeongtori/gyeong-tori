@@ -123,7 +123,8 @@ pipeline {
                             }
                             if(var=="certbot"){
                                 sh "chmod +x init-letsencrypt.sh"
-                                sh "./init-letsencrypt.sh"
+                                def output = sh(script: './init-letsencrypt.sh', returnStdout: true).trim()
+                                echo "Script output: ${output}"
                             }
                         }
                     }

@@ -11,8 +11,6 @@ data_path="./certbot"
 email="dhmonukim24@gmail.com" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
-ls -al
-
 if [ -d "$data_path" ]; then
   read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
   if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
@@ -78,7 +76,7 @@ docker compose -p test-server run --rm --entrypoint "\
     --force-renewal" certbot
 echo
 
-docker ps
+docker logs nginx
 
 echo "### Reloading nginx ..."
 docker compose -p test-server exec nginx nginx -s reload
