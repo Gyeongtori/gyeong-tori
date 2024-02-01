@@ -79,7 +79,7 @@ pipeline {
             steps {
                 script {
                     component.each{ entry ->
-                        if(entry.value&&entry.key!="redis"){
+                        if(entry.value&&entry.key!="redis"&&entry.key!="certbot"){
                             def var = entry.key
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
                                 sh "docker push ${DOCKER_USER_ID}/toritest-${var.toLowerCase()}:${env.TAG}"
