@@ -9,6 +9,8 @@ import Signup from "./pages/Signup";
 import Maps from "./pages/Maps";
 import SearchPage from "./pages/SearchPage";
 
+import Test from "./pages/Test";
+
 function App() {
   // PWA 적용을 위한 vh변환 함수
   function setScreenSize() {
@@ -30,6 +32,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/maps" element={<Maps/>} />
         <Route path="/search" element={<SearchPage />} />
+
+        <Route path="/test" element={<Test />} />
       </Routes>
     </div>
   );

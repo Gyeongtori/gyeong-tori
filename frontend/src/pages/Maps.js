@@ -3,13 +3,23 @@ import { GoogleMap, Circle, useJsApiLoader, MarkerF, MarkerClustererF } from "@r
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
 import { Sample1 } from "../components/Mains/MapStyles"
+import axios from "axios";
+
+import convert from 'xml-js';
+// import parser from 'fast-xml-parser';
 
 const google = window.google = window.google ? window.google : {}
 
+// 경주 { lat: 35.831490, lng: 129.210748}
+// 전대 { lat: 35.175595, lng: 126.907032 }
+
 export default function Maps () {
   const [map, setMap] = useState(null);
-  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
+  const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748});
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+  const [head, setHead] = useState()
+
+ 
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -28,6 +38,10 @@ export default function Maps () {
         const lngNow = position.coords.longitude;
         console.log(latNow, lngNow);
         setCenter({lat: latNow, lng: lngNow});
+
+        const headNow = position.coords.heading
+        setHead(headNow)
+        // console.log(head, 'headdddd')
       }, function(error) {
         console.error(error);
       }, {
@@ -45,11 +59,12 @@ export default function Maps () {
     // console.log('버튼 클릭')
     // console.log(event)
     console.log('count')
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         const latNow = position.coords.latitude
         const lngNow = position.coords.longitude
-        console.log(latNow, lngNow)
+        console.log(latNow, lngNow, '클릭이벤트')
         setCenter({lat: latNow, lng: lngNow});
       }, function(error) {
         console.error(error);
@@ -63,22 +78,50 @@ export default function Maps () {
     }
   }
 
+
+  const goGetCard = () => {
+    console.log('클릭클릭')
+  }
+
+
+
+  // 문화재 요청
+  const [api, setApi] = useState();	
+  
+  useEffect(() => {
+    getAPI();
+  }, []);
+    
+  const getAPI = async () => {
+    try {
+      // res에는 결과 값이 담겨옴
+      const res = await axios.get("v1/culturalheritage/list", {headers: {
+        'Content-Type': `application/json`,
+        'ngrok-skip-browser-warning': '69420',
+      }},);
+      setApi(res.data.data_body)
+      console.log('api 정보 조회', api)
+
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
+  
+    /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
+             division, lng, lat, image_source, image_detail, narration, video_source} */
+
+  
+
   const places = [
-    ['1', 35.202018, 126.811782],
-    ['2', 35.201121, 126.807993],
-    ['3', 35.203164, 126.813467]
+    {no: '1', lat: 35.202018, lng: 126.811782},
+    {no: '2', lat: 35.201121, lng: 126.807993},
+    {no: '3', lat: 35.203164, lng: 126.813467}
   ]
 
-  // const places = [
-  //   [ key = '1',
-  //     lat = 35.202018, 
-  //     lng = 126.811782],
-  //   [ key = '2',
-  //     lat = 35.201121,
-  //     lng = 126.807993],
-  //   [ key = '3',
-  //     lat = 35.203164, 126.813467]
-  // ]
+  
+
+
+
 
 
   const circleRangeOptions = {
@@ -115,8 +158,8 @@ export default function Maps () {
             styles: Sample1,
             // 기본 ui 요소 지우기
             disableDefaultUI: true, 
-            minZoom: 16, 
-            maxZoom: 18,
+            // minZoom: 16, 
+            // maxZoom: 18,
           }}
           mapContainerStyle={{ width: '100%', height: '100vh' }}
         > 
@@ -129,25 +172,33 @@ export default function Maps () {
           < MarkerClustererF options={{}}>
             {(clusterer) => (
               <>
-                {places.map((place) => (
+                {api && api.map((place) => (
                   <MarkerF 
-                    key={place[0]}
-                    position={{lat: place[1], lng: place[2]}}
+                    key={place.no}
+                    position={{lat: Number(place.lat), lng: Number(place.lng)}}
+                    onClick={() => {getLocation()}}
+                    // onClick={startOrStop()}
+                    />
                     
-                  />
-
-                ))}
+                    ))}
               </>
             )}
           </MarkerClustererF>
 
         {/* 메인기능 버튼 */}
           <Body>
+            {/* <video autoPlay style={cameraStyles.Video} /> */}
             <button onClick={getLocation}>버튼</button>
             <InfoTop ></InfoTop>
           </Body>
 
         </GoogleMap>
+
+      </div>
+
+
+      <div>
+        
       </div>
     </div>
   )
@@ -158,3 +209,5 @@ const Body = styled.div`
   position: absolute;
   z-index: 10;
 `;
+
+
