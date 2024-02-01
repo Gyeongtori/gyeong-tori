@@ -91,7 +91,7 @@ pipeline {
         stage('Prune old images'){
             steps{
                 script{
-                    sh "docker image prune --filter until=1h"
+                    sh "docker system prune -f --filter until=1h"
                 }
             }
         }
@@ -111,7 +111,7 @@ pipeline {
             steps {
                 script {
                     component.each{ entry ->
-                        if(entry.value){
+                        if(entry.value&&entry.key!="nginx"){
                             def var = entry.key
                             try {
                                 sh "docker compose -p test-server up -d ${var.toLowerCase()}"
