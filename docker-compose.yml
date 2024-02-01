@@ -22,7 +22,7 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - jenkins-networkr
+      - jenkins-network
     volumes:
       - /var/lib/docker/volumes/jenkins/_data/workspace/경토리 백엔드/certbot/conf:/etc/letsencrypt
       - /var/lib/docker/volumes/jenkins/_data/workspace/경토리 백엔드/certbot/www:/var/www/certbot
