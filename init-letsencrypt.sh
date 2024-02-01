@@ -66,7 +66,7 @@ case "$email" in
 esac
 
 # Enable staging mode if needed
-if [ $staging != "0" ]; then staging_arg="--staging"; fi
+if [ $staging != "1" ]; then staging_arg="--staging"; fi
 
 docker compose -p test-server run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
@@ -78,5 +78,7 @@ docker compose -p test-server run --rm --entrypoint "\
     --force-renewal" certbot
 echo
 
+docker ps
+
 echo "### Reloading nginx ..."
-docker compose exec -p test-server nginx nginx -s reload
+docker compose -p test-server exec nginx nginx -s reload
