@@ -5,6 +5,8 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
+pwd
+
 domains=("i10c107.p.ssafy.io") # Make domains an array if multiple domains are needed
 rsa_key_size=4096
 data_path="./certbot"

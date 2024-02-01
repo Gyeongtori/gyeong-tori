@@ -113,10 +113,6 @@ pipeline {
                     component.each{ entry ->
                         if(entry.value){
                             def var = entry.key
-                            if(var=='nginx'){
-                                sh "yes | cp -a /var/lib/docker/volumes/jenkins/_data/workspace/경토리 백엔드/certbot/conf/* ../../../etc/letsencrypt"
-                                sh "yes | cp -a /var/lib/docker/volumes/jenkins/_data/workspace/경토리 백엔드/certbot/www/* ../../../etc/letsencrypt"
-                            }
                             try {
                                 sh "docker compose -p test-server up -d ${var.toLowerCase()}"
                             } catch (Exception e) {
