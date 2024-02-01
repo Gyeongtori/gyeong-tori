@@ -43,6 +43,7 @@ public class CardServiceImpl implements CardService{
                         .user(findUser.get())
                         .card(findCard.get())
                         .date(new Date())
+                        .address(addCardToCollectionRequest.getAddress())
                         .build()
         );
     }
@@ -50,6 +51,7 @@ public class CardServiceImpl implements CardService{
     @Override
     public List<ReadCardResponse> readCard(Long userEmail) {
         //카드 전체 조회
+
         //보유 중 카드 조회
         return null;
     }

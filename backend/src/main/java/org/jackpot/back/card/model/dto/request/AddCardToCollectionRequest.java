@@ -15,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class AddCardToCollectionRequest {
     String userEmail; //사용자
     Integer culturalHeritageId; //문화재 ID
+    String address; //상세 주소
 }
