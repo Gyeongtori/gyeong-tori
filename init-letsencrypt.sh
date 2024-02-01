@@ -41,7 +41,7 @@ echo
 
 
 echo "### Starting nginx ..."
-docker compose -p test-server up --force-recreate -d nginx
+docker compose -p test-server up -d nginx || docker compose -p test-server restart nginx
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
