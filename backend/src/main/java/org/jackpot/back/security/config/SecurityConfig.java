@@ -33,6 +33,7 @@ public class SecurityConfig {
             //health check
             "/actuator",
             "/api/",
+            "/v1/dummy/**"
     };
     //    private static final String[] ALLOWED_URIS={"/**"};
     private final JwtFilter jwtFilter;
