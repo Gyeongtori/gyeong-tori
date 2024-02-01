@@ -1,6 +1,7 @@
 package org.jackpot.back.global.config;
 
 import lombok.RequiredArgsConstructor;
+import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRedisRepository;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,9 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
-@EnableRedisRepositories(basePackages = {"org.jackpot.back.security.repository","org.jackpot.back.battle.repository"})
+@EnableRedisRepositories(basePackages = {"org.jackpot.back.security.repository","org.jackpot.back.battle.repository"},
+                            basePackageClasses = {CulturalHeritageRedisRepository.class})
+
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
