@@ -11,6 +11,13 @@ data_path="./certbot"
 email="dhmonukim24@gmail.com" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
+if [ -d "$data_path" ]; then
+  read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
+  if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
+    exit
+  fi
+fi
+
 if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
   echo "### Downloading recommended TLS parameters ..."
   mkdir -p "$data_path/conf"
@@ -19,12 +26,6 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
-echo "### Copying files to nginx ..."
-if [ ! -e "/etc/letsencrypt/options-ssl-nginx.conf" ]; then
-  cp -r $data_path/conf/* /etc/letsencrypt
-  cp -r $data_path/www/* /var/www/certbot
-fi
-echo
 
 echo "### Creating dummy certificate for ${domains[@]} ..."
 for domain in "${domains[@]}"; do
