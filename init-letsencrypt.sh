@@ -42,6 +42,13 @@ echo "### Starting nginx ..."
 docker compose -p test-server up -d nginx || docker compose -p test-server restart nginx
 echo
 
+echo "### copy files to nginx ..."
+if [ ! -e "/etc/letsencrypt/options-ssl-nginx.conf" ]
+  cp $data_path/conf /etc/letsencrypt
+  cp $data_path/www /var/www/certbot
+fi
+
+
 echo "### Deleting dummy certificate for $domains ..."
 docker compose -p test-server run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
@@ -64,7 +71,7 @@ case "$email" in
 esac
 
 # Enable staging mode if needed
-if [ $staging != "1" ]; then staging_arg="--staging"; fi
+if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
 docker compose -p test-server run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
