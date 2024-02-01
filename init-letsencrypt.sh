@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=("p.ssafy.io") # Make domains an array if multiple domains are needed
+domains=("i10c107.p.ssafy.io") # Make domains an array if multiple domains are needed
 rsa_key_size=4096
 data_path="./certbot"
 email="dhmonukim24@gmail.com" # Adding a valid address is strongly recommended
@@ -29,7 +29,7 @@ fi
 
 echo "### Creating dummy certificate for ${domains[@]} ..."
 for domain in "${domains[@]}"; do
-  path="/etc/letsencrypt/live/$domain"
+  path="/etc/letsencrypt/live/p.ssafy.io"
   mkdir -p "$path"
   docker-compose -p test-server run --rm --entrypoint "\
     openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
@@ -46,9 +46,9 @@ echo
 echo "### Deleting dummy certificate for ${domains[@]} ..."
 for domain in "${domains[@]}"; do
   docker-compose -p test-server run --rm --entrypoint "\
-    rm -Rf /etc/letsencrypt/live/$domain && \
-    rm -Rf /etc/letsencrypt/archive/$domain && \
-    rm -Rf /etc/letsencrypt/renewal/$domain.conf" certbot
+    rm -Rf /etc/letsencrypt/live/p.ssafy.io && \
+    rm -Rf /etc/letsencrypt/archive/p.ssafy.io && \
+    rm -Rf /etc/letsencrypt/renewal/p.ssafy.io.conf" certbot
 done
 echo
 
