@@ -7,7 +7,7 @@ fi
 
 domains="i10c107.p.ssafy.io"
 rsa_key_size=4096
-data_path="../certbot"
+data_path="./certbot"
 email="dhmonukim24@gmail.com" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
