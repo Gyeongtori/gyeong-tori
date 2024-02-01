@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker compose)" ]; then
   exit 1
 fi
 
-domains="i10c107.p.ssafy.io"
+domains="p.ssafy.io"
 rsa_key_size=4096
 data_path="./certbot"
 email="dhmonukim24@gmail.com" # Adding a valid address is strongly recommended
