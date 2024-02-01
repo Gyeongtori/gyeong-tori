@@ -120,11 +120,6 @@ pipeline {
                                 echo "Failed to up. Starting 'docker compose start'..."
                                 sh "docker compose -p test-server restart ${var.toLowerCase()}"
                             }
-                            if(var=="certbot"){
-                                sh "chmod +x init-letsencrypt.sh"
-                                def output = sh(script: './init-letsencrypt.sh', returnStdout: true).trim()
-                                echo "Script output: ${output}"
-                            }
                         }
                     }
                 }
