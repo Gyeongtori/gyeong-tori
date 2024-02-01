@@ -49,25 +49,21 @@ public class DummyCardController {
 
          List<CardGradeDto> cardGradeDtoList1 = new ArrayList<>();
          List<CardGradeDto> cardGradeDtoList2 = new ArrayList<>();
-         List<CardGradeDto> cardGradeDtoList4 = new ArrayList<>();
-         List<CardGradeDto> cardGradeDtoList6 = new ArrayList<>();
-         List<CardGradeDto> cardGradeDtoList7 = new ArrayList<>();
-         List<CardGradeDto> cardGradeDtoList8 = new ArrayList<>();
-         List<CardGradeDto> cardGradeDtoList9 = new ArrayList<>();
-         List<CardGradeDto> cardGradeDtoList10 = new ArrayList<>();
 
          cardGradeDtoList1.add(new CardGradeDto(1, holdingCardDtoList1));
-         cardGradeDtoList2.add(new CardGradeDto(2, holdingCardDtoList2));
-         cardGradeDtoList4.add(new CardGradeDto(4, holdingCardDtoList4));
-         cardGradeDtoList6.add(new CardGradeDto(1, holdingCardDtoList6));
-         cardGradeDtoList7.add(new CardGradeDto(2, holdingCardDtoList7));
-         cardGradeDtoList8.add(new CardGradeDto(3, holdingCardDtoList8));
-         cardGradeDtoList9.add(new CardGradeDto(4, holdingCardDtoList9));
-         cardGradeDtoList10.add(new CardGradeDto(5, holdingCardDtoList10));
+         cardGradeDtoList1.add(new CardGradeDto(2, holdingCardDtoList2));
+         cardGradeDtoList1.add(new CardGradeDto(3, null));
+         cardGradeDtoList1.add(new CardGradeDto(4, holdingCardDtoList4));
+         cardGradeDtoList1.add(new CardGradeDto(5, null));
+         cardGradeDtoList2.add(new CardGradeDto(1, holdingCardDtoList6));
+         cardGradeDtoList2.add(new CardGradeDto(2, holdingCardDtoList7));
+         cardGradeDtoList2.add(new CardGradeDto(3, holdingCardDtoList8));
+         cardGradeDtoList2.add(new CardGradeDto(4, holdingCardDtoList9));
+         cardGradeDtoList2.add(new CardGradeDto(5, holdingCardDtoList10));
 
          List<ReadCardResponse> readCardResponseList = new ArrayList<>();
          readCardResponseList.add(new ReadCardResponse("경주 불국사 다보탑", "경북", "경주시", cardGradeDtoList1, "http://www.cha.go.kr/unisearch/images/national_treasure/1612673.jpg", "ATTACK", "불국사는 통일신라 경덕왕 10년(751) 김대성의 발원에 의해 창건된 사찰로, 과거·현재·미래의 부처가 사는 정토(淨土), 즉 이상향을 구현하고자 했던 신라인들의 정신세계가 잘 드러나 있는 곳이다."));
-         readCardResponseList.add(new ReadCardResponse("경주 불국사 다보탑", "경북", "경주시", cardGradeDtoList10, "http://www.cha.go.kr/unisearch/images/national_treasure/1612673.jpg", "DEFENCE", "불국사는 통일신라 경덕왕 10년(751) 김대성의 발원에 의해 창건된 사찰로, 과거·현재·미래의 부처가 사는 정토(淨土), 즉 이상향을 구현하고자 했던 신라인들의 정신세계가 잘 드러나 있는 곳이다."));
+         readCardResponseList.add(new ReadCardResponse("경주 불국사 삼층석탑", "경북", "경주시", cardGradeDtoList2, "http://www.cha.go.kr/unisearch/images/national_treasure/1612742.jpg", "DEFENCE", "불국사는 통일신라 경덕왕 10년(751) 김대성의 발원에 의해 창건된 사찰로, 과거·현재·미래의 부처가 사는 정토(淨土), 즉 이상향을 구현하고자 했던 신라인들의 정신세계가 잘 드러나 있는 곳이다."));
 
          return ResponseEntity.ok().body(MessageUtils.success(readCardResponseList));
      }
