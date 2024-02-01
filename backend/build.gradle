@@ -45,7 +45,7 @@ tasks.named('test') {
 
 tasks.register('copyPrivate', Copy) {
     copy {
-        from './secure-settings'
+        from './secure-settings/back'
         include "*.yml"
         include "*.json"
         include "*.sql"

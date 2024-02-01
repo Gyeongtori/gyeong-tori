@@ -54,6 +54,10 @@ const InfoTop = () => {
     navigate("/profile")
   }
 
+  const goCard = () => {
+    navigate("/cards")
+  }
+
   // 주소 바꾸기 XX
   // const alterAddress = (lat, lon) => {
   // const API_KEY = '84ce352790538c53c7ae183bc7b7d56f'
@@ -91,7 +95,7 @@ const InfoTop = () => {
       </Info>
 
       <InfoSide>
-        <GiHandBag size={25} />
+        <GiHandBag onClick={goCard} size={25} />
         
         {isOn && <FaTrophy size={25} />}
       </InfoSide>
