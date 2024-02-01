@@ -44,11 +44,11 @@ public class CulturalHeritage {
     @NotNull
     private String division; //종목코드(카테고리)
 
-    @Column(length = 20)
+    @Column(length = 50)
     @NotNull
     private String lng; //경도
 
-    @Column(length = 20)
+    @Column(length = 50)
     @NotNull
     private String lat; //위도
 

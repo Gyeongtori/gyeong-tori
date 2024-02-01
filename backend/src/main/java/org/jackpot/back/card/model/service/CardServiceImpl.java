@@ -3,6 +3,7 @@ package org.jackpot.back.card.model.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
+import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.entity.Card;
 import org.jackpot.back.card.model.entity.HoldingCard;
 import org.jackpot.back.card.model.repository.CardRepository;
@@ -14,6 +15,7 @@ import org.jackpot.back.user.model.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -43,5 +45,12 @@ public class CardServiceImpl implements CardService{
                         .date(new Date())
                         .build()
         );
+    }
+
+    @Override
+    public List<ReadCardResponse> readCard(Long userEmail) {
+        //카드 전체 조회
+        //보유 중 카드 조회
+        return null;
     }
 }
