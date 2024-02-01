@@ -15,6 +15,7 @@ import org.jackpot.back.user.model.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public ReadCardResponse readCard(Long userEmail) {
+    public List<ReadCardResponse> readCard(Long userEmail) {
         //카드 전체 조회
         //보유 중 카드 조회
         return null;

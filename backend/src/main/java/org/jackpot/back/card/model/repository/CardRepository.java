@@ -21,12 +21,12 @@ public interface CardRepository extends JpaRepository<Card,Long> {
 //            "JOIN c.culturalHeritage ch " +
 //            "WHERE ch.no = :culturalHeritageNo AND hc.user.id = :userId " +
 //            "GROUP BY ch.name_kr, ch.sido_name")
-    @Query("SELECT new org.jackpot.back.card.model.dto.ReadCardResponse(ch.name_kr, ch.sido_name, ch.gugun_name, " +
-        "STRING_AGG(CONCAT(c.rating, ':', hc.card.number, ':', hc.date), ',')) " +
-        "FROM HoldingCard hc " +
-        "JOIN hc.card c " +
-        "JOIN c.culturalHeritage ch " +
-        "WHERE ch.no = :culturalHeritageNo AND hc.user.id = :userId " +
-        "GROUP BY ch.name_kr, ch.sido_name, ch.gugun_name")
-    List<ReadCardResponse> findCardDtoByCulturalHeritageAndUser(Integer culturalHeritageNo, Long userId);
+//    @Query("SELECT new org.jackpot.back.card.model.dto.ReadCardResponse(ch.name_kr, ch.sido_name, ch.gugun_name, " +
+//        "STRING_AGG(CONCAT(c.rating, ':', hc.card.number, ':', hc.date), ',')) " +
+//        "FROM HoldingCard hc " +
+//        "JOIN hc.card c " +
+//        "JOIN c.culturalHeritage ch " +
+//        "WHERE ch.no = :culturalHeritageNo AND hc.user.id = :userId " +
+//        "GROUP BY ch.name_kr, ch.sido_name, ch.gugun_name")
+//    List<ReadCardResponse> findCardDtoByCulturalHeritageAndUser(Integer culturalHeritageNo, Long userId);
 }
