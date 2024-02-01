@@ -112,7 +112,7 @@ pipeline {
             steps {
                 script {
                     component.each{ entry ->
-                        if(entry.value&&entry.key!="nginx"){
+                        if(entry.value){
                             def var = entry.key
                             try {
                                 sh "docker compose -p test-server up -d ${var.toLowerCase()}"
