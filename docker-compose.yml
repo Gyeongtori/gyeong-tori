@@ -6,8 +6,8 @@ services:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - /var/lib/docker/volumes/jenkins/_data/workspace/경토리 백엔드/certbot/conf:/etc/letsencrypt
-      - /var/lib/docker/volumes/jenkins/_data/workspace/경토리 백엔드/certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
 #    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   nginx:
@@ -24,8 +24,8 @@ services:
     networks:
       - jenkins-network
     volumes:
-      - ~/경토리 백엔드/certbot/conf:/etc/letsencrypt
-      - ~/경토리 백엔드/certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
       - back
 #    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
