@@ -27,6 +27,13 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
+echo "### copy files to nginx ..."
+if [ ! -e "/etc/letsencrypt/options-ssl-nginx.conf" ]
+  cp $data_path/conf /etc/letsencrypt
+  cp $data_path/www /var/www/certbot
+fi
+echo
+
 echo "### Creating dummy certificate for $domains ..."
 path="/etc/letsencrypt/live/$domains"
 mkdir -p "$data_path/conf/live/$domains"
@@ -42,11 +49,6 @@ echo "### Starting nginx ..."
 docker compose -p test-server up -d nginx || docker compose -p test-server restart nginx
 echo
 
-echo "### copy files to nginx ..."
-if [ ! -e "/etc/letsencrypt/options-ssl-nginx.conf" ]
-  cp $data_path/conf /etc/letsencrypt
-  cp $data_path/www /var/www/certbot
-fi
 
 
 echo "### Deleting dummy certificate for $domains ..."
