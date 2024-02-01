@@ -1,6 +1,9 @@
 package org.jackpot.back.dummy.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.jackpot.back.card.model.dto.response.CardGradeDto;
+import org.jackpot.back.card.model.dto.response.HoldingCardDto;
+import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.dummy.dto.request.DummyGetCardListRequest;
 import org.jackpot.back.dummy.dto.response.Card;
 import org.jackpot.back.dummy.dto.response.DummyCardList;
@@ -18,6 +21,57 @@ import java.util.List;
 @RequestMapping("/v1/dummy")
 @RequiredArgsConstructor
 public class DummyCardController {
+     @PostMapping("/list")
+     public ResponseEntity dummyList(@RequestBody DummyGetCardListRequest dummyGetCardListRequest){
+         List<HoldingCardDto> holdingCardDtoList1 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList2 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList4 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList6 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList7 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList8 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList9 = new ArrayList<>();
+         List<HoldingCardDto> holdingCardDtoList10 = new ArrayList<>();
+
+         holdingCardDtoList1.add(new HoldingCardDto(1L, "2024-01-01"));
+         holdingCardDtoList1.add(new HoldingCardDto(1L, "2024-01-02"));
+         holdingCardDtoList1.add(new HoldingCardDto(1L, "2024-01-03"));
+         holdingCardDtoList2.add(new HoldingCardDto(2L, "2024-01-04"));
+         holdingCardDtoList2.add(new HoldingCardDto(2L, "2024-01-05"));
+         holdingCardDtoList4.add(new HoldingCardDto(4L, "2024-01-06"));
+         holdingCardDtoList6.add(new HoldingCardDto(6L, "2024-01-07"));
+         holdingCardDtoList6.add(new HoldingCardDto(6L, "2024-01-08"));
+         holdingCardDtoList6.add(new HoldingCardDto(6L, "2024-01-09"));
+         holdingCardDtoList7.add(new HoldingCardDto(7L, "2024-01-10"));
+         holdingCardDtoList7.add(new HoldingCardDto(7L, "2024-01-11"));
+         holdingCardDtoList8.add(new HoldingCardDto(8L, "2024-01-12"));
+         holdingCardDtoList9.add(new HoldingCardDto(9L, "2024-01-13"));
+         holdingCardDtoList10.add(new HoldingCardDto(10L, "2024-01-14"));
+
+         List<CardGradeDto> cardGradeDtoList1 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList2 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList4 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList6 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList7 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList8 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList9 = new ArrayList<>();
+         List<CardGradeDto> cardGradeDtoList10 = new ArrayList<>();
+
+         cardGradeDtoList1.add(new CardGradeDto(1, holdingCardDtoList1));
+         cardGradeDtoList2.add(new CardGradeDto(2, holdingCardDtoList2));
+         cardGradeDtoList4.add(new CardGradeDto(4, holdingCardDtoList4));
+         cardGradeDtoList6.add(new CardGradeDto(1, holdingCardDtoList6));
+         cardGradeDtoList7.add(new CardGradeDto(2, holdingCardDtoList7));
+         cardGradeDtoList8.add(new CardGradeDto(3, holdingCardDtoList8));
+         cardGradeDtoList9.add(new CardGradeDto(4, holdingCardDtoList9));
+         cardGradeDtoList10.add(new CardGradeDto(5, holdingCardDtoList10));
+
+         List<ReadCardResponse> readCardResponseList = new ArrayList<>();
+         readCardResponseList.add(new ReadCardResponse("경주 불국사 다보탑", "경북", "경주시", cardGradeDtoList1, "http://www.cha.go.kr/unisearch/images/national_treasure/1612673.jpg", "ATTACK", "불국사는 통일신라 경덕왕 10년(751) 김대성의 발원에 의해 창건된 사찰로, 과거·현재·미래의 부처가 사는 정토(淨土), 즉 이상향을 구현하고자 했던 신라인들의 정신세계가 잘 드러나 있는 곳이다."));
+         readCardResponseList.add(new ReadCardResponse("경주 불국사 다보탑", "경북", "경주시", cardGradeDtoList10, "http://www.cha.go.kr/unisearch/images/national_treasure/1612673.jpg", "DEFENCE", "불국사는 통일신라 경덕왕 10년(751) 김대성의 발원에 의해 창건된 사찰로, 과거·현재·미래의 부처가 사는 정토(淨土), 즉 이상향을 구현하고자 했던 신라인들의 정신세계가 잘 드러나 있는 곳이다."));
+
+         return ResponseEntity.ok().body(MessageUtils.success(readCardResponseList));
+     }
+
     @PostMapping("/cards")
     public ResponseEntity dummyGetCardList(@RequestBody DummyGetCardListRequest dummyGetCardListRequest){
         List<Card> cardList=new ArrayList<>();

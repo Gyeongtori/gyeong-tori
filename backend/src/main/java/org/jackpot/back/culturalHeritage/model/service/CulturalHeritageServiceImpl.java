@@ -8,6 +8,7 @@ import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRedisR
 import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,5 +42,22 @@ public class CulturalHeritageServiceImpl implements CulturalHeritageService{
                     .build();
             culturalHeritageRedisRepository.save(culturalHeritageRedis);
         }
+    }
+
+    @Override
+    public List<CulturalHeritage> getList() {
+        List<CulturalHeritageRedis> culturalHeritageRedisList = (List<CulturalHeritageRedis>) culturalHeritageRedisRepository.findAll();
+        List<CulturalHeritage> culturalHeritageList = new ArrayList<>();
+        for(CulturalHeritageRedis culturalHeritageRedis : culturalHeritageRedisList){
+            culturalHeritageList.add(new CulturalHeritage(culturalHeritageRedis.getNo(),
+                    culturalHeritageRedis.getAsno(), culturalHeritageRedis.getName_kr(),
+                    culturalHeritageRedis.getName_hanja(), culturalHeritageRedis.getContent(),
+                    culturalHeritageRedis.getSido_name(), culturalHeritageRedis.getGugun_name(),
+                    culturalHeritageRedis.getDivision(), culturalHeritageRedis.getLng(),
+                    culturalHeritageRedis.getLat(), culturalHeritageRedis.getImage_source(),
+                    culturalHeritageRedis.getImage_detail(), culturalHeritageRedis.getNarration(),
+                    culturalHeritageRedis.getVideo_source()));
+        }
+        return culturalHeritageList;
     }
 }

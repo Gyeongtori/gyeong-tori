@@ -7,10 +7,7 @@ import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.service.CardService;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +17,12 @@ import java.util.List;
 @Slf4j
 public class CardController {
     private final CardService cardService;
+
+    @GetMapping("/redis_save")
+    public ResponseEntity redisSave() {
+        cardService.redisSave();
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
 
     /**
      * 카드 수집

@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
 import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.entity.Card;
+import org.jackpot.back.card.model.entity.CardRedis;
 import org.jackpot.back.card.model.entity.HoldingCard;
+import org.jackpot.back.card.model.repository.CardRedisRepository;
 import org.jackpot.back.card.model.repository.CardRepository;
 import org.jackpot.back.card.model.repository.HoldingCardRepository;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
+import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritageRedis;
 import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRepository;
 import org.jackpot.back.user.model.entity.User;
 import org.jackpot.back.user.model.repository.UserRepository;
@@ -24,8 +27,25 @@ import java.util.Optional;
 public class CardServiceImpl implements CardService{
     private final CulturalHeritageRepository culturalHeritageRepository;
     private final CardRepository cardRepository;
+    private final CardRedisRepository cardRedisRepository;
     private final UserRepository userRepository;
     private final HoldingCardRepository holdingCardRepository;
+
+    @Override
+    public void redisSave() {
+        //문화재 DB 조회
+        List<Card> cardList = cardRepository.findAll();
+        //DB -> Redis 저장
+        for(Card card : cardList){
+            CardRedis cardRedis = CardRedis.builder()
+                    .number(card.getNumber())
+                    .culturalHeritage(card.getCulturalHeritage())
+                    .rating(card.getRating())
+                    .field(card.getField())
+                    .build();
+            cardRedisRepository.save(cardRedis);
+        }
+    }
 
     @Override
     public void addCardToCollection(AddCardToCollectionRequest addCardToCollectionRequest) {
@@ -53,6 +73,7 @@ public class CardServiceImpl implements CardService{
         //카드 전체 조회
 
         //보유 중 카드 조회
+
         return null;
     }
 }
