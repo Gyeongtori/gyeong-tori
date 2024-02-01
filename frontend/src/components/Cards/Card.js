@@ -10,9 +10,9 @@ let Division = styled.span`
   padding-top: 1rem;
   padding-bottom: 1rem;
   font-weight: bold;
-  color: ${(props) => (props.border ? "rgba(229, 154, 89, 100)" : "black")};
+  color: ${(props) => (props.$border ? "rgba(229, 154, 89, 100)" : "black")};
   border-bottom: solid 0.125rem
-    ${(props) => (props.border ? "rgba(229, 154, 89, 100)" : "black")};
+    ${(props) => (props.$border ? "rgba(229, 154, 89, 100)" : "black")};
 `;
 let SortTitle = styled.div`
   display: flex;
@@ -60,7 +60,7 @@ const Card = () => {
     <>
       <div>
         <Division
-          border={divis}
+          $border={divis}
           onClick={() => {
             if (!divis) setDivis(!divis);
           }}
@@ -68,7 +68,7 @@ const Card = () => {
           전체
         </Division>
         <Division
-          border={!divis}
+          $border={!divis}
           onClick={() => {
             if (divis) setDivis(!divis);
           }}
