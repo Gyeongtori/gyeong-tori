@@ -58,7 +58,10 @@ const CardDetail = styled.div`
     height: 200%;
     background: conic-gradient(
       transparent,
-      rgba(168, 239, 255, 1),
+      ${(props) =>
+        props.$cardType === "ATTACK"
+          ? "rgba(240, 0, 0, 1)"
+          : "rgba(168, 239, 255, 1)"},
       transparent 30%
     );
     animation: rotate 4s linear infinite;
@@ -82,13 +85,14 @@ const CardDetail = styled.div`
     /* left: 50%; */
     /* transform: translateX(-50%); */
     z-index: 10;
-    height: 100%;
+    /* height: 100%; */
   }
 `;
 const Des = styled.div`
+  border-radius: 20px;
   background-color: rgba(288, 288, 288, 0.8);
   color: black;
-  padding: 0.25rem;
+  padding: 0.5rem;
 `;
 const Detail = (props) => {
   const cardRef = useRef(null);
@@ -105,10 +109,15 @@ const Detail = (props) => {
   }, [cardRef]);
   return (
     <Blurs>
-      <CardDetail id="detail" $cardImg={props.card.image} ref={cardRef}>
+      <CardDetail
+        id="detail"
+        $cardImg={props.card.image}
+        $cardType={props.card.field}
+        ref={cardRef}
+      >
         {/* <img src={props.cardImg} alt="pictures" /> */}
         <div>
-          <h3>{props.card.cultural_heritage_name}</h3>
+          <strong>{props.card.cultural_heritage_name}</strong>
           <Des>{props.card.description}</Des>
         </div>
       </CardDetail>
