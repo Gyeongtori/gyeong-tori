@@ -10,8 +10,9 @@ import convert from 'xml-js';
 
 const google = window.google = window.google ? window.google : {}
 
-// 경주 { lat: 35.831490, lng: 129.210748}
+// 경주 { lat: 35.831490, lng: 129.210748 }
 // 전대 { lat: 35.175595, lng: 126.907032 }
+// 싸피 { lat: 35.205231, lng: 126.8117628 }
 
 export default function Maps () {
   const [map, setMap] = useState(null);
@@ -36,9 +37,10 @@ export default function Maps () {
       navigator.geolocation.watchPosition(function(position) {
         const latNow = position.coords.latitude;
         const lngNow = position.coords.longitude;
-        console.log(latNow, lngNow);
-        setCenter({lat: latNow, lng: lngNow});
 
+        console.log(latNow, lngNow,'현재위치 받아왔어요')
+        setCenter({lat: latNow, lng: lngNow});
+        console.log(center, '센터인데 지금은')
         const headNow = position.coords.heading
         setHead(headNow)
         // console.log(head, 'headdddd')
@@ -83,7 +85,11 @@ export default function Maps () {
     console.log('클릭클릭')
   }
 
-
+  const places = [
+    {no: '1', lat: 35.202018, lng: 126.811782},
+    {no: '2', lat: 35.201121, lng: 126.807993},
+    {no: '3', lat: 35.203164, lng: 126.813467}
+  ]
 
   // 문화재 요청
   const [api, setApi] = useState();	
@@ -95,12 +101,13 @@ export default function Maps () {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get("v1/culturalheritage/list", {headers: {
+      const res = await axios.get("v1/culturalheritage/list", 
+      {headers: {
         'Content-Type': `application/json`,
         'ngrok-skip-browser-warning': '69420',
       }},);
-      setApi(res.data.data_body)
-      console.log('api 정보 조회', api)
+      setApi([res.data.data_body, places])
+      // console.log('api 정보 조회', api)
 
     } catch (e) {
       console.log(e.response);
@@ -109,14 +116,6 @@ export default function Maps () {
   
     /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
              division, lng, lat, image_source, image_detail, narration, video_source} */
-
-  
-
-  const places = [
-    {no: '1', lat: 35.202018, lng: 126.811782},
-    {no: '2', lat: 35.201121, lng: 126.807993},
-    {no: '3', lat: 35.203164, lng: 126.813467}
-  ]
 
   
 
@@ -189,7 +188,9 @@ export default function Maps () {
           <Body>
             {/* <video autoPlay style={cameraStyles.Video} /> */}
             <button onClick={getLocation}>버튼</button>
-            <InfoTop ></InfoTop>
+            <InfoTop 
+              center={center}
+            ></InfoTop>
           </Body>
 
         </GoogleMap>

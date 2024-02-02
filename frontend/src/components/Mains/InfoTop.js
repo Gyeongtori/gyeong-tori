@@ -8,8 +8,13 @@ import { GiHandBag } from "react-icons/gi";
 import { FaTrophy } from "react-icons/fa";
 import axios from 'axios';
 
-const InfoTop = () => {
+const InfoTop = (props) => {
   const navigate = useNavigate()
+
+  // 내 위치
+  const [center, setCenter] = useState({ lat: props.center.lat, lng: props.center.lng});
+  // console.log('center: ', center.lat);
+
 
   // 초기 온도 상태 설정
   const [temp, setTemp] = useState(null)
@@ -23,54 +28,57 @@ const InfoTop = () => {
   
 
   useEffect(()=>{
-    getCurrentLocation()
-    getAddress()
+    getWeatherByCurrentLocation()
+
   }, [])
 
 
-  // GET : 현재 위도 경도 
-  const getCurrentLocation=()=>{
-    navigator.geolocation.watchPosition((position)=>{
-      let lat = position.coords.latitude
-      let lon = position.coords.longitude
-      // console.log(lat, lon, '현재위치')
-      getWeatherByCurrentLocation(lat, lon)
-
-    })
-  }
-
-
   // 위도 경도 -> 주소
+  // const getAdress = async () => {
+  //   try {
+  //     let url = "https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=129.210748,35.831490&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2"
+
+  //     let response = await fetch(url, {
+  //       method: 'GET',
+  //       mode: 'no-cors'
+  //     })
+  //     let data = await response.json();
+  //     console.log('data: ', data);
+  //   } catch (e) {
+  //     console.log(e.response);
+  //   }
+  // };
+
+
+  const [address, setAddress] = useState();	
+
+  useEffect((props) => {
+    getAddress();
+  }, []);
+    
   const getAddress = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      // const res = await axios.get("https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=129.210748,35.831490&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2", {'Access-Control-Allow-Origin':'http://localhost:3000/maps'});
-      
-      // setAdressNow(res.data)
-      // console.log('api 정보 조회', res)
+      const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2`, 
+      // {headers: {
+      //   'Access-Control-Allow-Origin' : 'http://localhost:3000/maps'
+      // }}
+      );
+      setAddress(res.data.response.result[0])
+      // console.log(address.structure.level4L, '00동')
 
-
-      let url = "https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=129.210748,35.831490&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2"
-
-      let response = await fetch(url, {
-        method: 'GET',
-        mode: 'no-cors'
-      })
-      let data = await response.json();
-      console.log('data: ', data);
-
-      
     } catch (e) {
       console.log(e.response);
     }
   };
 
 
-  const getWeatherByCurrentLocation= async (lat, lon)=>{
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=101694a50d5922c2274bdd9982d0eacd&units=metric`
+// 현재 날씨 받아오기
+  const getWeatherByCurrentLocation= async ()=>{
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${center.lat}&lon=${center.lng}&appid=101694a50d5922c2274bdd9982d0eacd&units=metric`
     let response = await fetch(url)
     let data = await response.json();
-    // console.log(data);
+    // console.log(data, '이게 될까?');
 
     // 온도 정보 업데이트
     setTemp(data.main.temp)
@@ -86,22 +94,6 @@ const InfoTop = () => {
     navigate("/cards")
   }
 
-  // 주소 바꾸기 XX
-  // const alterAddress = (lat, lon) => {
-  // const API_KEY = '84ce352790538c53c7ae183bc7b7d56f'
-  // if (lat && lon) {
-  //     axios.get(
-  //         `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lat}&y=${lon}`,
-  //         { headers: { Authorization: `KakaoAK ${API_KEY}`} }
-  //     ).then((result) => {
-  //       console.log(result, '주소!')
-        
-  //       //법정동 기준으로 동단위의 값을 가져온다
-  //       // let location = result.documents[0].region_3depth_name;
-  //     })
-  //   }
-  // }
-  
 
   return (
     <div>
@@ -109,7 +101,7 @@ const InfoTop = () => {
         <InfoHeader>
           <img src={`https://openweathermap.com/img/w/${icon}.png`} alt="" />
           <div>{ temp }°C</div>
-          <div>00동</div>
+          <div>{ address.structure.level4L }</div> 
         </InfoHeader>
 
         <InfoHeaderRight>
