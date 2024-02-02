@@ -82,7 +82,7 @@ public class CardServiceImpl implements CardService{
         List<CulturalHeritageRedis> culturalHeritageRedisList = (List<CulturalHeritageRedis>) culturalHeritageRedisRepository.findAll();
         for(CulturalHeritageRedis culturalHeritageRedis : culturalHeritageRedisList){
             //문화재에 해당하는 카드 조회
-            Optional<List<CardRedis>> optionalCardRedisList = cardRedisRepository.findByNo(culturalHeritageRedis.getNo());
+            Optional<List<CardRedis>> optionalCardRedisList = cardRedisRepository.findByCulturalHeritage_No(culturalHeritageRedis.getNo());
             //카드가 존재할 경우
             if(optionalCardRedisList.get() != null) {
                 ReadCardResponse readCardResponse = new ReadCardResponse();

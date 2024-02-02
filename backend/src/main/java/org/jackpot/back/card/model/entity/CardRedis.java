@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Builder
-@RedisHash(value = "card_redis", timeToLive = 60)
+@RedisHash(value = "card_redis", timeToLive = 1800)
 public class CardRedis {
     @Id
     private Long number; //카드 번호
