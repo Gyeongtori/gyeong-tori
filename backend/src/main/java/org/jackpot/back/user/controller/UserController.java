@@ -28,8 +28,7 @@ public class UserController {
 
     @PostMapping("/retrieve")
     public ResponseEntity getUser(@AuthenticationPrincipal User user){
-        System.out.println(user.toString());
-        return ResponseEntity.ok().body(MessageUtils.success(user));
+        return ResponseEntity.ok().body(MessageUtils.success(user.toPublicInfo()));
     }
 
 }
