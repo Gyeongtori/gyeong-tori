@@ -6,6 +6,7 @@ import Toggle from './Toggle';
 import { IoSettingsOutline } from "react-icons/io5";
 import { GiHandBag } from "react-icons/gi";
 import { FaTrophy } from "react-icons/fa";
+import axios from 'axios';
 
 const InfoTop = () => {
   const navigate = useNavigate()
@@ -14,14 +15,20 @@ const InfoTop = () => {
   const [temp, setTemp] = useState(null)
   const [icon, setIcon] = useState(null)
 
+  // Toggle option
   const [isOn, setIsOn] = useState(false);
   
-  // const onSetisOn = (isOn) => {
-  //   setIsOn(isOn)
-  //   console.log(isOn, '00')
-  // }
+  // 좌표 -> 주소 변환
+  const [adressNow, setAdressNow] = useState()
+  
+
+  useEffect(()=>{
+    getCurrentLocation()
+    getAddress()
+  }, [])
 
 
+  // GET : 현재 위도 경도 
   const getCurrentLocation=()=>{
     navigator.geolocation.watchPosition((position)=>{
       let lat = position.coords.latitude
@@ -32,10 +39,31 @@ const InfoTop = () => {
     })
   }
 
-  useEffect(()=>{
-    getCurrentLocation()
 
-  }, [temp])
+  // 위도 경도 -> 주소
+  const getAddress = async () => {
+    try {
+      // res에는 결과 값이 담겨옴
+      // const res = await axios.get("https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=129.210748,35.831490&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2", {'Access-Control-Allow-Origin':'http://localhost:3000/maps'});
+      
+      // setAdressNow(res.data)
+      // console.log('api 정보 조회', res)
+
+
+      let url = "https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=129.210748,35.831490&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2"
+
+      let response = await fetch(url, {
+        method: 'GET',
+        mode: 'no-cors'
+      })
+      let data = await response.json();
+      console.log('data: ', data);
+
+      
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
 
 
   const getWeatherByCurrentLocation= async (lat, lon)=>{
