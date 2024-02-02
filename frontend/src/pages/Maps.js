@@ -2,11 +2,8 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { GoogleMap, Circle, useJsApiLoader, MarkerF, MarkerClustererF } from "@react-google-maps/api";
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
-import { Sample1 } from "../components/Mains/MapStyles"
+import { Sample1 } from "../components/Styles/MapStyles"
 import axios from "axios";
-
-import convert from 'xml-js';
-// import parser from 'fast-xml-parser';
 
 const google = window.google = window.google ? window.google : {}
 
@@ -16,7 +13,12 @@ const google = window.google = window.google ? window.google : {}
 
 export default function Maps () {
   const [map, setMap] = useState(null);
-  const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748});
+
+  // 경주 기준점
+  // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
+  
+  // 전대 기준점
+  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
   const [head, setHead] = useState()
 
@@ -40,7 +42,7 @@ export default function Maps () {
 
         console.log(latNow, lngNow,'현재위치 받아왔어요')
         setCenter({lat: latNow, lng: lngNow});
-        console.log(center, '센터인데 지금은')
+        console.log(center, '센터값 : 35.2059392 126.81216 이게 나와야함')
         const headNow = position.coords.heading
         setHead(headNow)
         // console.log(head, 'headdddd')
@@ -80,15 +82,17 @@ export default function Maps () {
     }
   }
 
-
-  const goGetCard = () => {
-    console.log('클릭클릭')
+// 마크 클릭 이벤트
+  const goGetCard = (event) => {
+    console.log(event)
   }
 
   const places = [
     {no: '1', lat: 35.202018, lng: 126.811782},
     {no: '2', lat: 35.201121, lng: 126.807993},
-    {no: '3', lat: 35.203164, lng: 126.813467}
+    {no: '3', lat: 35.203164, lng: 126.813467},
+    {no: '4', lat: 35.203817, lng: 126.808487},
+    {no: '5', lat: 35.206029, lng: 126.811789}
   ]
 
   // 문화재 요청
@@ -106,8 +110,13 @@ export default function Maps () {
         'Content-Type': `application/json`,
         'ngrok-skip-browser-warning': '69420',
       }},);
-      setApi([res.data.data_body, places])
+      // console.log('eeeee', res.data.data_body)
+
+      setApi(res? [...res.data.data_body, ...places] : [...places])
+      
       // console.log('api 정보 조회', api)
+
+      // setApi(res.data.data_body)
 
     } catch (e) {
       console.log(e.response);
@@ -175,8 +184,15 @@ export default function Maps () {
                   <MarkerF 
                     key={place.no}
                     position={{lat: Number(place.lat), lng: Number(place.lng)}}
-                    onClick={() => {getLocation()}}
-                    // onClick={startOrStop()}
+                    onClick={()=> {goGetCard(place)}}
+                    
+                    // icon={{
+                    //   href: require("../public/markerSample1.png"),
+                    //   url: "https://img.freepik.com/premium-vector/funny-pussy-kitty-cat-character-in-kawaii-cartoon-style_835197-15967.jpg",
+                    //   scaledSize: new google.maps.Size(50, 50),
+                    //   origin: new google.maps.Point(0, 0),
+                    //   anchor: new google.maps.Point(25, 50),
+                    // }}
                     />
                     
                     ))}
@@ -187,10 +203,10 @@ export default function Maps () {
         {/* 메인기능 버튼 */}
           <Body>
             {/* <video autoPlay style={cameraStyles.Video} /> */}
-            <button onClick={getLocation}>버튼</button>
             <InfoTop 
               center={center}
             ></InfoTop>
+            <button onClick={getLocation}>버튼</button>
           </Body>
 
         </GoogleMap>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { GoogleMap, Circle, useJsApiLoader, MarkerF, MarkerClustererF } from "@react-google-maps/api";
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
-import { Sample1 } from "../components/Mains/MapStyles"
+import { Sample1 } from "../components/Styles/MapStyles"
 
 import * as THREE from 'three';
 

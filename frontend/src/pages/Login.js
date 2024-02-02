@@ -1,8 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-import ButtonFull from "../components/ButtonFull";
-import ButtonBlank from "../components/ButtonBlank";
+import ButtonFull from "../components/Styles/ButtonFull";
+import ButtonBlank from "../components/Styles/ButtonBlank";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
