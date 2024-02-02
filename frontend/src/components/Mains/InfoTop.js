@@ -101,7 +101,7 @@ const InfoTop = (props) => {
         <InfoHeader>
           <img src={`https://openweathermap.com/img/w/${icon}.png`} alt="" />
           <div>{ temp }°C</div>
-          <div>{ address.structure.level4L }</div> 
+          <div>{ address && address.structure.level4L }</div> 
         </InfoHeader>
 
         <InfoHeaderRight>
