@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CardRedisRepository extends CrudRepository<CardRedis, Long> {
-    Optional<List<CardRedis>> findByCulturalHeritage_No(int no);
+    List<CardRedis> findByCulturalHeritage_No(int culturalHeritageNo);
 }

@@ -27,25 +27,25 @@ public class RedisConfig {
     private final RedisProperties redisProperties;
 
     // lettuce
-//    @Bean
-//    @Profile("dev")
-//    public RedisConnectionFactory redisConnectionFactoryDev() {
-//        return new LettuceConnectionFactory(
-//                new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort()));
-//    }
-//
-//    @Bean
-//    @Profile("dev")
-//    public RedisTemplate<?, ?> redisTemplateDev() {
-//        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(redisConnectionFactoryDev());   //connection
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
-//        redisTemplate.setValueSerializer(new StringRedisSerializer());  // value
-//        return redisTemplate;
-//    }
+    @Bean
+    @Profile("dev")
+    public RedisConnectionFactory redisConnectionFactoryDev() {
+        return new LettuceConnectionFactory(
+                new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort()));
+    }
 
     @Bean
     @Profile("dev")
+    public RedisTemplate<?, ?> redisTemplateDev() {
+        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactoryDev());   //connection
+        redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
+        redisTemplate.setValueSerializer(new StringRedisSerializer());  // value
+        return redisTemplate;
+    }
+
+    @Bean
+    @Profile("prod")
     public RedisConnectionFactory redisConnectionFactoryProd() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisProperties.getHost());
@@ -56,7 +56,7 @@ public class RedisConfig {
 
     // Redis template
     @Bean
-    @Profile("dev")
+    @Profile("prod")
     public RedisTemplate<?, ?> redisTemplateProd() {
         RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactoryProd());   //connection

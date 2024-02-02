@@ -46,6 +46,7 @@ public class CardController {
      */
     @PostMapping("/list")
     public ResponseEntity getCardList(@RequestBody String userEmail) {
+        System.out.println("이메일!!!:" +userEmail);
         List<ReadCardResponse> readCardResponse = cardService.getCardList(userEmail);
         return ResponseEntity.ok().body(MessageUtils.success(readCardResponse));
     }

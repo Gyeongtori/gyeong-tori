@@ -37,7 +37,7 @@ public class DummyCardController {
          cardGradeDtoList1.add(new CardGradeDto(3L, 3, null));
          cardGradeDtoList1.add(new CardGradeDto(4L, 4, Arrays.asList("2024-01-06")));
          cardGradeDtoList1.add(new CardGradeDto(5L, 5, null));
-         readCardResponseList.add(new ReadCardResponse("경주 불국사 다보탑", "경북", "경주시", "경북 경주시 불국로 385", cardGradeDtoList1,
+         readCardResponseList.add(new ReadCardResponse(320, "경주 불국사 다보탑", "경북", "경주시", "경북 경주시 불국로 385", cardGradeDtoList1,
                  "http://www.cha.go.kr/unisearch/images/national_treasure/1612673.jpg", "ATTACK",
                  "법화경에 의하면 “석가모니가 영취산(靈鷲山)에서 법화경을 설파할 때 다보여래의 진신사리를 모셔둔 탑이 땅 밑에서 솟아나오고, 그 탑 속에서 소리를 내어 석가모니의 설법을 참된 진리라고 찬탄하고 증명하였다”라고 한다. 참고로 석가모니가 자신 다음에 부처가 될것이라 수기(예언)을 내린 부처도 다보불이다. 이를 근원으로 세워진 탑이 다보여래상주증명탑, 줄여서 다보탑이다. 즉 절의 대웅전 마당에 다보탑을 세우는 것은 석가모니의 영취산을 절에서 재현하는 의미다."));
 
@@ -47,7 +47,7 @@ public class DummyCardController {
          cardGradeDtoList2.add(new CardGradeDto(8L, 3, Arrays.asList("2024-01-11")));
          cardGradeDtoList2.add(new CardGradeDto(9L, 4, Arrays.asList("2024-01-06", "2024-01-30")));
          cardGradeDtoList2.add(new CardGradeDto(10L, 5, Arrays.asList("2024-01-23")));
-         readCardResponseList.add(new ReadCardResponse("경주 불국사 삼층석탑", "경북", "경주시", "경북 경주시 불국로 385 불국사", cardGradeDtoList2,
+         readCardResponseList.add(new ReadCardResponse(321, "경주 불국사 삼층석탑", "경북", "경주시", "경북 경주시 불국로 385 불국사", cardGradeDtoList2,
                  "http://www.cha.go.kr/unisearch/images/national_treasure/1612742.jpg", "DEFENCE",
                  "경주 불국사 삼층석탑(慶州佛國寺三層石塔)은 경주 불국사에 있는, 남북국 시대 신라의 삼층석탑이다. 원래 이름은 석가여래상주설법탑(釋迦如來常住設法塔)이며 흔히 줄여서 석가탑(釋迦塔)이라고도 한다. 아사달과 아사녀의 전설에서 따 무영탑(無影塔)이라고 부르기도 한다. 불국사 대웅전 앞뜰에 다보탑과 나란히 서 있으며, 대한민국의 국보 제21호로 지정되어 있다."));
 
