@@ -1,6 +1,8 @@
 package org.jackpot.back.global.config;
 
 import lombok.RequiredArgsConstructor;
+import org.jackpot.back.card.model.repository.CardRedisRepository;
+import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRedisRepository;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -17,31 +19,33 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
-@EnableRedisRepositories(basePackages = {"org.jackpot.back.security.repository","org.jackpot.back.battle.repository"})
+@EnableRedisRepositories(basePackages = {"org.jackpot.back.security.repository","org.jackpot.back.battle.repository"},
+                            basePackageClasses = {CulturalHeritageRedisRepository.class, CardRedisRepository.class})
+
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
 
     // lettuce
-    @Bean
-    @Profile("dev")
-    public RedisConnectionFactory redisConnectionFactoryDev() {
-        return new LettuceConnectionFactory(
-                new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort()));
-    }
+//    @Bean
+//    @Profile("dev")
+//    public RedisConnectionFactory redisConnectionFactoryDev() {
+//        return new LettuceConnectionFactory(
+//                new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort()));
+//    }
+//
+//    @Bean
+//    @Profile("dev")
+//    public RedisTemplate<?, ?> redisTemplateDev() {
+//        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setConnectionFactory(redisConnectionFactoryDev());   //connection
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
+//        redisTemplate.setValueSerializer(new StringRedisSerializer());  // value
+//        return redisTemplate;
+//    }
 
     @Bean
     @Profile("dev")
-    public RedisTemplate<?, ?> redisTemplateDev() {
-        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactoryDev());   //connection
-        redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
-        redisTemplate.setValueSerializer(new StringRedisSerializer());  // value
-        return redisTemplate;
-    }
-
-    @Bean
-    @Profile("prod")
     public RedisConnectionFactory redisConnectionFactoryProd() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisProperties.getHost());
@@ -52,7 +56,7 @@ public class RedisConfig {
 
     // Redis template
     @Bean
-    @Profile("prod")
+    @Profile("dev")
     public RedisTemplate<?, ?> redisTemplateProd() {
         RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactoryProd());   //connection

@@ -35,4 +35,8 @@ public class HoldingCard {
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date date; //카드 획득일
+
+    @Column
+    @NotNull
+    private String address; //상세 주소
 }

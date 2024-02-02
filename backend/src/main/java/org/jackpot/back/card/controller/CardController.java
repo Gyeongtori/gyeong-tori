@@ -7,10 +7,7 @@ import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.service.CardService;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,9 +19,19 @@ public class CardController {
     private final CardService cardService;
 
     /**
+     * 카드 Redis 저장
+     * @return
+     */
+    @GetMapping("/redis_save")
+    public ResponseEntity redisSave() {
+        cardService.redisSave();
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    /**
      * 카드 수집
      * @param addCardToCollectionRequest
-     * @return card
+     * @return
      */
     @PostMapping("/add")
     public ResponseEntity addCardToCollection(@RequestBody AddCardToCollectionRequest addCardToCollectionRequest) {
@@ -32,9 +39,14 @@ public class CardController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-    @PostMapping("/read")
-    public ResponseEntity readCard(@RequestBody Long userEmail) {
-        List<ReadCardResponse> readCardResponse = cardService.readCard(userEmail);
+    /**
+     * 카드 조회 (전체, 상세)
+     * @param userEmail
+     * @return List<ReadCardResponse>
+     */
+    @PostMapping("/list")
+    public ResponseEntity getCardList(@RequestBody String userEmail) {
+        List<ReadCardResponse> readCardResponse = cardService.getCardList(userEmail);
         return ResponseEntity.ok().body(MessageUtils.success(readCardResponse));
     }
 }
