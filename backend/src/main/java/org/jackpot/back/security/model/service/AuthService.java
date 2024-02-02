@@ -29,6 +29,7 @@ public class AuthService {
     public void login(HttpServletResponse response, String email, String password){
         User user = userService.findByEmail(email);
         log.info("user : "+user.toString());
+        log.info("encrypted password : "+passwordEncoder.encode(password));
         if (user!=null && passwordEncoder.matches(password, user.getPassword())){
             if (user.getStatus().equals(UserStatus.ACTIVE)){
                 GeneratedToken generatedToken = tokenService.generatedToken(user.getId());
