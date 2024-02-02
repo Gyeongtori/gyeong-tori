@@ -106,7 +106,7 @@ export default function Maps () {
         'Content-Type': `application/json`,
         'ngrok-skip-browser-warning': '69420',
       }},);
-      setApi([res.data.data_body, places])
+      setApi(res.data.data_body)
       // console.log('api 정보 조회', api)
 
     } catch (e) {
