@@ -17,8 +17,8 @@ const Blurs = styled.div`
 `;
 const CardDetail = styled.div`
   width: 50%;
-  max-width: 300px;
-  height: 400px;
+  width: 60vw;
+  height: 80vw;
   /* background-color: transparent; */
   background-color: black;
   /* background-image: url(${(props) => props.$cardImg}); */
@@ -38,7 +38,7 @@ const CardDetail = styled.div`
   padding: 2rem;
   @keyframes blink {
     40% {
-      opacity:.5;
+      opacity: 0.5;
     }
     80% {
       opacity: 1;
@@ -56,10 +56,14 @@ const CardDetail = styled.div`
     top: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(transparent, rgba(168, 239, 255, 1), transparent 30%);
+    background: conic-gradient(
+      transparent,
+      rgba(168, 239, 255, 1),
+      transparent 30%
+    );
     animation: rotate 4s linear infinite;
   }
-  
+
   &:after {
     content: "";
     position: absolute;
@@ -78,9 +82,14 @@ const CardDetail = styled.div`
     /* left: 50%; */
     /* transform: translateX(-50%); */
     z-index: 10;
+    height: 100%;
   }
 `;
-
+const Des = styled.div`
+  background-color: rgba(288, 288, 288, 0.8);
+  color: black;
+  padding: 0.25rem;
+`;
 const Detail = (props) => {
   const cardRef = useRef(null);
   useEffect(() => {
@@ -96,14 +105,11 @@ const Detail = (props) => {
   }, [cardRef]);
   return (
     <Blurs>
-      <CardDetail id="detail" $cardImg={props.cardImg} ref={cardRef}>
+      <CardDetail id="detail" $cardImg={props.card.image} ref={cardRef}>
         {/* <img src={props.cardImg} alt="pictures" /> */}
         <div>
-        
-          <h1>여기에서 설명해요</h1>
-
-
-          {props.des}
+          <h3>{props.card.cultural_heritage_name}</h3>
+          <Des>{props.card.description}</Des>
         </div>
       </CardDetail>
     </Blurs>

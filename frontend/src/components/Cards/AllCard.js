@@ -56,7 +56,7 @@ const AllCard = () => {
   const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
 
   useEffect(() => {
-    // console.log(db); // firebase 연결 테스트
+    console.log(db); // firebase 연결 테스트
     getCards();
   }, []);
 
@@ -73,35 +73,9 @@ const AllCard = () => {
         position: "50%",
         filter: "opacity(0)",
       }); // CSS 적용
-      console.log(res.data.data_body[0].image);
+      setCard(data);
+      console.log(card);
 
-      // let cardId = []; // 카드 아이디 배열
-      let heritageName = []; // 문화재 이름 배열
-      let address = []; // 문화재 위치
-      let cardImg = []; // 카드 이미지 배열
-      let des = []; // 카드 설명 배열
-      let field = []; // 속성
-      let grade1 = []; // 1성 획득일들 배열
-      let grade2 = []; // 2성 획득일들 배열
-      let grade3 = []; // 3성 획득일들 배열
-      let grade4 = []; // 4성 획득일들 배열
-      let grade5 = []; // 5성 획득일들 배열
-      let highGrade = []; // 가장 높은 등급
-
-      Object.values(res.data.data_body).map((item, index) => {
-        // cardId[index] = { item }.card_number;
-        // heritageName[index] = { item }.cultural_heritage_name;
-        // address[index] = { item }.address;
-        // cardImg[index] = { item }.image;
-        // des[index] = { item }.description;
-        // field[index] = { item }.field;
-        console.log(Object.values(item));
-      });
-      res.data.data_body.grade_cards.map((item, index) => {
-        let id = item.card_number;
-        if (index === 0) grade1[id] = item.holding_cards;
-      });
-      // console.log(cardImg, des);
       // Firebase Img 불러오기
       // const promises = res.data.data_body.card_list.map(async (card, index) => {
       //   const storage = getStorage();
@@ -112,17 +86,10 @@ const AllCard = () => {
       //   // console.log(cardImgs[index], cardImgs);
       // });
       // await Promise.all(promises);
-      // for (let i = 0; i < currnet; i++) {
-      //   cardImg[i] = res.data.data_body[i].image;
-      // }
+
       setStates((pre) => {
         return setting;
       });
-      setCardImgList((pre) => {
-        return [...cardImg];
-      });
-      setCardDes(des);
-      console.log(cardImgList, cardDes);
     } catch (e) {
       console.log(e.response);
     }
@@ -196,34 +163,27 @@ const AllCard = () => {
   return (
     <>
       <div>
-        {getdetail ? (
-          <Detail
-            setDetail={setDetail}
-            cardImg={cardImgList[cardId]}
-            des={cardDes[cardId]}
-          />
-        ) : null}
+        {getdetail && <Detail setDetail={setDetail} card={card[cardId]} />}
         <CardGrid>
-          {states.length !== "undefined"
-            ? states.map((state, index) => (
-                <Container
-                  key={index}
-                  $rotation={state.rotation}
-                  onMouseMove={(e) => handleMouseMove(index, e)}
-                  onTouchMove={(e) => handleTouchMove(index, e)}
-                  onMouseOut={() => handleMouseOut(index)}
-                  onTouchEnd={() => handleTouchOut(index)}
-                >
-                  <Overlay
-                    id={index}
-                    onClick={handleDetail}
-                    $position={state.position}
-                    $filter={state.filter}
-                  />
-                  <CardImg $url={cardImgList[index]} />
-                </Container>
-              ))
-            : null}
+          {states &&
+            states.map((state, index) => (
+              <Container
+                key={index}
+                $rotation={state.rotation}
+                onMouseMove={(e) => handleMouseMove(index, e)}
+                onTouchMove={(e) => handleTouchMove(index, e)}
+                onMouseOut={() => handleMouseOut(index)}
+                onTouchEnd={() => handleTouchOut(index)}
+              >
+                <Overlay
+                  id={index}
+                  onClick={handleDetail}
+                  $position={state.position}
+                  $filter={state.filter}
+                />
+                <CardImg $url={card[index].image} />
+              </Container>
+            ))}
         </CardGrid>
       </div>
     </>
