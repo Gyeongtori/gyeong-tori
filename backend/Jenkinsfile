@@ -1,9 +1,9 @@
 def component = [
         front: false,
         back: true,
-        nginx: true,
-        redis: true,
-        certbot: true
+        nginx: false,
+        redis: false,
+        certbot: false
 ]
 pipeline {
     agent any
@@ -91,7 +91,7 @@ pipeline {
         stage('Prune old images'){
             steps{
                 script{
-                    sh "docker system prune -f --filter until=1h"
+                    sh "yes | docker system prune --filter until=1h"
                 }
             }
         }
