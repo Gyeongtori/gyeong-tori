@@ -22,7 +22,7 @@ export default function Maps () {
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
   const [head, setHead] = useState()
 
- 
+  const [showSemiCircle, setShowSemiCircle] = useState(false);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -138,7 +138,7 @@ export default function Maps () {
     strokeWeight: 0,
     fillColor: '#C779D0',
     fillOpacity: 0.35,
-    radius: 100,
+    radius: 80,
     center,
   };
 
@@ -211,6 +211,18 @@ export default function Maps () {
 
         </GoogleMap>
 
+        <Body>
+        <ToggleButton onClick={() => setShowSemiCircle(!showSemiCircle)}>
+          토글
+        </ToggleButton>
+
+        <SemiCircle show={showSemiCircle}>
+          <SemiCircleButton>버튼 1</SemiCircleButton>
+          <SemiCircleButton>버튼 2</SemiCircleButton>
+          <SemiCircleButton>버튼 3</SemiCircleButton>
+        </SemiCircle>
+
+        </Body>
       </div>
 
 
@@ -227,4 +239,36 @@ const Body = styled.div`
   z-index: 10;
 `;
 
+const ToggleButton = styled.button`
+  position: absolute;
+  bottom: 10px; // 위치 조정
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000; // z-index 조정
+`;
 
+const SemiCircle = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 200px;
+  background: rgb(114, 161, 111, 0.5);
+  border-radius: 50% 50% 0 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 998;
+  transition: all 0.3s ease-in-out;
+  opacity: ${props => props.show ? 1 : 0};
+  visibility: ${props => props.show ? 'visible' : 'hidden'};
+`;
+
+const SemiCircleButton = styled.button`
+  flex: 1;
+  height: 50%;
+  background-color: #72A16F; // 배경색 설정
+  border-radius: 50%; // 원 모양 만들기
+  border: none; // 기본 테두리 제거
+`;
