@@ -8,10 +8,7 @@ import org.jackpot.back.user.model.entity.User;
 import org.jackpot.back.user.model.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -26,7 +23,7 @@ public class UserController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-    @PostMapping("/retrieve")
+    @GetMapping("/retrieve")
     public ResponseEntity getUser(@AuthenticationPrincipal User user){
         return ResponseEntity.ok().body(MessageUtils.success(user.toPublicInfo()));
     }

@@ -20,23 +20,25 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer_";
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader=null;
-
+        log.debug("========= jwt filter =========");
         Cookie[] cookies = request.getCookies();
+        log.debug(Arrays.toString(cookies));
+        log.debug("토큰 존재 확인");
         if(cookies!=null){
             for(Cookie cookie : cookies){
+                log.debug(cookie.getName()+": "+cookie.getValue());
                 if("accessToken".equals(cookie.getName())){
                     authHeader = cookie.getValue();
                     break;
@@ -58,7 +60,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         //access token 추출
-        String authToken=authHeader.split(" ")[1];
+        String authToken=authHeader.substring(7);
+        log.debug("authToken is "+authToken);
 
         //access token 검증
         Jws<Claims> claimsJws = jwtUtil.validateAccessToken(authToken);
