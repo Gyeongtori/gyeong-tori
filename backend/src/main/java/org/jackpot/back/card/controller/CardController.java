@@ -3,6 +3,7 @@ package org.jackpot.back.card.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
+import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.service.CardService;
 import org.jackpot.back.global.utils.MessageUtils;
@@ -46,7 +47,12 @@ public class CardController {
      */
     @PostMapping("/list")
     public ResponseEntity getCardList(@RequestBody String userEmail) {
-        List<ReadCardResponse> readCardResponse = cardService.getCardList(userEmail);
-        return ResponseEntity.ok().body(MessageUtils.success(readCardResponse));
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(userEmail)));
+    }
+
+
+    @PostMapping("/search")
+    public ResponseEntity searchCard(@RequestBody SearchCardRequest searchCardRequest) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
     }
 }

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,5 +21,5 @@ public class CardGradeDto {
     private Long cardNumber;
     private int grade;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private List<Date> holdingCards; //보유 카드 정보
+    private List<LocalDate> holdingCards; //보유 카드 정보
 }

@@ -35,7 +35,7 @@ public class HoldingCard {
     @CreatedDate
     @Temporal(TemporalType.DATE)
     @NotNull
-    private Date date; //카드 획득일
+    private LocalDate date; //카드 획득일
 
     @Column
     @NotNull
