@@ -23,6 +23,7 @@ public class SocketModule {
 
     private DataListener<Location> onLocationReceived() {
         return (senderClient, data, ackSender) -> {
+            log.info("======== chatchat =========");
             log.info(data.toString());
             senderClient.getNamespace().getBroadcastOperations().sendEvent("get_location", data);
 
