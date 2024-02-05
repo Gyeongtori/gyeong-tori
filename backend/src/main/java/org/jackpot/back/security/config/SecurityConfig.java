@@ -25,13 +25,9 @@ public class SecurityConfig {
             "/v1/auth/login",
             "/v1/user/regist",
             "/v1/auth/refresh",
-            "/v1/culturalheritage/open_api",
-            "/v1/culturalheritage/list",
-            "/v1/culturalheritage/redis_save",
-            "/v1/card/redis_save",
-            "/v1/card/add",
-            "/v1/card/list",
-            "/v1/dummy/list",
+            "/v1/culturalheritage/**",
+            "/v1/card/**",
+            "/v1/dummy/**",
             //swagger 접근 위한 whitelist
             "/favicon.ico",
             "/error",
@@ -41,7 +37,6 @@ public class SecurityConfig {
             //health check
             "/actuator",
             "/api/",
-            "/v1/dummy/**",
     };
     //    private static final String[] ALLOWED_URIS={"/**"};
     private final JwtFilter jwtFilter;
@@ -63,7 +58,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 나머지 경로는 인증 요구
                 );
 
-        httpSecurity
+        httpSecurity.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2Login -> oauth2Login //소셜 로그인
                                 .successHandler(oauth2AuthenticationSuccessHandler) // 로그인 성공했을 경우 handelr 처리
                                 .failureHandler(oauth2AuthenticationFailureHandler)
@@ -72,7 +67,7 @@ public class SecurityConfig {
                                 ) //회원가입 or 업데이트 처리
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//                .addFilterBefore(jwtFilter, BasicAuthenticationFilter.class);
+
         return httpSecurity.build();
     }
 

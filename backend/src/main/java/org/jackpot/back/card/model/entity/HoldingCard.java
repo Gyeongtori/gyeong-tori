@@ -7,6 +7,7 @@ import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 import org.jackpot.back.user.model.entity.User;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -32,9 +33,9 @@ public class HoldingCard {
 
     @Column(length = 512)
     @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @NotNull
-    private Date date; //카드 획득일
+    private LocalDate date; //카드 획득일
 
     @Column
     @NotNull

@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ReadCardResponse {
+    private Integer no; //primary key
     private String culturalHeritageName;
     private String sido;
     private String gugun;

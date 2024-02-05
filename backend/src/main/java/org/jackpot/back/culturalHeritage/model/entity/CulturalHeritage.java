@@ -23,11 +23,11 @@ public class CulturalHeritage {
 
     @Column(length = 30)
     @NotNull
-    private String name_kr; //문화재명(국문)
+    private String nameKr; //문화재명(국문)
 
     @Column(length = 30)
     @NotNull
-    private String name_hanja; //문화재명(한자)
+    private String nameHanja; //문화재명(한자)
 
     @Column(length = 5000)
     @NotNull
@@ -35,11 +35,11 @@ public class CulturalHeritage {
 
     @Column(length = 10)
     @NotNull
-    private String sido_name; //시도명
+    private String sidoName; //시도명
 
     @Column(length = 10)
     @NotNull
-    private String gugun_name; //시군구명
+    private String gugunName; //시군구명
 
     @Column(length = 5)
     @NotNull
@@ -55,16 +55,16 @@ public class CulturalHeritage {
 
     @Column
     @NotNull
-    private String image_source; //이미지 주소
+    private String imageSource; //이미지 주소
 
     @Column
     @NotNull
-    private String image_detail; //이미지 설명
+    private String imageDetail; //이미지 설명
 
     @Column(length = 512)
     private String narration; //문화재나레이션
 
     @Column(length = 512)
-    private String video_source; //동영상
+    private String videoSource; //동영상
 
 }
