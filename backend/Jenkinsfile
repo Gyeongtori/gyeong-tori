@@ -3,7 +3,7 @@ def component = [
         back: true,
         nginx: true,
         redis: false,
-        certbot: false
+        certbot: true
 ]
 pipeline {
     agent any
