@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.jackpot.back.user.model.dto.request.RegistUserRequest;
+import org.jackpot.back.user.model.dto.request.UpdateNicknameRequest;
 import org.jackpot.back.user.model.entity.User;
 import org.jackpot.back.user.model.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -28,4 +29,9 @@ public class UserController {
         return ResponseEntity.ok().body(MessageUtils.success(user.toPublicInfo()));
     }
 
+    @PatchMapping("/update/nickname")
+    public ResponseEntity updateNickname(@AuthenticationPrincipal User user, @RequestBody UpdateNicknameRequest updateNicknameRequest){
+        userService.updateNickname(user,updateNicknameRequest);
+        return ResponseEntity.ok(MessageUtils.success());
+    }
 }
