@@ -1,26 +1,26 @@
 package org.jackpot.back.battle.model.entity;
 
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import org.jackpot.back.card.model.entity.Card;
+import lombok.*;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
-import java.io.Serializable;
-import java.util.List;
-
-@Getter
-@AllArgsConstructor
+@RedisHash(value = "battle_room",timeToLive = 86400)
+@Data
 @Builder
-@RedisHash(value = "battleRoom", timeToLive = 60 * 60 * 2)
-public class Battle implements Serializable {
+public class Battle {
+    private static final int ROOM_CODE_LENGTH = 10;
+
     @Id
-    public Long id;
-    public Long playerOneId;
-    public Long playerTwoId;
-    public Card playerOneBetCard;
-    public Card playerTwoBetCard;
-    public List<Card> playerOneCardList;
-    public List<Card> playerTwoCardList;
+    private String code;
+    private Long player_one_bet;
+    private Long player_two_bet;
+    public static Battle create(final Long groupId)  {
+        String code = RandomStringUtils.randomAlphanumeric(ROOM_CODE_LENGTH);
+        return Battle.builder()
+                .code(code)
+                .build();
+    }
+
 }

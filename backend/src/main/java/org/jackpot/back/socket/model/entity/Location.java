@@ -1,4 +1,4 @@
-package org.jackpot.back.socket.model;
+package org.jackpot.back.socket.model.entity;
 
 import jakarta.persistence.Entity;
 import lombok.*;
@@ -12,4 +12,5 @@ public class Location {
     private String lat;
     private String nickname;
     private Long userId;
+    private String socketId;
 }
