@@ -92,12 +92,12 @@ export default function Maps () {
   const goGetCard = (event) => {
     console.log(event)
     navigate("/camera", {
-      state: {
-        no: `${event.no}`,
-        lat: `${event.lat}`,
-        lng: `${event.lng}`,
-        // 이외 info 추가 예정
-      }
+      // state: {
+      //   no: `${event.no}`,
+      //   lat: `${event.lat}`,
+      //   lng: `${event.lng}`,
+      //   // 이외 info 추가 예정
+      // }
     });
     
   }

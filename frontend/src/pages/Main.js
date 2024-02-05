@@ -11,7 +11,7 @@ const Main = () => {
   return (
     <Mobile>
       <InfoTop />
-
+    
     </Mobile>
   )
   }

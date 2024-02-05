@@ -34,7 +34,7 @@
     "xml-js": "^1.6.11"
   },
   "scripts": {
-    "start": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
+    "start": " react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -15,6 +15,9 @@ const Login = () => {
   const goMain = () => {
     navigate("/maps");
   };
+  const goCamera =()=> {
+    navigate("/camera");
+  }
 
   const [api, setApi] = useState();	
 
@@ -70,6 +73,7 @@ const Login = () => {
           아직 회원이 아니신가요? <a onClick={goSignUp}>회원가입</a>
         </p>
       </Body>
+      <button onClick={goCamera}>토리와 사진을찍어아용</button>
     </Main>
   );
 };
