@@ -9,45 +9,25 @@ import { FaTrophy } from "react-icons/fa";
 import axios from 'axios';
 
 const InfoTop = (props) => {
-  const navigate = useNavigate()
-
+  
   // 내 위치
   const [center, setCenter] = useState({ lat: props.center.lat, lng: props.center.lng});
-  // console.log('center: ', center.lat);
-
+  // console.log(center, 'info 센터값입니다')
 
   // 초기 온도 상태 설정
   const [temp, setTemp] = useState(null)
   const [icon, setIcon] = useState(null)
-
+  
   // Toggle option
   const [isOn, setIsOn] = useState(false);
   
-  // 좌표 -> 주소 변환
-  const [adressNow, setAdressNow] = useState()
   
+  const navigate = useNavigate()
 
   useEffect(()=>{
     getWeatherByCurrentLocation()
 
   }, [])
-
-
-  // 위도 경도 -> 주소
-  // const getAdress = async () => {
-  //   try {
-  //     let url = "https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=129.210748,35.831490&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2"
-
-  //     let response = await fetch(url, {
-  //       method: 'GET',
-  //       mode: 'no-cors'
-  //     })
-  //     let data = await response.json();
-  //     console.log('data: ', data);
-  //   } catch (e) {
-  //     console.log(e.response);
-  //   }
-  // };
 
 
   const [address, setAddress] = useState();	
@@ -59,6 +39,7 @@ const InfoTop = (props) => {
   const getAddress = async () => {
     try {
       // res에는 결과 값이 담겨옴
+
       const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`, 
       // const res = await axios.get(`${process.env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process.env.REACT_APP_SIDO_KEY}`
       // https://api.vworld.kr/req/address?service=address&request=getCoord&key=&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2127.766922,35.907757

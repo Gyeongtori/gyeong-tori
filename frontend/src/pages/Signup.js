@@ -11,7 +11,7 @@ const Signup = () => {
     const navigate = useNavigate()
 
     const goSignUp = () => {
-        navigate('/login')
+        navigate('/')
     }
     
 
@@ -27,6 +27,7 @@ const Signup = () => {
             activecolor='#A94C36'
             borderwidth='2'
             placeholder='ssafy@gmail.com'
+            type='email'
             ></ButtonBlank>
             
             <InputText>닉네임</InputText>
@@ -43,6 +44,7 @@ const Signup = () => {
             activecolor='#A94C36'
             borderwidth='2'
             placeholder='*********'
+            type='password'
             ></ButtonBlank>
 
             <InputText>비밀번호 확인</InputText>
@@ -51,6 +53,8 @@ const Signup = () => {
             activecolor='#A94C36'
             borderwidth='2'
             placeholder='*********'
+            type='password'
+
             ></ButtonBlank>
 
             <SignupBtn>
@@ -70,8 +74,6 @@ const InputText = styled.div`
   max-width: 400px;
   margin: 1.5rem 0rem 0rem 3rem;
   font-weight: bold;
-
-
   text-align: left;
 `;
 

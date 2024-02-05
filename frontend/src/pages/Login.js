@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +15,29 @@ const Login = () => {
   const goMain = () => {
     navigate("/maps");
   };
+
+  const [api, setApi] = useState();	
+
+  useEffect(() => {
+    getAPI();
+  }, []);
+    
+  const getAPI = async () => {
+    try {
+      // res에는 결과 값이 담겨옴
+      const res = await axios.get("v1/culturalheritage/list");
+      console.log('eeeee', res.data)
+
+      setApi(res)
+
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
+
+
+
+
   return (
     <Main>
       {/* <h1>TEST</h1> */}
@@ -30,6 +54,7 @@ const Login = () => {
           color="#E4E7EC"
           activecolor="#BCBCBD"
           placeholder="비밀번호"
+          type="password"
         ></ButtonBlank>
 
         <ButtonFull color="#888870" activecolor="#999966">

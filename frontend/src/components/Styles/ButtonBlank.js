@@ -6,7 +6,7 @@ const StyledButton = styled.input`
   display: inline-block;
   outline: none;
   border-radius: 0.5rem;
-  color: #C8C8C8;
+  color: black;
   background-color: transparent;
   padding: 0rem 1.25rem;
   align-items: center;
@@ -18,7 +18,7 @@ const StyledButton = styled.input`
   width: 17.5rem;
   font-size: 0.875rem;
 
-  
+
   /* 색상 */
   ${( props ) => {
       return css`
@@ -32,13 +32,13 @@ const StyledButton = styled.input`
 `;
 
 
-const ButtonBlank = ({  color, activecolor, borderwidth,  ...rest }) => {
+const ButtonBlank = ({  color, activecolor, borderwidth, type = "text",  ...rest }) => {
     return <StyledButton 
         {...rest}
         color={color}
         activecolor={activecolor}
         borderwidth={borderwidth}
-       
+        type={type}
       >
       </StyledButton>;
 };
