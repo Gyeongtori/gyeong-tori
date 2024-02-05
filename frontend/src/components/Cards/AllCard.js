@@ -19,7 +19,7 @@ const Container = styled.div`
   margin: 0 auto;
   transition: all 0.1s;
   position: relative;
-  transform: ${(props) => props.rotation};
+  transform: ${(props) => props.$rotation};
 `;
 const Overlay = styled.div`
   position: absolute;
@@ -32,80 +32,68 @@ const Overlay = styled.div`
     rgba(132, 50, 255, 0.6) 50%,
     transparent 54%
   );
-  filter: ${(props) => props.filter};
+  filter: ${(props) => props.$filter};
   mix-blend-mode: color-dodge;
   background-size: 150% 150%;
-  background-position: ${(props) => props.position};
+  background-position: ${(props) => props.$position};
   transition: all 0.1s;
 `;
 
 const CardImg = styled.div`
   width: 175px;
   height: 250px;
-  background-image: ${(props) => `url("${props.url}")`};
+  background-image: ${(props) => `url("${props.$url}")`};
   background-size: cover;
   margin: 0 auto;
 `;
 
 const AllCard = () => {
-  const [states, setStates] = useState([]);
-  const [cardDes, setCardDes] = useState([]);
-  const [cardImgList, setCardImgList] = useState([]);
-  const [getdetail, setDetail] = useState(false);
-  const [cardId, setCardId] = useState();
+  const [states, setStates] = useState([]); // 카드 CSS 적용 모두 담기
+  const [cardDes, setCardDes] = useState([]); // 카드 설명 모두 담기
+  const [cardImgList, setCardImgList] = useState([]); // 카드 이미지 모두 담기
+  const [card, setCard] = useState([]); // 카드 CSS 빼고 나머지(주소, 설명, 이미지주소, 등급 등등)
+  const [getdetail, setDetail] = useState(false); // 카그 상세 설명 팝업 컴포넌트 열고 닫기
+  const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
+
   useEffect(() => {
-    console.log(db);
-    // await axios.get('https://jsonplaceholder.typicode.com/users')
-    // .then(response => {
-    //   console.log(response.data);
-    // });
+    console.log(db); // firebase 연결 테스트
     getCards();
   }, []);
+
   const getCards = async () => {
     try {
-      // CORS 오류 존재
-      // console.log(`${process.env.REACT_APP_PUBLIC_URL}/v1/dummy/cards`);
-      // const res = await axios.post(`${process.env.REACT_APP_PUBLIC_URL}v1/dummy/cards`, { offset: 1 });
-      const res = await axios.post("api/v1/dummy/cards", {
+      const res = await axios.post("/v1/dummy/list", {
         offset: 1,
       });
-      // const res = await axios.post('/v1/dummy/cards', { offset: 1 });
-      // console.log(cardDes);
-      // console.log(res)
-      const total = res.data.data_body.total;
-      const currnet = res.data.data_body.currnet;
+      console.log(res);
+      const data = await res.data.data_body;
+      const currnet = data.length;
       let setting = Array(currnet).fill({
         rotation: "",
         position: "50%",
         filter: "opacity(0)",
-      });
-      let cardImgs = [];
-      let des = [];
-      const promises = res.data.data_body.card_list.map(async (card, index) => {
-        const storage = getStorage();
-        const imageUrl = await getDownloadURL(ref(storage, card.img));
-        // console.log(imageUrl);
-        cardImgs[index] = imageUrl;
-        des[index] = card.description;
-        // console.log(cardImgs[index], cardImgs);
-      });
-      await Promise.all(promises);
+      }); // CSS 적용
+      setCard(data);
+      console.log(card);
+
+      // Firebase Img 불러오기
+      // const promises = res.data.data_body.card_list.map(async (card, index) => {
+      //   const storage = getStorage();
+      //   const imageUrl = await getDownloadURL(ref(storage, card.img));
+      //   // console.log(imageUrl);
+      //   cardImgs[index] = imageUrl;
+      //   des[index] = card.description;
+      //   // console.log(cardImgs[index], cardImgs);
+      // });
+      // await Promise.all(promises);
 
       setStates((pre) => {
         return setting;
       });
-      setCardImgList((pre) => {
-        return [...cardImgs];
-      });
-      setCardDes(des);
-      // console.log(cardImgList, states);
     } catch (e) {
       console.log(e.response);
     }
   };
-  // const [rotation, setRotation] = useState('');
-  // const [position, setPosition] = useState('50%');
-  // const [filter, setFilter] = useState('brightness(1.1) opacity(0.8);');
 
   const handleMouseMove = (index, e) => {
     const x = e.nativeEvent.offsetX;
@@ -113,9 +101,6 @@ const AllCard = () => {
     const rotateY = (-1 / 5) * x + 20;
     const rotateX = (4 / 30) * y - 20;
 
-    // setPosition(`${x/5 + y/5}%;`);
-    // setFilter(`opacity(${x/200}) brightness(1.2)`);
-    // setRotation(`perspective(350px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
     const newState = {
       rotation: `perspective(350px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
       position: `${x / 5 + y / 5}%`,
@@ -128,7 +113,25 @@ const AllCard = () => {
       return newStates;
     });
   };
+  const handleTouchMove = (index, e) => {
+    const x = e.changedTouches[0].pageX;
+    const y = e.changedTouches[0].pageY;
 
+    const rotateY = (-1 / 5) * x + 20;
+    const rotateX = (4 / 30) * y - 20;
+
+    const newState = {
+      rotation: `perspective(350px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+      position: `${x / 5 + y / 5}%`,
+      filter: `opacity(${x / 200}) brightness(1.2)`,
+    };
+
+    setStates((pre) => {
+      const newStates = [...pre];
+      newStates[index] = newState;
+      return newStates;
+    });
+  };
   const handleMouseOut = (index) => {
     setStates((pre) => {
       const newStates = [...pre];
@@ -140,7 +143,17 @@ const AllCard = () => {
       return newStates;
     });
   };
-
+  const handleTouchOut = (index) => {
+    setStates((pre) => {
+      const newStates = [...pre];
+      newStates[index] = {
+        rotation: "perspective(350px) rotateY(0deg) rotateX(0deg)",
+        position: "50%",
+        filter: "opacity(0)",
+      };
+      return newStates;
+    });
+  };
   const handleDetail = (e) => {
     const id = e.target.id;
     console.log(id);
@@ -150,32 +163,27 @@ const AllCard = () => {
   return (
     <>
       <div>
-        {getdetail ? (
-          <Detail
-            setDetail={setDetail}
-            cardImg={cardImgList[cardId]}
-            des={cardDes[cardId]}
-          />
-        ) : null}
+        {getdetail && <Detail setDetail={setDetail} card={card[cardId]} />}
         <CardGrid>
-          {states.length !== "undefined"
-            ? states.map((state, index) => (
-                <Container
-                  key={index}
-                  rotation={state.rotation}
-                  onMouseMove={(e) => handleMouseMove(index, e)}
-                  onMouseOut={() => handleMouseOut(index)}
-                >
-                  <Overlay
-                    id={index}
-                    onClick={handleDetail}
-                    position={state.position}
-                    filter={state.filter}
-                  />
-                  <CardImg url={cardImgList[index]} />
-                </Container>
-              ))
-            : null}
+          {states &&
+            states.map((state, index) => (
+              <Container
+                key={index}
+                $rotation={state.rotation}
+                onMouseMove={(e) => handleMouseMove(index, e)}
+                onTouchMove={(e) => handleTouchMove(index, e)}
+                onMouseOut={() => handleMouseOut(index)}
+                onTouchEnd={() => handleTouchOut(index)}
+              >
+                <Overlay
+                  id={index}
+                  onClick={handleDetail}
+                  $position={state.position}
+                  $filter={state.filter}
+                />
+                <CardImg $url={card[index].image} />
+              </Container>
+            ))}
         </CardGrid>
       </div>
     </>
