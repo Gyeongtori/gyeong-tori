@@ -7,7 +7,7 @@ import axios from "axios";
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px 1vw;
+  /* grid-gap: 20px 1vw; */
   transform-style: preserve-3d;
   height: 100%;
   position: relative;
@@ -16,6 +16,7 @@ const CardGrid = styled.div`
 const Container = styled.div`
   width: 170px;
   height: 250px;
+  border-radius: 20px;
   margin: 0 auto;
   transition: all 0.1s;
   position: relative;
@@ -25,6 +26,8 @@ const Overlay = styled.div`
   position: absolute;
   width: 175px;
   height: 250px;
+  border-radius: 20px;
+  margin: 0 auto;
   background: linear-gradient(
     105deg,
     transparent 40%,
@@ -40,8 +43,14 @@ const Overlay = styled.div`
 `;
 
 const CardImg = styled.div`
-  width: 175px;
+  width: 170px;
   height: 250px;
+  border-radius: 20px;
+  margin: 0 auto;
+
+  -webkit-box-shadow: inset 0px 0px 0px 3px #9daf89;
+  -moz-box-shadow: inset 0px 0px 0px 3px #9daf89;
+  box-shadow: inset 0px 0px 0px 3px #9daf89;
   background-image: ${(props) => `url("${props.$url}")`};
   background-size: cover;
   margin: 0 auto;
