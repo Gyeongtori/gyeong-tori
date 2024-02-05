@@ -51,8 +51,21 @@ export default function Camera() {
     const [facingMode,setFacingMode] = useState('user')
 
     const toggleFacingMode = (pros) => {
-      setFacingMode(prevFacingMode => (prevFacingMode === 'user' ? 'environment' : 'user'));
-    };
+      
+      stopVideo();
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then((stream) => {
+          video.srcObject = stream;
+          video.play();
+  
+          // 비디오 텍스처 갱신
+          const videoTexture = new THREE.VideoTexture(video);
+          scene.getObjectByName('videoMesh').material.map = videoTexture;
+  
+          // 비디오 스트림 저장
+          videoStream = stream;
+      }).catch((error) => {
+          console.error('Error accessing webcam:', error);
+      });};
 
     return (
       <>
