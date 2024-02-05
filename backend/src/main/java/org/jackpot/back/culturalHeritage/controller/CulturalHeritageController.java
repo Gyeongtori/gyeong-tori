@@ -45,7 +45,7 @@ public class CulturalHeritageController {
     }
 
     /**
-     * 문화재 전체 조회
+     * 문화재 조회 (반경 500m 이내)
      * @return List<CulturalHeritage>
      */
     @PostMapping("/list")

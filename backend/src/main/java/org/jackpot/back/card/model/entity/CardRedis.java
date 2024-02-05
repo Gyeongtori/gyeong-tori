@@ -17,7 +17,7 @@ import org.springframework.data.redis.core.RedisHash;
 public class CardRedis {
     @Id
     private Long number; //카드 번호
-    private CulturalHeritageRedis cultural_heritage_redis; //문화재 외래키
+    private CulturalHeritageRedis culturalHeritageRedis; //문화재 외래키
     private Integer rating; //등급
     private CardField field; //속성 (공,수,힐)
 }

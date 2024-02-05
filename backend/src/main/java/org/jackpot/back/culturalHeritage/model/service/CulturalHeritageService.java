@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface CulturalHeritageService {
     void redisSave(); //redis 문화재 값 저장
-    List<CulturalHeritageRedis> getList(GetCulturalHeritageListRequest getCulturalHeritageListRequest);
+    List<CulturalHeritageRedis> getList(GetCulturalHeritageListRequest getCulturalHeritageListRequest); //문화재 조회
 }

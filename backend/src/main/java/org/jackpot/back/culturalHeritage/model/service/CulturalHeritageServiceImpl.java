@@ -30,10 +30,13 @@ import java.util.stream.Collectors;
 public class CulturalHeritageServiceImpl implements CulturalHeritageService{
     private final CulturalHeritageRepository culturalHeritageRepository;
     private final CulturalHeritageRedisRepository culturalHeritageRedisRepository;
-    //Redis Geo
-    private final RedisTemplate<String, CulturalHeritageRedis> redisTemplate;
+
     // RedisTemplate을 통해 GeoOperations 생성
-//    private final GeoOperations<String, CulturalHeritageRedis> geoOperations = redisTemplate.opsForGeo();
+    private GeoOperations<String, String> geoOperations;
+    @Autowired
+    public void setGeoOperations(RedisTemplate<String, String> redisTemplate) {
+        this.geoOperations = redisTemplate.opsForGeo();
+    }
 
     @Override
     public void redisSave() {
@@ -44,21 +47,23 @@ public class CulturalHeritageServiceImpl implements CulturalHeritageService{
             CulturalHeritageRedis culturalHeritageRedis = CulturalHeritageRedis.builder()
                     .no(culturalHeritage.getNo())
                     .asno(culturalHeritage.getAsno())
-                    .name_kr(culturalHeritage.getNameKr())
-                    .name_hanja(culturalHeritage.getNameHanja())
+                    .nameKr(culturalHeritage.getNameKr())
+                    .nameHanja(culturalHeritage.getNameHanja())
                     .content(culturalHeritage.getContent())
-                    .sido_name(culturalHeritage.getSidoName())
-                    .gugun_name(culturalHeritage.getGugunName())
+                    .sidoName(culturalHeritage.getSidoName())
+                    .gugunName(culturalHeritage.getGugunName())
                     .division(culturalHeritage.getDivision())
                     .lng(culturalHeritage.getLng())
                     .lat(culturalHeritage.getLat())
-                    .image_source(culturalHeritage.getImageSource())
-                    .image_detail(culturalHeritage.getImageDetail())
+                    .imageSource(culturalHeritage.getImageSource())
+                    .imageDetail(culturalHeritage.getImageDetail())
                     .narration(culturalHeritage.getNarration())
-                    .video_source(culturalHeritage.getVideoSource())
+                    .videoSource(culturalHeritage.getVideoSource())
                     .build();
 
             culturalHeritageRedisRepository.save(culturalHeritageRedis);
+            // Geo 데이터 추가
+            geoOperations.add("geopoints", new Point(Double.parseDouble(culturalHeritageRedis.getLng()), Double.parseDouble(culturalHeritageRedis.getLat())), culturalHeritageRedis.getNo().toString());
         }
     }
 
@@ -66,51 +71,34 @@ public class CulturalHeritageServiceImpl implements CulturalHeritageService{
     public List<CulturalHeritageRedis> getList(GetCulturalHeritageListRequest getCulturalHeritageListRequest) {
         List<CulturalHeritageRedis> culturalHeritageRedisList = new ArrayList<>();
 
-        GeoOperations<String, CulturalHeritageRedis> geoOperations = redisTemplate.opsForGeo();
-
-        // Redis Hash에 접근하기 위해 opsForHash()를 사용
-        HashOperations<String, Integer, CulturalHeritageRedis> hashOperations = redisTemplate.opsForHash();
-
         // 검색 중심 좌표
         Point center = new Point(Double.parseDouble(getCulturalHeritageListRequest.getLng()), Double.parseDouble(getCulturalHeritageListRequest.getLat()));
-
         // 거리 단위 및 반경 설정
-        Metric metric = RedisGeoCommands.DistanceUnit.KILOMETERS;
-        Distance distance = new Distance(1, metric);
+        Metric metric = RedisGeoCommands.DistanceUnit.METERS;
+        Distance distance = new Distance(500, metric);
         Circle circle = new Circle(center, distance);
 
-        // Redis의 키 스캔
-        ScanOptions scanOptions = ScanOptions.scanOptions().match("cultural_heritage_redis*").build();
-        Set<String> matchingKeys = new HashSet<>();
-        redisTemplate.executeWithStickyConnection(connection -> {
-            connection.scan(scanOptions).forEachRemaining(key -> {
-                String decodedKey = new String(key, Charset.forName("UTF-8"));
-                matchingKeys.add(decodedKey);
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands
+                .GeoRadiusCommandArgs
+                .newGeoRadiusArgs()
+                .includeDistance() //거리 정보 포함
+//                .includeCoordinates()
+                .sortAscending(); //가까운 순서 정렬
+
+        //중심 기준으로 500m 위치 조회
+        GeoResults<RedisGeoCommands.GeoLocation<String>> radius = geoOperations
+                .radius("geopoints", circle, args);
+
+        //반경 이내 조회된 결과 respone에 담기
+        if (radius != null) {
+            radius.forEach(geoLocationGeoResult -> {
+                RedisGeoCommands.GeoLocation<String> content = geoLocationGeoResult.getContent();
+                String name = content.getName(); //문화재 No 반환
+//                Distance dis = geoLocationGeoResult.getDistance(); //거리 반환
+
+                culturalHeritageRedisList.add(culturalHeritageRedisRepository.findById(Integer.parseInt(name)).get());
             });
-            return null;
-        });
-
-        // Geo 검색 수행
-        matchingKeys.forEach(key -> {
-            // 로그로 확인
-//            System.out.println("키!!!!!!!!! " + key);
-
-            GeoResults<RedisGeoCommands.GeoLocation<CulturalHeritageRedis>> geoLocation = geoOperations.radius(key, circle);
-//            System.out.println("돈다!!!!!!!!!!!");
-
-            if (geoLocation != null) {
-                // Geo 검색 결과에서 CulturalHeritageRedis 객체 가져오기
-                geoLocation.forEach(geoLocationGeoResult -> {
-                    RedisGeoCommands.GeoLocation<CulturalHeritageRedis> content = geoLocationGeoResult.getContent();
-                    CulturalHeritageRedis culturalHeritageRedis = hashOperations.get(key, content.getName().getNo());
-
-                    // 가져온 객체가 null이 아니라면 리스트에 추가
-                    if (culturalHeritageRedis != null) {
-                        culturalHeritageRedisList.add(culturalHeritageRedis);
-                    }
-                });
-            }
-        });
+        }
 
         return culturalHeritageRedisList;
     }

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class GetCulturalHeritageListRequest {
     String lng; //경도
     String lat; //위도

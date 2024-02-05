@@ -69,7 +69,7 @@ public class CardServiceImpl implements CardService{
             Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(card.getCulturalHeritage().getNo());
             CardRedis cardRedis = CardRedis.builder()
                     .number(card.getNumber())
-                    .cultural_heritage_redis(culturalHeritageRedis.get())
+                    .culturalHeritageRedis(culturalHeritageRedis.get())
                     .rating(card.getRating())
                     .field(card.getField())
                     .build();
@@ -112,12 +112,12 @@ public class CardServiceImpl implements CardService{
             if(response.isEmpty()){
                 ReadCardResponse readCardResponse = new ReadCardResponse();
                 //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCultural_heritage_redis().getNo());
+                Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
                 readCardResponse.setNo(culturalHeritageRedis.get().getNo());
-                readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getName_kr());
-                readCardResponse.setSido(culturalHeritageRedis.get().getSido_name());
-                readCardResponse.setGugun(culturalHeritageRedis.get().getGugun_name());
-                readCardResponse.setImage(culturalHeritageRedis.get().getImage_source());
+                readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
                 readCardResponse.setField(String.valueOf(cardRedis.getField()));
                 readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
 
@@ -141,7 +141,7 @@ public class CardServiceImpl implements CardService{
             }
             else {
                 Optional<ReadCardResponse> findCardRes = response.stream()
-                        .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCultural_heritage_redis().getNo()))
+                        .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCulturalHeritageRedis().getNo()))
                         .findFirst();
 
                 //문화재 정보 존재할 경우
@@ -161,12 +161,12 @@ public class CardServiceImpl implements CardService{
                 else{
                     ReadCardResponse readCardResponse = new ReadCardResponse();
                     //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                    Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCultural_heritage_redis().getNo());
+                    Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
                     readCardResponse.setNo(culturalHeritageRedis.get().getNo());
-                    readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getName_kr());
-                    readCardResponse.setSido(culturalHeritageRedis.get().getSido_name());
-                    readCardResponse.setGugun(culturalHeritageRedis.get().getGugun_name());
-                    readCardResponse.setImage(culturalHeritageRedis.get().getImage_source());
+                    readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                    readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                    readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                    readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
                     readCardResponse.setField(String.valueOf(cardRedis.getField()));
                     readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
 
@@ -213,12 +213,12 @@ public class CardServiceImpl implements CardService{
             if(response.isEmpty()){
                 ReadCardResponse readCardResponse = new ReadCardResponse();
                 //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCultural_heritage_redis().getNo());
+                Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
                 readCardResponse.setNo(culturalHeritageRedis.get().getNo());
-                readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getName_kr());
-                readCardResponse.setSido(culturalHeritageRedis.get().getSido_name());
-                readCardResponse.setGugun(culturalHeritageRedis.get().getGugun_name());
-                readCardResponse.setImage(culturalHeritageRedis.get().getImage_source());
+                readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
                 readCardResponse.setField(String.valueOf(cardRedis.getField()));
                 readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
 
@@ -242,7 +242,7 @@ public class CardServiceImpl implements CardService{
             }
             else {
                 Optional<ReadCardResponse> findCardRes = response.stream()
-                        .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCultural_heritage_redis().getNo()))
+                        .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCulturalHeritageRedis().getNo()))
                         .findFirst();
 
                 //문화재 정보 존재할 경우
@@ -262,12 +262,12 @@ public class CardServiceImpl implements CardService{
                 else{
                     ReadCardResponse readCardResponse = new ReadCardResponse();
                     //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                    Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCultural_heritage_redis().getNo());
+                    Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
                     readCardResponse.setNo(culturalHeritageRedis.get().getNo());
-                    readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getName_kr());
-                    readCardResponse.setSido(culturalHeritageRedis.get().getSido_name());
-                    readCardResponse.setGugun(culturalHeritageRedis.get().getGugun_name());
-                    readCardResponse.setImage(culturalHeritageRedis.get().getImage_source());
+                    readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                    readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                    readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                    readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
                     readCardResponse.setField(String.valueOf(cardRedis.getField()));
                     readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
 
