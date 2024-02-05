@@ -2,6 +2,7 @@ package org.jackpot.back.culturalHeritage.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jackpot.back.culturalHeritage.model.dto.request.GetCulturalHeritageListRequest;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 import org.jackpot.back.culturalHeritage.model.service.CulturalHeritageService;
 import org.jackpot.back.culturalHeritage.model.service.WebClientService;
@@ -47,10 +48,9 @@ public class CulturalHeritageController {
      * 문화재 전체 조회
      * @return List<CulturalHeritage>
      */
-    @GetMapping("/list")
-    public ResponseEntity getCulturalHeritageList() {
-        List<CulturalHeritage> culturalHeritageList = culturalHeritageService.getList();
-        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageList));
+    @PostMapping("/list")
+    public ResponseEntity getCulturalHeritageList(@RequestBody GetCulturalHeritageListRequest getCulturalHeritageListRequest) {
+        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getList(getCulturalHeritageListRequest)));
     }
 
 }

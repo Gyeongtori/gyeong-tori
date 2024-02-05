@@ -1,13 +1,18 @@
 package org.jackpot.back.culturalHeritage.model.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Builder
+@ToString
 @RedisHash(value = "cultural_heritage_redis", timeToLive = -1L)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CulturalHeritageRedis {
     @Id
     private Integer no; //고유 키 값

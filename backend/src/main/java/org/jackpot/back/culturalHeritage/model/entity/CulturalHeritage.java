@@ -1,5 +1,7 @@
 package org.jackpot.back.culturalHeritage.model.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,7 +13,6 @@ import lombok.*;
 @Builder
 @Getter
 @ToString
-
 public class CulturalHeritage {
     @Id
     @Column
