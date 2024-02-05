@@ -90,12 +90,60 @@ public class AuthController {
      * @param
      * @return
      */
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<MessageUtils> logout(
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal User user,
+            HttpServletRequest request,
+            HttpServletResponse response
     ){
-        log.debug("userDto={}",user);
+        String accessToken=null;
+        String refreshToken=null;
+
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies){
+            if("accessToken".equals(cookie.getName())){
+                accessToken = cookie.getValue();
+                continue;
+            }
+            if("refreshToken".equals(cookie.getName())){
+                refreshToken = cookie.getValue();
+                continue;
+            }
+        }
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                // 토큰의 유효 기간
+                .maxAge(0) //expire
+                .path("/")
+                // https 환경에서만 쿠키가 발동합니다.
+                .secure(true)
+                // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                .sameSite("None")
+                .httpOnly(true)
+                // 브라우저에서 쿠키에 접근할 수 없도록 제한
+                .build();
+
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken",accessToken)
+                // 토큰의 유효 기간
+                .maxAge(0) //expire
+                .path("/")
+                // https 환경에서만 쿠키가 발동합니다.
+                .secure(true)
+                // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                .sameSite("None")
+                .httpOnly(false)
+                // 브라우저에서 쿠키에 접근할 수 없도록 제한
+                .build();
+
+
+        //redis에서 토큰 제거
         tokenService.removeToken(user.getId());
+
+        //쿠키에서 토큰 만료
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+
         return ResponseEntity.ok(MessageUtils.success());
     }
 

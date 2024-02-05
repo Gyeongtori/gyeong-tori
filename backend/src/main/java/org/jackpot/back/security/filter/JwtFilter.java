@@ -35,10 +35,8 @@ public class JwtFilter extends OncePerRequestFilter {
         log.debug("========= jwt filter =========");
         Cookie[] cookies = request.getCookies();
         log.debug(Arrays.toString(cookies));
-        log.debug("토큰 존재 확인");
         if(cookies!=null){
             for(Cookie cookie : cookies){
-                log.debug(cookie.getName()+": "+cookie.getValue());
                 if("accessToken".equals(cookie.getName())){
                     authHeader = cookie.getValue();
                     break;
@@ -61,7 +59,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         //access token 추출
         String authToken=authHeader.substring(7);
-        log.debug("authToken is "+authToken);
 
         //access token 검증
         Jws<Claims> claimsJws = jwtUtil.validateAccessToken(authToken);
@@ -75,8 +72,5 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request,response);
-
-
-        System.out.println("거침!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 }
