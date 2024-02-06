@@ -31,7 +31,7 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'com.corundumstudio.socketio:netty-socketio:2.0.8'
-    implementation 'org.jdom:jdom2:2.0.6'
+    implementation 'org.jdom:jdom2:2.0.6.1'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

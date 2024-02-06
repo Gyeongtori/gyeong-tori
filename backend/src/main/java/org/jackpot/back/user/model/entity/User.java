@@ -21,7 +21,7 @@ import java.util.Map;
 @Table(name="Users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @ToString
 public class User implements UserDetails {
