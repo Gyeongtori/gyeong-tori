@@ -57,10 +57,13 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <Header> </Header>
+    <SignupBlock>
 
-      <h1>회원가입</h1>
+      <div style={{'margin-bottom': '0.5rem'}}>
+        <TitleText>회원가입</TitleText >
+        <TitleInfo>경토리에 회원가입 하시면</TitleInfo>
+        <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
+      </div>
 
       <InputText>이메일</InputText>
       <ButtonBlank
@@ -137,20 +140,38 @@ const Signup = () => {
           이미 계정이 있으신가요? <a onClick={goSignIn}>로그인</a>
         </p>
       </SignupBtn>
-    </div>
+    </SignupBlock>
   );
 };
 
 export default Signup;
 
-const InputText = styled.div`
-  max-width: 400px;
-  margin: 1.5rem 0rem 0rem 3rem;
-  font-weight: bold;
+const SignupBlock = styled.div`
+  margin-top: 1rem;
+`;
 
+const TitleText = styled.div`
+  margin-top: 1.5rem;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  font-size: 1.5rem; 
+  text-align: left;
+
+`;
+
+const TitleInfo = styled.div`
+  margin-left: 0.5rem;
+  font-size: 0.8rem; 
+
+`;
+
+const InputText = styled.div`
+  margin-left: 0.5rem;
+  margin-top: 0.7rem;
+  font-size: 0.8rem;
   text-align: left;
 `;
 
 const SignupBtn = styled.div`
-  margin-top: 5rem;
+  margin-top: 2rem;
 `;
