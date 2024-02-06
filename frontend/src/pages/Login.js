@@ -18,6 +18,9 @@ const Login = () => {
   const goCamera =()=> {
     navigate("/camera");
   }
+  const goArPage = ()=>{
+    navigate("/arpage")
+  }
 
   const [api, setApi] = useState();	
 
