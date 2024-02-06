@@ -16,12 +16,14 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ReadCardResponse {
     private Integer no; //primary key
+    private boolean have; //카드 보유 여부
     private String culturalHeritageName;
+    private String division; //종목
     private String sido;
     private String gugun;
     private String address;
     private List<CardGradeDto> gradeCards; //등급별 보유 현황
     private String image;
-    private String field;
+    private String field; //속성
     private String description;
 }

@@ -114,7 +114,9 @@ public class CardServiceImpl implements CardService{
                 //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
                 Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
                 readCardResponse.setNo(culturalHeritageRedis.get().getNo());
+                readCardResponse.setHave(false);
                 readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                readCardResponse.setDivision(culturalHeritageRedis.get().getDivision());
                 readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
                 readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
                 readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
@@ -131,7 +133,9 @@ public class CardServiceImpl implements CardService{
                 List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
                 List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
                 cardGradeDto.setHoldingCards(holdingCards);
+                //보유하고 있는 경우
                 if(!holdingCardList.isEmpty()){
+                    readCardResponse.setHave(true);
                     readCardResponse.setAddress(holdingCardList.get(0).getAddress());
                 }
 
@@ -152,6 +156,10 @@ public class CardServiceImpl implements CardService{
                     cardGradeDto.setCardNumber(cardRedis.getNumber());
                     cardGradeDto.setGrade(cardRedis.getRating());
                     List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
+                    //보유하고 있는 경우
+                    if(!holdingCards.isEmpty()){
+                        findCardRes.get().setHave(true);
+                    }
                     cardGradeDto.setHoldingCards(holdingCards);
 
                     //리스트에 추가
@@ -163,7 +171,9 @@ public class CardServiceImpl implements CardService{
                     //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
                     Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
                     readCardResponse.setNo(culturalHeritageRedis.get().getNo());
+                    readCardResponse.setHave(false);
                     readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                    readCardResponse.setDivision(culturalHeritageRedis.get().getDivision());
                     readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
                     readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
                     readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
@@ -180,7 +190,9 @@ public class CardServiceImpl implements CardService{
                     List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
                     List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
                     cardGradeDto.setHoldingCards(holdingCards);
+                    //보유하고 있는 경우
                     if(!holdingCardList.isEmpty()){
+                        readCardResponse.setHave(true);
                         readCardResponse.setAddress(holdingCardList.get(0).getAddress());
                     }
 
