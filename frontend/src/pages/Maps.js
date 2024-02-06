@@ -35,9 +35,9 @@ export default function Maps () {
   });
 
 
-  const onUnmount = useCallback(function callback() {
-    setMap(null);
-  }, []);
+  // const onUnmount = useCallback(function callback() {
+  //   setMap(null);
+  // }, []);
 
 
   useEffect(() => {
@@ -107,7 +107,14 @@ export default function Maps () {
     {no: '2', lat: 35.201121, lng: 126.807993},
     {no: '3', lat: 35.203164, lng: 126.813467},
     {no: '4', lat: 35.203817, lng: 126.808487},
-    {no: '5', lat: 35.206029, lng: 126.811789}
+    {no: '5', lat: 35.206029, lng: 126.811789},
+
+    {no: '6', lat: 35.7509, lng: 126.817994},
+    {no: '7', lat: 35.197480, lng: 126.812415},
+    {no: '8', lat: 35.192255, lng: 126.812715},
+    {no: '9', lat: 35.191587, lng: 126.811201},
+    {no: '10', lat: 35.196365, lng: 126.811164},
+
   ]
 
   // 문화재 요청
@@ -177,7 +184,7 @@ export default function Maps () {
           zoom={17} 
           center={center} 
           mapContainerClassName="map-container"
-          onUnmount={onUnmount}
+          // onUnmount={onUnmount}
           options={{
             styles: Sample1,
             // 기본 ui 요소 지우기
@@ -230,7 +237,7 @@ export default function Maps () {
           <Body>
             <Testt>
               <ToggleButton onClick={() => setShowSemiCircle(!showSemiCircle)}>
-                토글
+                
               </ToggleButton>
               <SemiCircle show={showSemiCircle}>
                 <div>
@@ -256,40 +263,67 @@ export default function Maps () {
   )
 }
 
+
 const Body = styled.div`
   width: 100%;
   position: absolute;
   z-index: 10;
+  
 `;
 
 const ToggleButton = styled.button`
+  position: absolute;
+  bottom: 20px;
   z-index: 50;
+  left: -35px;
+
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  background-image: url('https://w7.pngwing.com/pngs/952/332/png-transparent-ball-pocket-monster-poke-safari-poke-ball-set-icon.png');
+  background-size: cover;  // 이미지를 버튼 크기에 맞게 조절
+  background-repeat: no-repeat;  // 이미지를 반복하지 않음
+  border: none;
+
 `;
 
 const SemiCircle = styled.div`
-z-index: 20;
-  position: absolute;
-  bottom: -150px;
-  left: 50%;
-  transform: translateX(-50%) ${props => props.show ? 'translateY(0)' : 'translateY(100%)'}; // 위로 올라오는 애니메이션 추가
-  width: 120%;
-  height: 400px;
+  position: relative;
+  bottom: -100px;
+  transform: translateX(-50%) ${props => props.show ? 'translateY(0)' : 'translateY(100%)'};
+  width: 500px;
+  height: 350px;
   background: rgb(114, 161, 111, 0.5);
   border-radius: 100% 100% 0 0;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.7s ease-in-out;
   opacity: ${props => props.show ? 1 : 0};
   visibility: ${props => props.show ? 'visible' : 'hidden'};
+
+  div:first-child {
+    align-self: center;
+  }
+
+  div:last-child {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 10px 20px;
+    margin-bottom: 80px;
+  }
 `;
 
 const SemiCircleButton = styled.button`
-  flex: 1;
-  height: 50%;
-  background-color: #72A16F; // 배경색 설정
+  width: 80px;
+  height: 80px;
+  border: 1px solid #72A16F;
+  background-color: #F0F4EF; // 배경색 설정
   border-radius: 50%; // 원 모양 만들기
-  border: none; // 기본 테두리 제거
+  border: 2px solid #72A16F; // 기본 테두리 제거
 `;
 
 

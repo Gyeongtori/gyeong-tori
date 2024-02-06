@@ -32,12 +32,11 @@ const StyledButton = styled.input`
 `;
 
 
-const ButtonBlank = ({  color, activecolor, borderwidth, type = "text",  ...rest }) => {
+const ButtonBlank = ({  color, activecolor,  type = "text",  ...rest }) => {
     return <StyledButton 
         {...rest}
         color={color}
         activecolor={activecolor}
-        borderwidth={borderwidth}
         type={type}
       >
       </StyledButton>;
