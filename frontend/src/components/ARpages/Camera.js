@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
 import html2canvas from 'html2canvas';
 import saveAs from 'file-saver';
-
-
-
 
 export default function Camera() {
     const rendererRef = useRef(null);
@@ -13,7 +13,40 @@ export default function Camera() {
     const videoTextureRef = useRef(null);
     const videoMeshRef = useRef(null);
     const videoStreamRef = useRef(null);
+    const canvasRef = useRef(null);
+
+    const [capturedImageDataURL,setCapturedImageDataURL] =useState(null);
     const [facingMode, setFacingMode] = useState('user');
+    
+    const handelCapture = () => {
+      const canvas = canvasRef.current;
+
+      html2canvas(canvas)
+      .then((canvas)=> {
+        const imageDataURL = canvas.toDataURL();
+        console.log(imageDataURL);
+        setCapturedImageDataURL(imageDataURL);
+      })
+      .catch((error) => {
+        console.error('Error capturing canvas:', error);
+      });
+    }
+
+    const handleDownload = () => {
+      // 캡쳐된 이미지 데이터 URL을 이용하여 다운로드
+      if (capturedImageDataURL) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = capturedImageDataURL;
+        downloadLink.download = 'captured_image.png';
+    
+        // 다운로드 링크 클릭
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      } else {
+        console.error('No captured image data to download.');
+      }
+    };
 
     function toggleFacingMode(){
       setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
@@ -24,7 +57,7 @@ export default function Camera() {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const canvas = document.querySelector('#canvas');
-        const renderer = new THREE.WebGLRenderer({canvas});
+        const renderer = new THREE.WebGLRenderer({canvas, preserveDrawingBuffer: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         // useRef를 사용하여 렌더러, 씬 및 카메라에 대한 참조 설정
         rendererRef.current = renderer;
@@ -49,7 +82,7 @@ export default function Camera() {
                 const videoTexture = new THREE.VideoTexture(video);
                 videoTextureRef.current = videoTexture;
                 const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
-                const videoGeometry = new THREE.PlaneGeometry(16, 9);
+                const videoGeometry = new THREE.PlaneGeometry(9, 16);
                 const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
                 scene.add(videoMesh);
                 videoMeshRef.current = videoMesh;
@@ -105,11 +138,12 @@ export default function Camera() {
     
     return (
       <>
-      <canvas id='canvas' style={{ width: '100%', maxWidth: '100vw', height: '70%', transform: 'scaleX(-1)' }}>
+      <canvas ref={canvasRef} id='canvas' style={{ width: '100%', maxWidth: '100vw', height: '70%', transform: 'scaleX(-1)' }}>
      
       </canvas>
       <button color='primary' onClick={toggleFacingMode}>카메라 전환하기</button>
-      <button>캡쳐하기</button>
+      <button onClick={handelCapture}>캡쳐하기</button>
+      <button onClick={handleDownload}>사진저장하기</button>
       </>
     );
 }

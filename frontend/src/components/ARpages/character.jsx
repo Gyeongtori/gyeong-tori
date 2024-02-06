@@ -1,58 +1,58 @@
-import * as THREE from 'https://threejs.org/build/three.module.js';
-import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// Scene
+export default function Character() {
+    // 씬(Scene), 카메라(Camera), 렌더러(Renderer) 생성
 const scene = new THREE.Scene();
-
-// Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
-
-// Renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(1, 1, 1).normalize();
-scene.add(directionalLight);
-
-// GLTF Loader
+// 캐릭터 모델을 로드하기 위한 로더 생성
 const loader = new GLTFLoader();
+
+// 카메라 이동을 위한 OrbitControls 추가
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// 카메라 초기 위치 설정
+camera.position.z = 5;
+
+// 캐릭터 모델 로드 및 씬에 추가
 loader.load(
-    './path/to/your/model.gltf',  // Replace with the path to your GLTF file
-    (gltf) => {
-        // When the model is loaded, add it to the scene
-        scene.add(gltf.scene);
-    },
-    undefined,
-    (error) => {
-        console.error('Error loading GLTF model', error);
-    }
+  './metarial/scene.gltf',
+  (gltf) => {
+    const character = gltf.scene;
+    scene.add(character);
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading character model:', error);
+  }
 );
 
-// Animation Loop
+// 애니메이션 루프
 const animate = () => {
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 
-    // Your custom animations or updates go here
+  // 카메라 이동 갱신
+  controls.update();
 
-    renderer.render(scene, camera);
+  // 렌더링
+  renderer.render(scene, camera);
 };
 
+// 창 크기 조절 이벤트 핸들러
+const handleResize = () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+};
+
+// 창 크기 조절 이벤트 리스너 등록
+window.addEventListener('resize', handleResize);
+
+// 애니메이션 루프 시작
 animate();
-
-// Handle window resize
-window.addEventListener('resize', () => {
-    const newWidth = window.innerWidth;
-    const newHeight = window.innerHeight;
-
-    camera.aspect = newWidth / newHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(newWidth, newHeight);
-});
+}
