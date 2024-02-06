@@ -2,6 +2,7 @@ package org.jackpot.back.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.jackpot.back.card.model.repository.CardRedisRepository;
+import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritageRedis;
 import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRedisRepository;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
@@ -62,6 +64,8 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactoryProd());   //connection
         redisTemplate.setKeySerializer(new StringRedisSerializer());    // key
         redisTemplate.setValueSerializer(new StringRedisSerializer());  // value
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(CulturalHeritageRedis.class));
         return redisTemplate;
     }
 }
