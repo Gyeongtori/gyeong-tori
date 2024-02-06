@@ -52,6 +52,7 @@ const CardImg = styled.div`
   -moz-box-shadow: inset 0px 0px 0px 3px #9daf89;
   box-shadow: inset 0px 0px 0px 3px #9daf89;
   background-image: ${(props) => `url("${props.$url}")`};
+  color: ${(props) => props.$black};
   background-size: cover;
   margin: 0 auto;
 `;
@@ -71,9 +72,13 @@ const AllCard = () => {
 
   const getCards = async () => {
     try {
-      const res = await axios.post("/v1/dummy/list", {
-        offset: 1,
-      });
+      // const res = await axios.post("/v1/dummy/list", {
+      //   offset: 1,
+      // });
+      const res = await axios.post(
+        "/v1/card/list",
+        JSON.stringify("test@test.com")
+      );
       console.log(res);
       const data = await res.data.data_body;
       const currnet = data.length;
@@ -175,24 +180,34 @@ const AllCard = () => {
         {getdetail && <Detail setDetail={setDetail} card={card[cardId]} />}
         <CardGrid>
           {states &&
-            states.map((state, index) => (
-              <Container
-                key={index}
-                $rotation={state.rotation}
-                onMouseMove={(e) => handleMouseMove(index, e)}
-                onTouchMove={(e) => handleTouchMove(index, e)}
-                onMouseOut={() => handleMouseOut(index)}
-                onTouchEnd={() => handleTouchOut(index)}
-              >
-                <Overlay
-                  id={index}
-                  onClick={handleDetail}
-                  $position={state.position}
-                  $filter={state.filter}
-                />
-                <CardImg $url={card[index].image} />
-              </Container>
-            ))}
+            states.map((state, index) =>
+              card[index].have ? (
+                <Container
+                  key={index}
+                  $rotation={state.rotation}
+                  onMouseMove={(e) => handleMouseMove(index, e)}
+                  onTouchMove={(e) => handleTouchMove(index, e)}
+                  onMouseOut={() => handleMouseOut(index)}
+                  onTouchEnd={() => handleTouchOut(index)}
+                >
+                  <Overlay
+                    id={index}
+                    onClick={handleDetail}
+                    $position={state.position}
+                    $filter={state.filter}
+                  />
+                  <CardImg $url={card[index].image} />
+                </Container>
+              ) : (
+                <Container key={index}>
+                  <Overlay id={index} />
+                  <CardImg
+                    $url={card[index].image}
+                    $black={"rgba(0, 0, 0, 0.8)"}
+                  />
+                </Container>
+              )
+            )}
         </CardGrid>
       </div>
     </>
