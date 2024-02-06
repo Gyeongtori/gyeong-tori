@@ -6,6 +6,7 @@ import ButtonBlank from "../components/Styles/ButtonBlank";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuthStore } from "../store/store";
+import Main from './Main';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -61,10 +62,9 @@ const Login = () => {
 
 
   return (
-    <Main>
-      {/* <h1>TEST</h1> */}
 
-      <Body>
+    <Body>
+      <LoginBlock>
         <h2>로그인</h2>
         <ButtonBlank
           color="#E4E7EC"
@@ -72,7 +72,6 @@ const Login = () => {
           placeholder="이메일"
           onChange={(e) => setEmail(e.target.value)}
         ></ButtonBlank>
-
         <ButtonBlank
           color="#E4E7EC"
           activecolor="#BCBCBD"
@@ -80,45 +79,38 @@ const Login = () => {
           type="password"
           onChange={(e) => setPassword(e.target.value)}
         ></ButtonBlank>
-
         <ButtonFull onClick={handleLogin} color="#888870" activecolor="#999966" >
           로그인하기
         </ButtonFull>
-
         <ButtonFull onClick={goMain} color="#712E1E" activecolor="#A94C36" >
           게스트로 입장하기
         </ButtonFull>
-
-   
         <p>
-          아직 회원이 아니신가요? <a onClick={goSignUp} style={{ position: 'relative' }}>회원가입</a>
+          아직 회원이 아니신가요? <span onClick={goSignUp} style={{ position: 'relative' }}>회원가입</span>
         </p>
-      </Body>
-    </Main>
+      </LoginBlock>
+    </Body>
   );
 };
 
 export default Login;
 
-const Main = styled.div`
+
+const LoginBlock = styled.div`
   background-color: beige;
-  height: 100vh;
-`;
-
-const Body = styled.div`
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   bottom: 0px;
-  left: 50%;
-  transform: translate(-50%);
-
   border-radius: 50px 50px 0px 0px;
   background-color: white;
 
-  /* 경계 테스트 */
-  /* border: 1px solid black; */
+  border: 1px solid black;
+`;
+
+const Body = styled.div`
+  /* background-color: beige; */
 `;

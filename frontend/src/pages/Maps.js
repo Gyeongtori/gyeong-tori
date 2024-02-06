@@ -16,10 +16,11 @@ export default function Maps () {
   const [map, setMap] = useState(null);
 
   // 경주 기준점
-  // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
+  const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
   
   // 전대 기준점
-  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
+  // const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
+
   const [mapCenter, setMapCenter] = useState()
   const [head, setHead] = useState()
 
@@ -30,8 +31,8 @@ export default function Maps () {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    // googleMapsApiKey: 'AIzaSyAfcce2IjhzDkYHn7rZBilMDHw4f1c4IwU',
+    // googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: 'AIzaSyAfcce2IjhzDkYHn7rZBilMDHw4f1c4IwU',
   });
 
 
@@ -125,9 +126,13 @@ export default function Maps () {
   }, []);
     
   const getAPI = async () => {
+    console.log(typeof(center.lat), typeof(toString(center.lat)), 'werawfaadfg')
+
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get("v1/culturalheritage/list", 
+      const res = await axios.post("v1/culturalheritage/list", {
+              'lat' : `${center.lat}`,
+              'lng' : `${center.lng}` }
       // {headers: {
       //   'Content-Type': `application/json`,
       //   'ngrok-skip-browser-warning': '69420',
@@ -136,13 +141,10 @@ export default function Maps () {
       // console.log('eeeee', res.data.data_body)
 
       setApi(res? [...res.data.data_body, ...places] : [...places])
-      
-      // console.log('api 정보 조회', api)
-
-      // setApi(res.data.data_body)
 
     } catch (e) {
       console.log(e.response);
+      
     }
   };
   
