@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AllCard from "./AllCard";
 import { IoChevronDownCircleOutline } from "react-icons/io5";
 import { FaArrowUp } from "react-icons/fa";
+import MyCard from "./MyCard";
 let Division = styled.span`
   display: inline-block;
   width: 50%;
@@ -46,7 +47,7 @@ let Scroll = styled.div`
 let TopBtn = styled.button`
   width: 35px;
   height: 35px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.5);
   color: rgba(128, 128, 128, 0.623);
   border: 1px solid rgba(128, 128, 128, 0.623);
   border-radius: 50%;
@@ -146,7 +147,7 @@ const Card = () => {
           </Title>
         </Sorts>
       </div>
-      {!checked ? <AllCard /> : <div>컬렉션</div>}
+      {!checked ? <AllCard /> : <MyCard />}
       <Scroll>
         <TopBtn onClick={scrollToTop}>
           <FaArrowUp />
