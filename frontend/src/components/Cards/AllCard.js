@@ -65,6 +65,7 @@ const AllCard = () => {
   // const [getdetail, setDetail] = useState(false); // 카드 상세 설명 팝업 컴포넌트 열고 닫기
   // const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
   let navigate = useNavigate();
+
   useEffect(() => {
     console.log(db); // firebase 연결 테스트
     getCards();

@@ -163,15 +163,11 @@ const MyCard = () => {
   };
   const handleDetail = (e) => {
     const id = e.target.id;
-    console.log(id);
-    // setCardId(id);
-    // setDetail(true);
     navigate("/detail", { state: card[id] });
   };
   return (
     <>
       <div>
-        {/* {getdetail && <Detail setDetail={setDetail} card={card[cardId]} />} */}
         <CardGrid>
           {states &&
             states.map(

@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { GiAcorn } from "react-icons/gi";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { GrLinkPrevious, GrClose, GrLinkNext } from "react-icons/gr";
 const Frame = styled.div`
   display: flex;
   flex-direction: column;
@@ -56,7 +60,18 @@ const Des = styled.div`
     background: #848484;
   }
 `;
-
+const Dates = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-radius: 20px;
+  background-color: white;
+  color: black;
+  &:hover {
+    color: white;
+    background-color: #9daf89;
+  }
+`;
 const Footer = styled.div`
   margin: 0 auto;
   display: flex;
@@ -64,10 +79,28 @@ const Footer = styled.div`
   align-items: center;
   bottom: 0px;
   width: 80%;
+  .close {
+    border-radius: 50px;
+  }
 `;
 const DetailPage = () => {
-  const { state } = useLocation();
   let navigate = useNavigate();
+  const { state } = useLocation();
+  const [getGrade, setGrade] = useState(1);
+  const [getDate, setDate] = useState(false);
+  const ARRAY = [0, 1, 2, 3, 4];
+
+  const prev = () => {
+    if (getGrade === 1) console.log("1 등급");
+    else setGrade(getGrade - 1);
+  };
+  const next = () => {
+    if (getGrade === 5) console.log("5 등급");
+    else setGrade(getGrade + 1);
+  };
+  const getDates = () => {
+    setDate(true);
+  };
   console.log(state);
   return (
     <>
@@ -75,17 +108,35 @@ const DetailPage = () => {
         <Section>
           <Box>
             <Title>{state.cultural_heritage_name}</Title>
-            <Grade>등급표시</Grade>
+            <Grade>
+              {ARRAY.map((item, index) =>
+                getGrade <= index + 1 ? (
+                  <GiAcorn key={index} style={{ color: "red" }} />
+                ) : (
+                  <GiAcorn key={index} style={{ color: "gray" }} />
+                )
+              )}
+            </Grade>
             <CardImg $cardImg={state.image} />
+            <div>
+              <FaMapMarkerAlt />
+              {state.address}
+            </div>
           </Box>
         </Section>
-
+        <Dates onClick={getDates}>획득일</Dates>
         <Des>{state.description}</Des>
 
         <Footer>
-          <div>이전</div>
-          <button onClick={() => navigate("/cards")}>닫기</button>
-          <div>다음</div>
+          <button onClick={prev}>
+            <GrLinkPrevious />
+          </button>
+          <button className="close" onClick={() => navigate("/cards")}>
+            <GrClose />
+          </button>
+          <button onClick={next}>
+            <GrLinkNext />
+          </button>
         </Footer>
       </Frame>
     </>
