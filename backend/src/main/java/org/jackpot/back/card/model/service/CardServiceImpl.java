@@ -84,6 +84,8 @@ public class CardServiceImpl implements CardService{
                             .address(addCardToCollectionRequest.getAddress())
                             .build()
             );
+
+
         } catch (Exception e) {
             throw new CardException(TRANSACTION_FAIL);
         }
