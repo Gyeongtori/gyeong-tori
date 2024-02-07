@@ -42,7 +42,7 @@ public class CardController {
     }
 
     /**
-     * 카드 조회 (전체, 상세)
+     * 카드 조회 (전체, 상세 )
      * @param getCardListRequest
      * @return List<ReadCardResponse>
      */
