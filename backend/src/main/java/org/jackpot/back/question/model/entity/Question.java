@@ -6,7 +6,7 @@ import org.jackpot.back.card.model.entity.Card;
 import org.jackpot.back.question.model.dto.QuestionDto;
 
 @Entity
-@Table
+@Table(name="question")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

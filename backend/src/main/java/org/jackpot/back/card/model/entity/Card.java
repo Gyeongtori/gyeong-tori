@@ -7,7 +7,7 @@ import org.jackpot.back.card.model.entity.enums.CardField;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 
 @Entity
-@Table
+@Table(name="card")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
