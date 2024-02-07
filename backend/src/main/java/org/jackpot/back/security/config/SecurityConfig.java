@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 나머지 경로는 인증 요구
                 );
 
-        httpSecurity.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        httpSecurity
                 .oauth2Login(oauth2Login -> oauth2Login //소셜 로그인
                                 .successHandler(oauth2AuthenticationSuccessHandler) // 로그인 성공했을 경우 handelr 처리
                                 .failureHandler(oauth2AuthenticationFailureHandler)
