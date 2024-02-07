@@ -1,115 +1,160 @@
-import React, { useEffect, useRef, useState } from 'react';
 
-import * as THREE from 'three';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+<!DOCTYPE html>
+<html>
 
-import html2canvas from 'html2canvas';
-import saveAs from 'file-saver';
+<head>
+    <meta charset="UTF-8">
+    <title>3D 모델 렌더링</title>
+</head>
 
-export default function Camera() {
-    const rendererRef = useRef(null);
-    const sceneRef = useRef(null);
-    const cameraRef = useRef(null);
-    const videoTextureRef = useRef(null);
-    const videoMeshRef = useRef(null);
-    const videoStreamRef = useRef(null);
-    const [facingMode, setFacingMode] = useState('user');
+<body>
+    <!-- 렌더링할 3D 모델을 표시할 캔버스 -->
+    <canvas id="canvas" width="800" height="800"></canvas>
 
-    function toggleFacingMode(){
-      setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
-    }
-    // 여기부터
-    useEffect(() => {
-        // 새로운 THREE.js 씬, 카메라 및 렌더러 생성
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const canvas = document.querySelector('#canvas');
-        const renderer = new THREE.WebGLRenderer({canvas});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        // useRef를 사용하여 렌더러, 씬 및 카메라에 대한 참조 설정
-        rendererRef.current = renderer;
-        document.body.appendChild(renderer.domElement);
-        sceneRef.current = scene;
-        cameraRef.current = camera;
-
-        let video;
-
-        // 비디오 시작 함수
-        const startVideo = () => {
-          try {
-            const constraints = {
-                video: { facingMode },
-                audio: false,
-            };
-            navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-                video = document.createElement('video');
-                video.srcObject = stream;
-                video.play();
-
-                const videoTexture = new THREE.VideoTexture(video);
-                videoTextureRef.current = videoTexture;
-                const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
-                const videoGeometry = new THREE.PlaneGeometry(16, 9);
-                const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-                scene.add(videoMesh);
-                videoMeshRef.current = videoMesh;
-
-                camera.position.z = 7;
-                videoStreamRef.current = stream;
-
-                const animate = () => {
-                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                        videoTexture.needsUpdate = true;
-                    }
-
-                    renderer.render(scene, camera);
-                    requestAnimationFrame(animate);
-                };
-
-                animate();
-            }).catch((error) => {
-                console.error('Error accessing webcam:', error);
-            });
-        } catch (error) {
-            console.error('Error accessing webcam:', error);
-        }
-        };
-
-        // 비디오 시작 함수 호출
-        startVideo();
-
-        // 창 크기 조절 이벤트 핸들러
-        const handleResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(10000,window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio);
-        };
-
-        // 창 크기 조절 이벤트 리스너 등록
-        window.addEventListener('resize', handleResize);
-
-        // useEffect의 cleanup 함수
-        return () => {
-            // 이벤트 리스너 제거
-            window.removeEventListener('resize', handleResize);
-            // 비디오 스트림 정리
-            const { current: videoStream } = videoStreamRef;
-            if (videoStream) {
-                const tracks = videoStream.getTracks();
-                tracks.forEach(track => track.stop());
+    <!-- 모듈 import를 위한 importmap 설정 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.138.3/build/three.module.js",
+                "GLTFLoader": "https://unpkg.com/three@0.141.0/examples/jsm/loaders/GLTFLoader.js"
             }
-        };
-    }, [facingMode]); // facingMode 변수가 변경될 때마다 useEffect가 다시 실행됨
-    // 요기까지 유즈 이펙트
+        }
+    </script>
 
-    
-    return (
-      <>
-      <canvas id='canvas' style={{ width: '100%', maxWidth: '100vw', height: '70%', transform: 'scaleX(-1)' }}>
-     
-      </canvas>
-      <button color='primary' onClick={toggleFacingMode}>카메라 전환하기</button>
-      <button>캡쳐하기</button>
-      </>
-    );
-}
+    <!-- JavaScript 모듈을 사용한 3D 렌더링 스크립트 -->
+    <script type="module">
+        // GLTFLoader 및 THREE 모듈을 import
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        // 씬, 렌더러, 카메라 초기화
+        let scene = new THREE.Scene();
+        let renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#canvas'),
+            antialias: true
+        });
+        renderer.outputEncoding = THREE.sRGBEncoding;
+
+        let camera = new THREE.PerspectiveCamera(20, 1);
+        camera.position.set(0, 0, 10)
+
+        // 배경을 검은색으로 설정
+        scene.background = new THREE.Color('black');
+
+        // 빛 설정
+        const ambientLight = new THREE.AmbientLight(0xffffff, 3); // 주변 조명
+        const directionalLight = new THREE.DirectionalLight(0xff0000, 1); // 방향 조명
+        directionalLight.position.set(1, 1, 1).normalize(); // 조명의 위치
+
+        // 씬에 빛 추가
+        scene.add(ambientLight);
+        scene.add(directionalLight);
+
+        // GLTFLoader 인스턴스 생성
+        const loader1 = new GLTFLoader();
+        const loader2 = new GLTFLoader();
+        const loader3 = new GLTFLoader();
+
+        let xpos1 = Math.round(((Math.random() * (4 + 4)) - 4) * 1e2) / 1e2;
+        let ypos1 = Math.round(((Math.random() * (4 + 4)) - 4) * 1e2) / 1e2;
+        let beforexpos1 = xpos1;
+        let beforeypos1 = ypos1;
+        let sw1 = 3;
+        let ysw1 = 1;
+        let cnt1 = 0;
+        let xrand1 = ((Math.random() * (4 + 4)) - 4).toFixed(1);
+        let yrand1 = ((Math.random() * (4 + 4)) - 4).toFixed(1);
+
+        let xpos2 = Math.round(((Math.random() * (10 + 10)) - 10) * 1e2) / 1e2;
+        let ypos2 = Math.round(((Math.random() * (10 + 10)) - 10) * 1e2) / 1e2;
+        let beforexpos2 = xpos2;
+        let beforeypos2 = ypos2;
+        let sw2 = 4;
+        let ysw2 = 1;
+        let cnt2 = 0;
+        let xrand2 = ((Math.random() * (10 + 10)) - 10).toFixed(1);
+        let yrand2 = ((Math.random() * (10 + 10)) - 10).toFixed(1);
+
+        let mixer1; // mixer 변수를 외부에서 정의
+        let model1; // model1 변수를 외부에서 정의
+
+        let mixer2; // mixer 변수를 외부에서 정의
+        let model2; // model2 변수를 외부에서 정의
+
+        let mixer3; // mixer 변수를 외부에서 정의
+        let model3; // model2 변수를 외부에서 정의
+
+        // 3D 모델 로드 및 씬에 추가 (첫 번째 모델)
+        loader1.load('low_poly_mugil/scene.gltf', function (gltf1) {
+            model1 = gltf1.scene;
+
+            // 위치, 회전 또는 필요한 다른 속성에 따라 조정
+            model1.position.set(xpos1, ypos1, 0); // 예시 위치, 필요에 따라 조정
+            model1.rotation.y -= 1.5;
+            //model1.rotation.y -= 3.5;
+
+            // 씬에 모델 추가
+            scene.add(model1);
+
+            // 애니메이션 등 추가 설정 가능
+
+            const animations1 = gltf1.animations;
+            mixer1 = new THREE.AnimationMixer(model1); // mixer 초기화
+
+            // 모든 애니메이션을 믹서에 추가하고 재생
+            animations1.forEach((animation) => {
+                const action = mixer1.clipAction(animation);
+                action.play();
+            });
+
+            animate(); // 애니메이션 시작
+        });
+
+        // 3D 모델 로드 및 씬에 추가 (두 번째 모델)
+        loader2.load('koifish/scene.gltf', function (gltf2) {
+            model2 = gltf2.scene;
+
+            // 위치, 회전 또는 필요한 다른 속성에 따라 조정
+            model2.position.set(-5, 2, -40); // 예시 위치, 필요에 따라 조정
+            model2.rotation.y -= 3;
+
+            // 씬에 모델 추가
+            scene.add(model2);
+
+            // 애니메이션 등 추가 설정 가능
+
+            const animations2 = gltf2.animations;
+            mixer2 = new THREE.AnimationMixer(model2); // mixer 초기화
+
+            // 모든 애니메이션을 믹서에 추가하고 재생
+            animations2.forEach((animation) => {
+                const action = mixer2.clipAction(animation);
+                action.play();
+            });
+            animate(); // 애니메이션 시작
+        });
+
+        // 애니메이션 업데이트 함수 정의
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (mixer1) {
+                mixer1.update(0.016); // 보통 60FPS(0.016) 기준으로 업데이트(조금 느리게)
+
+                model1.position.set(0, 0, 0);
+            }
+
+            if (mixer2) {
+                mixer2.update(0.016); // 보통 60FPS 기준으로 업데이트
+
+                model2.position.set(5, 5, -40);
+            }
+
+            // 모든 모델에 대한 애니메이션 및 업데이트 작업 수행
+            //console.log("HI");
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+
+</html>

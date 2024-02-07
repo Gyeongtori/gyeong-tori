@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 
 import * as THREE from "three";
 
@@ -62,15 +64,14 @@ export default function Camera(props) {
     // 새로운 THREE.js 씬, 카메라 및 렌더러 생성
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
+      75, window.innerWidth / window.innerHeight, 0.1, 1000
     );
+    camera.position.set(0,0,10)
     const canvas = document.querySelector("#canvas");
     const renderer = new THREE.WebGLRenderer({
       canvas,
       preserveDrawingBuffer: true,
+      antialias:true,
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     // useRef를 사용하여 렌더러, 씬 및 카메라에 대한 참조 설정
@@ -78,6 +79,38 @@ export default function Camera(props) {
     // document.body.appendChild(renderer.domElement);
     sceneRef.current = scene;
     cameraRef.current = camera;
+
+    
+    // 빛 설정
+    const ambientLight = new THREE.AmbientLight(0xffffff, 3); // 주변 조명
+    const directionalLight = new THREE.DirectionalLight(0xff0000, 1); // 방향 조명
+    directionalLight.position.set(1, 1, 1).normalize(); // 조명의 위치
+    // 씬에 빛 추가
+    scene.add(ambientLight);
+    scene.add(directionalLight);
+    //gltf instense 생성 및 로드
+    const loader = new GLTFLoader(); 
+    loader.load('./metarial/1234.gltf',
+     function (gltf) {
+    
+
+      // 위치, 회전 또는 필요한 다른 속성에 따라 조정
+      gltf.position.set(0, 0, 0); // 예시 위치, 필요에 따라 조정
+      gltf.rotation.y -= 1.5;
+      gltf.scene.scale.set(0.5, 0.5, 0.5)
+      // 씬에 모델 추가
+      scene.add(gltf);
+      console.log(gltf,"gltf야")
+  },
+  function (xhr) {
+    // 로드 중 발생한 프로그레스 이벤트 처리
+    console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+  },
+  function (error) {
+    // 에러 핸들러 함수
+    console.error('GLTF 파일 로드 중 에러 발생:', error);
+  }
+  );
 
     let video;
 
@@ -190,7 +223,8 @@ export default function Camera(props) {
             <button onClick={handelCapture}>캡쳐하기</button>
           </div>
         </div>
-      )}
+      ) }
+      
     </div>
   );
 }
