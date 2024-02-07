@@ -2,6 +2,7 @@ package org.jackpot.back.culturalHeritage.model.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jackpot.back.culturalHeritage.exception.CulturalHeritageException;
 import org.jackpot.back.culturalHeritage.model.dto.request.GetCulturalHeritageListRequest;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritageRedis;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.jackpot.back.culturalHeritage.exception.CulturalHeritageErrorCode.TRANSACTION_FAIL;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -40,30 +43,34 @@ public class CulturalHeritageServiceImpl implements CulturalHeritageService{
 
     @Override
     public void redisSave() {
-        //문화재 DB 조회
-        List<CulturalHeritage> culturalHeritageList = culturalHeritageRepository.findAll();
-        //DB -> Redis 저장
-        for(CulturalHeritage culturalHeritage : culturalHeritageList){
-            CulturalHeritageRedis culturalHeritageRedis = CulturalHeritageRedis.builder()
-                    .no(culturalHeritage.getNo())
-                    .asno(culturalHeritage.getAsno())
-                    .nameKr(culturalHeritage.getNameKr())
-                    .nameHanja(culturalHeritage.getNameHanja())
-                    .content(culturalHeritage.getContent())
-                    .sidoName(culturalHeritage.getSidoName())
-                    .gugunName(culturalHeritage.getGugunName())
-                    .division(culturalHeritage.getDivision())
-                    .lng(culturalHeritage.getLng())
-                    .lat(culturalHeritage.getLat())
-                    .imageSource(culturalHeritage.getImageSource())
-                    .imageDetail(culturalHeritage.getImageDetail())
-                    .narration(culturalHeritage.getNarration())
-                    .videoSource(culturalHeritage.getVideoSource())
-                    .build();
+        try{
+            //문화재 DB 조회
+            List<CulturalHeritage> culturalHeritageList = culturalHeritageRepository.findAll();
+            //DB -> Redis 저장
+            for(CulturalHeritage culturalHeritage : culturalHeritageList) {
+                CulturalHeritageRedis culturalHeritageRedis = CulturalHeritageRedis.builder()
+                        .no(culturalHeritage.getNo())
+                        .asno(culturalHeritage.getAsno())
+                        .nameKr(culturalHeritage.getNameKr())
+                        .nameHanja(culturalHeritage.getNameHanja())
+                        .content(culturalHeritage.getContent())
+                        .sidoName(culturalHeritage.getSidoName())
+                        .gugunName(culturalHeritage.getGugunName())
+                        .division(culturalHeritage.getDivision())
+                        .lng(culturalHeritage.getLng())
+                        .lat(culturalHeritage.getLat())
+                        .imageSource(culturalHeritage.getImageSource())
+                        .imageDetail(culturalHeritage.getImageDetail())
+                        .narration(culturalHeritage.getNarration())
+                        .videoSource(culturalHeritage.getVideoSource())
+                        .build();
 
-            culturalHeritageRedisRepository.save(culturalHeritageRedis);
-            // Geo 데이터 추가
-            geoOperations.add("geopoints", new Point(Double.parseDouble(culturalHeritageRedis.getLng()), Double.parseDouble(culturalHeritageRedis.getLat())), culturalHeritageRedis.getNo().toString());
+                culturalHeritageRedisRepository.save(culturalHeritageRedis);
+                // Geo 데이터 추가
+                geoOperations.add("geopoints", new Point(Double.parseDouble(culturalHeritageRedis.getLng()), Double.parseDouble(culturalHeritageRedis.getLat())), culturalHeritageRedis.getNo().toString());
+            }
+        } catch (Exception e){
+            throw new CulturalHeritageException(TRANSACTION_FAIL);
         }
     }
 
@@ -89,15 +96,19 @@ public class CulturalHeritageServiceImpl implements CulturalHeritageService{
         GeoResults<RedisGeoCommands.GeoLocation<String>> radius = geoOperations
                 .radius("geopoints", circle, args);
 
-        //반경 이내 조회된 결과 respone에 담기
-        if (radius != null) {
-            radius.forEach(geoLocationGeoResult -> {
-                RedisGeoCommands.GeoLocation<String> content = geoLocationGeoResult.getContent();
-                String name = content.getName(); //문화재 No 반환
-//                Distance dis = geoLocationGeoResult.getDistance(); //거리 반환
+        try{
+            //반경 이내 조회된 결과 respone에 담기
+            if (radius != null) {
+                radius.forEach(geoLocationGeoResult -> {
+                    RedisGeoCommands.GeoLocation<String> content = geoLocationGeoResult.getContent();
+                    String name = content.getName(); //문화재 No 반환
+    //                Distance dis = geoLocationGeoResult.getDistance(); //거리 반환
 
-                culturalHeritageRedisList.add(culturalHeritageRedisRepository.findById(Integer.parseInt(name)).get());
-            });
+                    culturalHeritageRedisList.add(culturalHeritageRedisRepository.findById(Integer.parseInt(name)).get());
+                });
+            }
+        } catch (Exception e){
+            throw new CulturalHeritageException(TRANSACTION_FAIL);
         }
 
         return culturalHeritageRedisList;
