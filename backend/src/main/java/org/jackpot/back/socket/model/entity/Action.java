@@ -6,16 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Action {
-    private String nickname;
-    private Long userId;
-    private String socketId;
+public class Action extends BaseAction{
     //todo 담을 내용 확정 짓기
     private Location dataBody;
 }
