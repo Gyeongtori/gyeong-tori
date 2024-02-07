@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.dto.response.CardGradeDto;
+import org.jackpot.back.card.model.dto.response.GetCardRankResponse;
 import org.jackpot.back.card.model.dto.response.HoldingCardDto;
 import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.entity.Card;
@@ -306,6 +307,11 @@ public class CardServiceImpl implements CardService{
 
 
         return response;
+    }
+
+    @Override
+    public List<GetCardRankResponse> getCardRank() {
+        return null;
     }
 
 
