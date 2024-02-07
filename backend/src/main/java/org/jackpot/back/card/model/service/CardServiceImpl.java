@@ -311,7 +311,7 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public List<GetCardRankResponse> getCardRank() {
-        return null;
+        return holdingCardRepository.getCardRanking();
     }
 
 

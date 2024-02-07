@@ -21,6 +21,12 @@ public interface HoldingCardRepository extends JpaRepository<HoldingCard, Long> 
     @Query("SELECT hc.date FROM HoldingCard hc WHERE hc.user.id = :userId AND hc.card.number = :cardNumber")
     List<LocalDate> findDatesByUserIdAndCardNumber(@Param("userId") Long userId, @Param("cardNumber") Long cardNumber);
 
-    //보유 카드 총 개수 정렬
-//    List<GetCardRankResponse>
+    //총 보유 카드 개수 정렬
+    @Query("SELECT NEW org.jackpot.back.card.model.dto.response.GetCardRankResponse(" +
+            "u.profileImage, u.nickname, u.grade, COUNT(hc.card.number)) " +
+            "FROM User u " +
+            "JOIN HoldingCard hc ON u.id = hc.user.id " +
+            "GROUP BY u.id, u.profileImage, u.nickname, u.grade " +
+            "ORDER BY COUNT(hc.card.number) DESC")
+    List<GetCardRankResponse> getCardRanking();
 }

@@ -18,5 +18,5 @@ public class GetCardRankResponse {
     private String profileImage;
     private String nickname;
     private Integer grade; // 골품제 1~8
-    private Integer cardCount; //총 카드 개수
+    private Long cardCount; //총 카드 개수
 }

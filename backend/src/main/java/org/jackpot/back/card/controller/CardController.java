@@ -59,6 +59,6 @@ public class CardController {
 
     @GetMapping("/rank")
     public ResponseEntity getCardRank() {
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardRank()));
     }
 }
