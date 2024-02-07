@@ -57,6 +57,10 @@ public class CardController {
         return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
     }
 
+    /**
+     * 카드 랭킹
+     * @return List<GetCardRankResponse>
+     */
     @GetMapping("/rank")
     public ResponseEntity getCardRank() {
         return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardRank()));
