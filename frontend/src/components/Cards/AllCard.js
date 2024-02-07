@@ -7,7 +7,7 @@ import axios from "axios";
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  /* grid-gap: 20px 1vw; */
+  grid-gap: 10px 0vh;
   transform-style: preserve-3d;
   height: 100%;
   position: relative;
@@ -52,15 +52,14 @@ const CardImg = styled.div`
   -moz-box-shadow: inset 0px 0px 0px 3px #9daf89;
   box-shadow: inset 0px 0px 0px 3px #9daf89;
   background-image: ${(props) => `url("${props.$url}")`};
-  color: ${(props) => props.$black};
+  background-color: ${(props) => props.$black};
+  background-blend-mode: multiply;
   background-size: cover;
   margin: 0 auto;
 `;
 
 const AllCard = () => {
   const [states, setStates] = useState([]); // 카드 CSS 적용 모두 담기
-  const [cardDes, setCardDes] = useState([]); // 카드 설명 모두 담기
-  const [cardImgList, setCardImgList] = useState([]); // 카드 이미지 모두 담기
   const [card, setCard] = useState([]); // 카드 CSS 빼고 나머지(주소, 설명, 이미지주소, 등급 등등)
   const [getdetail, setDetail] = useState(false); // 카그 상세 설명 팝업 컴포넌트 열고 닫기
   const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
@@ -72,18 +71,14 @@ const AllCard = () => {
 
   const getCards = async () => {
     try {
-      // const res = await axios.post("/v1/dummy/list", {
-      //   offset: 1,
-      // });
-      const res = await axios.post(
-        "/v1/card/list",
-        JSON.stringify("test@test.com")
-      );
+      const res = await axios.post("/v1/card/list", {
+        user_email: "test@test.com",
+      });
       console.log(res);
       const data = await res.data.data_body;
       const currnet = data.length;
       let setting = Array(currnet).fill({
-        rotation: "",
+        rotation: "perspective(350px) rotateY(0deg) rotateX(0deg)",
         position: "50%",
         filter: "opacity(0)",
       }); // CSS 적용
@@ -199,11 +194,15 @@ const AllCard = () => {
                   <CardImg $url={card[index].image} />
                 </Container>
               ) : (
-                <Container key={index}>
-                  <Overlay id={index} />
+                <Container key={index} $rotation={state.rotation}>
+                  <Overlay
+                    id={index}
+                    $position={state.position}
+                    $filter={state.filter}
+                  />
                   <CardImg
                     $url={card[index].image}
-                    $black={"rgba(0, 0, 0, 0.8)"}
+                    $black={"rgba(0, 0, 0, 0.7)"}
                   />
                 </Container>
               )
