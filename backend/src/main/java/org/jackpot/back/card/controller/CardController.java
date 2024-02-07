@@ -3,6 +3,7 @@ package org.jackpot.back.card.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
+import org.jackpot.back.card.model.dto.request.GetCardListRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.service.CardService;
@@ -41,18 +42,23 @@ public class CardController {
     }
 
     /**
-     * 카드 조회 (전체, 상세)
-     * @param userEmail
+     * 카드 조회 (전체, 상세 )
+     * @param getCardListRequest
      * @return List<ReadCardResponse>
      */
     @PostMapping("/list")
-    public ResponseEntity getCardList(@RequestBody String userEmail) {
-        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(userEmail)));
+    public ResponseEntity getCardList(@RequestBody GetCardListRequest getCardListRequest) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(getCardListRequest.getUserEmail())));
     }
 
 
     @PostMapping("/search")
     public ResponseEntity searchCard(@RequestBody SearchCardRequest searchCardRequest) {
         return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity getCardRank() {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardRank()));
     }
 }
