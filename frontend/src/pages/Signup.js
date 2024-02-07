@@ -60,7 +60,7 @@ const Signup = () => {
     <SignupBlock>
 
       <div style={{'margin-bottom': '0.5rem'}}>
-        <HiOutlineArrowNarrowLeft size='25' />
+        <HiOutlineArrowNarrowLeft size='25' onClick={() => { navigate(-1); }}/>
         <TitleText>회원가입</TitleText >
         <TitleInfo>경토리에 회원가입 하시면</TitleInfo>
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
