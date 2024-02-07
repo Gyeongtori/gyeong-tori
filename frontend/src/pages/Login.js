@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Main from './Main';
+import { useCookies } from 'react-cookie';
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [islogined, setIslogined] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [id, setId] = useState('')
+  const [nickname, setNickname] = useState('')
+
+
+  const getUserInfo = async () => {
+    try {
+      const response = await axios.get('/v1/user/retrieve');
+      const userInfo = response.data.data_body;
+      console.log('userinfo', userInfo)
+      setId(userInfo.id)
+      setNickname(userInfo.nickname)
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  }
+
 
 
 
@@ -29,22 +44,57 @@ const Login = () => {
         });
         const status = response.data.data_header.result_code;
         if(status === "204 NO_CONTENT") {
-          setIslogined(true)
           console.log('로그인 성공!')
-          localStorage.setItem('name', email)
+          getUserInfo()
+
           goMain()
+
+
 
           // localStorage.setItem('accessToken', response.data.accessToken);
           // localStorage.setItem("refreshToken", response.data.refreshToken);
         }
       } catch(error) {
-        const status = error.response.data.data_header
-        if(status.result_code === 'NOT_EXISTS') {
-          alert(status.result_message)
-        }
-      }
-  }
+        const status = error
+        console.log('status: ', status);
+
+      //   if(status.result_code === 'NOT_EXISTS') {
+      //     alert(status.result_message)
+      // }
+    }}
   };
+
+//   const createAxiosInstance = () => {
+//     return axios.create({
+//       baseURL: "{baseURL 적기}",
+//     });
+//   };
+
+//   let axiosInstance = createAxiosInstance();
+
+//   axiosInstance.interceptors.response.use(
+//     (response) => response,
+//     async (error) => {
+//       const statusCode = error.response?.status;
+//       if (statusCode === 401) {
+//         try {
+//           const refreshResponse = await axios.get("/v1/auth/refresh");
+//           console.log(refreshResponse);
+//           const newToken = refreshResponse.data.accessToken;
+//           setCookie("jwt", newToken);
+//           axiosInstance = createAxiosInstance();
+//           error.config.headers["Authorization"] = `Bearer ${newToken}`;
+//           // return axiosInstance(error.config);
+//         } catch (refreshError) {
+//           removeCookie("jwt");
+//           navigate("/");
+   
+//         }
+//       }
+
+//     }
+//   );
+// };
 
   const goSignUp = () => {
     navigate("/signup");
@@ -81,7 +131,7 @@ const Login = () => {
           게스트로 입장하기
         </ButtonFull>
         <p>
-          아직 회원이 아니신가요? <span onClick={goSignUp} style={{ position: 'relative', color: '#758467'}}>회원가입</span>
+          아직 회원이 아니신가요? <span onClick={goSignUp} style={{ color: '#758467'}}>회원가입</span>
         </p>
       </LoginBlock>
     </BodyBlock>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
-import Header from "./../components/Profiles/Header";
+import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -60,6 +60,7 @@ const Signup = () => {
     <SignupBlock>
 
       <div style={{'margin-bottom': '0.5rem'}}>
+        <HiOutlineArrowNarrowLeft size='25' />
         <TitleText>회원가입</TitleText >
         <TitleInfo>경토리에 회원가입 하시면</TitleInfo>
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
@@ -67,9 +68,10 @@ const Signup = () => {
 
       <InputText>이메일</InputText>
       <ButtonBlank
-        color="#722D1E"
-        activecolor="#A94C36"
+        color="#CAD6C0"
+        activecolor="#9DAF89"
         borderwidth="2"
+    
         // placeholder='ssafy@gmail.com'
         onChange={(e) => {
           let email = e.target.value;
@@ -83,8 +85,8 @@ const Signup = () => {
 
       <InputText>닉네임</InputText>
       <ButtonBlank
-        color="#722D1E"
-        activecolor="#A94C36"
+        color="#CAD6C0"
+        activecolor="#9DAF89"
         borderwidth="2"
         // placeholder="오뉴오뉴"
         onChange={(e) => {
@@ -99,8 +101,8 @@ const Signup = () => {
 
       <InputText>비밀번호</InputText>
       <ButtonBlank
-        color="#722D1E"
-        activecolor="#A94C36"
+        color="#CAD6C0"
+        activecolor="#9DAF89"
         borderwidth="2"
         // placeholder="*********"
         type="password"
@@ -116,8 +118,8 @@ const Signup = () => {
 
       <InputText>비밀번호 확인</InputText>
       <ButtonBlank
-        color="#722D1E"
-        activecolor="#A94C36"
+        color="#CAD6C0"
+        activecolor="#9DAF89"
         borderwidth="2"
         // placeholder="*********"
         type="password"
@@ -133,12 +135,12 @@ const Signup = () => {
       ) : null}
 
       <SignupBtn>
-        <ButtonFull color="#722D1E" activecolor="#A94C36" onClick={goSignUp}>
+        <ButtonFull color="#8CAB6E" activecolor="#819171" onClick={goSignUp}>
           회원가입
         </ButtonFull>
-        <p>
-          이미 계정이 있으신가요? <a onClick={goSignIn}>로그인</a>
-        </p>
+        <InfoText>
+          이미 계정이 있으신가요? <span onClick={goSignIn} >로그인</span>
+        </InfoText>
       </SignupBtn>
     </SignupBlock>
   );
@@ -147,12 +149,14 @@ const Signup = () => {
 export default Signup;
 
 const SignupBlock = styled.div`
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
 `;
 
 const TitleText = styled.div`
-  margin-top: 1.5rem;
-  margin-left: 0.5rem;
+  margin: 0.5rem 0rem 0.5rem 0.5rem;
   font-weight: bold;
   font-size: 1.5rem; 
   text-align: left;
@@ -167,11 +171,15 @@ const TitleInfo = styled.div`
 
 const InputText = styled.div`
   margin-left: 0.5rem;
-  margin-top: 0.7rem;
+  margin-top: 1rem;
   font-size: 0.8rem;
   text-align: left;
 `;
 
 const SignupBtn = styled.div`
   margin-top: 2rem;
+  `;
+
+const InfoText = styled.div`
+  text-align: center;
 `;

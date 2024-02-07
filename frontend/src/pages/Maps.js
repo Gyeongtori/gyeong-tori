@@ -3,6 +3,9 @@ import { GoogleMap, Circle, useJsApiLoader, MarkerF, MarkerClustererF } from "@r
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
 import { Sample1 } from "../components/Styles/MapStyles"
+import { IoSettingsOutline } from "react-icons/io5";
+import { GiHandBag } from "react-icons/gi";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -16,10 +19,10 @@ export default function Maps () {
   const [map, setMap] = useState(null);
 
   // 경주 기준점
-  const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
+  // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
   
   // 전대 기준점
-  // const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
+  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
 
   const [mapCenter, setMapCenter] = useState()
   const [head, setHead] = useState()
@@ -31,14 +34,25 @@ export default function Maps () {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    // googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    googleMapsApiKey: 'AIzaSyAfcce2IjhzDkYHn7rZBilMDHw4f1c4IwU',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    // googleMapsApiKey: 'AIzaSyAfcce2IjhzDkYHn7rZBilMDHw4f1c4IwU',
   });
 
+ 
+  const goProfile = () => {
+    navigate("/profile")
+  }
 
-  // const onUnmount = useCallback(function callback() {
-  //   setMap(null);
-  // }, []);
+  
+  const goCard = () => {
+    navigate("/cards")
+  }
+
+
+
+  const onUnmount = useCallback(function callback() {
+    setMap(null);
+  }, []);
 
 
   useEffect(() => {
@@ -71,23 +85,19 @@ export default function Maps () {
 
   }, []);
 
-  const getLocation = (event) => {
-    console.log('count')
-
-    navigator.geolocation.getCurrentPosition(function(position) {
-      const latNow = position.coords.latitude
-      const lngNow = position.coords.longitude
-
-      console.log(latNow, lngNow, '클릭이벤트')
-      setCenter({lat: latNow, lng: lngNow});
-    }, function(error) {
-      console.error(error);
-    }, {
-      enableHighAccuracy: true,
-      maximumAge: 0,
-      timeout: Infinity
-    });
-  }
+  const getLocation = useCallback(() => {
+		if (center.lat && center.lng) {
+			const newLocation = {
+				lat: center.lat,
+				lng: center.lng,
+			};
+			setMapCenter(newLocation);
+			if (map) {
+				map.panTo(newLocation);
+				map.setZoom(18);
+			}
+		}
+	}, [center.lat, center.lng, map]);
 
 // 마크 클릭 이벤트
   const goGetCard = (event) => {
@@ -110,7 +120,7 @@ export default function Maps () {
     {no: '4', lat: 35.203817, lng: 126.808487},
     {no: '5', lat: 35.206029, lng: 126.811789},
 
-    {no: '6', lat: 35.7509, lng: 126.817994},
+    {no: '6', lat: 35.197509, lng: 126.817994},
     {no: '7', lat: 35.197480, lng: 126.812415},
     {no: '8', lat: 35.192255, lng: 126.812715},
     {no: '9', lat: 35.191587, lng: 126.811201},
@@ -126,8 +136,6 @@ export default function Maps () {
   }, []);
     
   const getAPI = async () => {
-    console.log(typeof(center.lat), typeof(toString(center.lat)), 'werawfaadfg')
-
     try {
       // res에는 결과 값이 담겨옴
       const res = await axios.post("v1/culturalheritage/list", {
@@ -138,10 +146,7 @@ export default function Maps () {
       //   'ngrok-skip-browser-warning': '69420',
       // }},
       );
-      // console.log('eeeee', res.data.data_body)
-
       setApi(res? [...res.data.data_body, ...places] : [...places])
-
     } catch (e) {
       console.log(e.response);
       
@@ -150,10 +155,6 @@ export default function Maps () {
   
     /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
              division, lng, lat, image_source, image_detail, narration, video_source} */
-
-  
-
-
 
 
 
@@ -186,7 +187,7 @@ export default function Maps () {
           zoom={17} 
           center={center} 
           mapContainerClassName="map-container"
-          // onUnmount={onUnmount}
+          onUnmount={onUnmount}
           options={{
             styles: Sample1,
             // 기본 ui 요소 지우기
@@ -228,26 +229,31 @@ export default function Maps () {
 
         {/* 메인기능 버튼 */}
           <Body>
-            {/* <video autoPlay style={cameraStyles.Video} /> */}
             <InfoTop 
               center={center}
             ></InfoTop>
             <button onClick={getLocation}>버튼</button>
-            <div>{head && head }방향정보~</div>
+            {/* <div>{head && head }방향정보~</div>S */}
           </Body>
 
           <Body>
             <Testt>
-              <ToggleButton onClick={() => setShowSemiCircle(!showSemiCircle)}>
-                
-              </ToggleButton>
+              <ToggleButton onClick={() => setShowSemiCircle(!showSemiCircle)} />
               <SemiCircle show={showSemiCircle}>
                 <div>
-                  <SemiCircleButton>버튼 1</SemiCircleButton>
+                  <SemiCircleButton>
+                    <GiHandBag onClick={goCard} size={35} />
+                  </SemiCircleButton>
                 </div>
                 <div>
-                  <SemiCircleButton>버튼 2</SemiCircleButton>
-                  <SemiCircleButton>버튼 3</SemiCircleButton>
+                <SemiCircleButton>
+                <GiHandBag onClick={goCard} size={35} />
+                </SemiCircleButton>
+                  <SemiCircleButton>
+                    <IoSettingsOutline 
+                      size={35} 
+                      onClick={goProfile}
+                  /></SemiCircleButton>
                 </div>
               </SemiCircle>
             </Testt>

@@ -26,7 +26,6 @@ const Styles = {
 function Camera() {
   const [playing, setPlaying] = React.useState(undefined);
   const location = useLocation();
-  const key = location.state.no
 
     const videoRef = React.useRef(null);
   
