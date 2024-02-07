@@ -50,8 +50,8 @@ public class CardController {
      * @return List<ReadCardResponse>
      */
     @GetMapping("/list")
-    public ResponseEntity getCardList(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail())));
+    public ResponseEntity getCardList(@RequestBody GetCardListRequest getCardListRequest) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(getCardListRequest.getUserEmail())));
     }
 
 
