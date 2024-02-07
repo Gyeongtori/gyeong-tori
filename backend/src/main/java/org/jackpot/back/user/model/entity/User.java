@@ -66,6 +66,7 @@ public class User implements UserDetails {
 
     public UserInfoResponse toPublicInfo(){
         return UserInfoResponse.builder()
+                .id(id)
                 .email(email)
                 .grade(grade)
                 .nickname(nickname)
