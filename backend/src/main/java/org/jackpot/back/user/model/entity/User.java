@@ -23,6 +23,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Getter
+@Setter
 @ToString
 public class User implements UserDetails {
     @Id

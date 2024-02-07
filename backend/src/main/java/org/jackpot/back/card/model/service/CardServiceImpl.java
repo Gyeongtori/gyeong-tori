@@ -40,7 +40,6 @@ public class CardServiceImpl implements CardService{
     private final CardRedisRepository cardRedisRepository;
     private final UserRepository userRepository;
     private final HoldingCardRepository holdingCardRepository;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void redisSave() {
@@ -84,6 +83,40 @@ public class CardServiceImpl implements CardService{
                             .address(addCardToCollectionRequest.getAddress())
                             .build()
             );
+            
+            //사용자 등급 확인 및 업데이트
+            int cardCount = holdingCardRepository.getCardCount(findUser.get().getId()); //총 카드 개수
+            User user = findUser.get();
+            switch (cardCount) {
+                case 3 :
+                    user.setGrade(2);
+                    userRepository.save(user);
+                    break;
+                case 5:
+                    user.setGrade(3);
+                    userRepository.save(user);
+                    break;
+                case 8:
+                    user.setGrade(4);
+                    userRepository.save(user);
+                    break;
+                case 13:
+                    user.setGrade(5);
+                    userRepository.save(user);
+                    break;
+                case 20:
+                    user.setGrade(6);
+                    userRepository.save(user);
+                    break;
+                case 40:
+                    user.setGrade(7);
+                    userRepository.save(user);
+                    break;
+                case 100:
+                    user.setGrade(8);
+                    userRepository.save(user);
+                    break;
+            }
 
 
         } catch (Exception e) {
