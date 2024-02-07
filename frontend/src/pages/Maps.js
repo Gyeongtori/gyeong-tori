@@ -19,7 +19,7 @@ export default function Maps () {
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
   
   // 전대 기준점
-  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
+  const [center, setCenter] = useState({ lat: 35.205231, lng: 126.8117628 });
   const [mapCenter, setMapCenter] = useState()
   const [head, setHead] = useState()
 
@@ -92,27 +92,27 @@ export default function Maps () {
   const goGetCard = (event) => {
     console.log(event)
     navigate("/camera", {
-      // state: {
-      //   no: `${event.no}`,
-      //   lat: `${event.lat}`,
-      //   lng: `${event.lng}`,
-      //   // 이외 info 추가 예정
-      // }
+      state: {
+        cultural_heritage_id: `${event.cultural_heritage_id}`,
+        lat: `${event.lat}`,
+        lng: `${event.lng}`,
+        address : `${event.address}` 
+      }
     });
     
   }
 
   const places = [
-    {no: '1', lat: 35.202018, lng: 126.811782},
-    {no: '2', lat: 35.201121, lng: 126.807993},
-    {no: '3', lat: 35.203164, lng: 126.813467},
-    {no: '4', lat: 35.203817, lng: 126.808487},
-    {no: '5', lat: 35.206029, lng: 126.811789}
+    {cultural_heritage_id: '1', lat: 35.205244, lng: 126.810495,address : " 광주광역시 광산구 오선동 549-1번지",},
+    {cultural_heritage_id: '2', lat: 35.205080, lng: 126.810211, address : " 광주광역시 광산구 오선동 549-1번지",},
+    {cultural_heritage_id: '3', lat: 35.205309, lng: 126.807715 , address : " 광주광역시 광산구 오선동 271번지",},
+    {cultural_heritage_id: '4', lat: 35.197128, lng: 126.803582, address : " 광주광역시 광산구 장덕동 971-3",},
+    {cultural_heritage_id: '5', lat: 35.199092, lng: 126.814761, address : " 광주광역시 광산구 수완동 풍영로 313",}
   ]
 
   // 문화재 요청
-  const [api, setApi] = useState();	
-  
+  const [api, setApi] = useState()
+
   useEffect(() => {
     getAPI();
   }, []);
@@ -120,25 +120,21 @@ export default function Maps () {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get("v1/culturalheritage/list", 
+      const res = await axios.post("v1/culturalheritage/list", {
+              'lat' : `${center.lat}`,
+              'lng' : `${center.lng}` }
       // {headers: {
       //   'Content-Type': `application/json`,
       //   'ngrok-skip-browser-warning': '69420',
       // }},
       );
-      // console.log('eeeee', res.data.data_body)
-
       setApi(res? [...res.data.data_body, ...places] : [...places])
-      
-      // console.log('api 정보 조회', api)
-
-      // setApi(res.data.data_body)
-
     } catch (e) {
       console.log(e.response);
+      
     }
   };
-  
+
     /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
              division, lng, lat, image_source, image_detail, narration, video_source} */
 
