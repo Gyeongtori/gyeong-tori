@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, } from "react-router-dom";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from "three";
 import html2canvas from "html2canvas";
@@ -17,7 +17,6 @@ export default function Camera(props) {
   const videoMeshRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
-
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
   const [facingMode, setFacingMode] = useState("user");
   const [captureState, setCaptureState] = useState(false);

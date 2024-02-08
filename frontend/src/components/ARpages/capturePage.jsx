@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Capture(props) {
-  console.log(props.url, props.state, props.isModalOpen);
+  console.log(props.url, props.state,);
   const url = props.url;
   const state = props.state;
-  const cultural_heritage_id = state.cultural_heritage_id;
+  const cultural_heritage_id = state.no;
   const address = state.address;
 
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export default function Capture(props) {
         cultural_heritage_id: cultural_heritage_id,
         address: address
       };
-      const res = await axios.post(`${process.env.REACT_APP_PUBLIC_URL}v1/culturalheritage/list`, postData);
+      const res = await axios.post(`/v1/card/add`, postData);
       console.log("정상적으로 실행되었습니다.")
     } catch (e) {
       console.log(e.response);

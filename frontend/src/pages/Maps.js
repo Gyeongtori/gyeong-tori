@@ -114,17 +114,33 @@ export default function Maps() {
     }
   }, [center.lat, center.lng, map]);
 
+  const [address, setAddress] = useState();
+
   // 마크 클릭 이벤트
   const goGetCard = (event) => {
     console.log(event);
+    getAddress(event.lat, event.lng)
+
     navigate("/camera", {
       state: {
-        cultural_heritage_id: `${event.cultural_heritage_id}`,
+        no: `${event.no}`,
         lat: `${event.lat}`,
         lng: `${event.lng}`,
-        address: `${event.address}`,
+        address: `${address.text}`,
       },
     });
+  };
+
+  const getAddress = async (getlat, getlng) => {
+    try {
+      // res에는 결과 값이 담겨옴
+      const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
+      );
+      setAddress(res.data.response.result[0])
+      console.log(address.text, '행정동 받아오기!!')
+    } catch (e) {
+      console.log(e.response);
+    }
   };
 
   const places = [
@@ -170,11 +186,12 @@ export default function Maps() {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.post("v1/culturalheritage/list", {
+      const res = await axios.get("v1/culturalheritage/list", {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
       setApi(res ? [...res.data.data_body, ...places] : [...places]);
+      console.log(api);
     } catch (e) {
       console.log(e.response);
     }
