@@ -217,8 +217,8 @@ export default function Maps() {
             styles: Sample1,
             // 기본 ui 요소 지우기
             disableDefaultUI: true,
-            minZoom: 16,
-            maxZoom: 17,
+            // minZoom: 16,
+            // maxZoom: 17,
           }}
           mapContainerStyle={{ width: "100%", height: "100vh" }}
         >

@@ -9,7 +9,7 @@ import Signup from "./pages/Signup";
 import Maps from "./pages/Maps";
 import SearchPage from "./pages/SearchPage";
 
-import Camera from "./components/ARpages/Camera";
+import Camera from "./components/ARpages/arCamera";
 import Test from "./pages/Test";
 
 function App() {
