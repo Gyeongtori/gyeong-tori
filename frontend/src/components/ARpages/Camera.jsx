@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-
 import * as THREE from "three";
-
 import html2canvas from "html2canvas";
 import Capture from "./capturePage";
 
@@ -12,11 +9,7 @@ export default function Camera(props) {
   const { state } = useLocation();
   console.log(state, "이거는 상속받아온 값입니다.");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
- 
-  // const navigate = useNavigate();
-  // const
-
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const rendererRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -45,10 +38,10 @@ export default function Camera(props) {
     html2canvas(canvas)
       .then((canvas) => {
         const imageDataURL = canvas.toDataURL();
-        console.log(imageDataURL);
+        console.log(imageDataURL,imageDataURL);
         setCapturedImageDataURL(imageDataURL);
         stopVideo();
-        setIsModalOpen(!isModalOpen);
+        // setIsModalOpen(!isModalOpen);
         setCaptureState(true);
       })
       .catch((error) => {
@@ -89,28 +82,41 @@ export default function Camera(props) {
     scene.add(ambientLight);
     scene.add(directionalLight);
     //gltf instense 생성 및 로드
-    const loader = new GLTFLoader(); 
-    loader.load('./metarial/1234.gltf',
-     function (gltf) {
     
-
-      // 위치, 회전 또는 필요한 다른 속성에 따라 조정
-      gltf.position.set(0, 0, 0); // 예시 위치, 필요에 따라 조정
-      gltf.rotation.y -= 1.5;
-      gltf.scene.scale.set(0.5, 0.5, 0.5)
-      // 씬에 모델 추가
-      scene.add(gltf);
-      console.log(gltf,"gltf야")
-  },
-  function (xhr) {
-    // 로드 중 발생한 프로그레스 이벤트 처리
-    console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-  },
-  function (error) {
-    // 에러 핸들러 함수
-    console.error('GLTF 파일 로드 중 에러 발생:', error);
+    const loadGltfModel = () => {
+      // GLTF 모델 로드
+      let loader = new GLTFLoader();
+  
+      loader.load("metarial/1234.gltf", (gltf) => {
+          console.log('GLTF 모델이 성공적으로 로드되었습니다.', gltf);
+  
+          if (gltf.scene) {
+              // 씬에 로드된 객체들 추가
+              gltf.scene.traverse((object) => {
+                  // traverse 함수 내에서 호출되는 콜백 함수를 이용하여 객체들을 씬에 추가합니다.
+                  sceneRef.current.add(object);
+              });
+  
+              // 애니메이션 시작
+              animate();
+          } else {
+              console.error('GLTF 모델의 씬이 정의되지 않았습니다.');
+          }
+      }, undefined, (error) => {
+          console.error('GLTF 모델 로딩 중 오류:', error);
+      });
   }
-  );
+
+  const animate = () => {
+    // 비디오 텍스처 갱신
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        videoMeshRef.current.material.map.needsUpdate = true;
+    }
+
+    // 렌더링 및 애니메이션 재귀 호출
+    rendererRef.current.render(sceneRef.current, cameraRef.current);
+    requestAnimationFrame(() => animate(video));
+}
 
     let video;
 
@@ -121,6 +127,7 @@ export default function Camera(props) {
           video: { facingMode },
           audio: false,
         };
+        
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then((stream) => {
@@ -133,14 +140,14 @@ export default function Camera(props) {
             const videoMaterial = new THREE.MeshBasicMaterial({
               map: videoTexture,
             });
-            const videoGeometry = new THREE.PlaneGeometry(6, 12);
+            const videoGeometry = new THREE.PlaneGeometry(16, 12);
             const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
             scene.add(videoMesh);
             videoMeshRef.current = videoMesh;
             camera.position.y = 1
             camera.position.z = 7;
             videoStreamRef.current = stream;
-
+            loadGltfModel()
             const animate = () => {
               if (video.readyState === video.HAVE_ENOUGH_DATA) {
                 videoTexture.needsUpdate = true;
@@ -150,7 +157,7 @@ export default function Camera(props) {
               requestAnimationFrame(animate);
             };
 
-            animate();
+            animate(video);
           })
           .catch((error) => {
             console.error("Error accessing webcam:", error);
@@ -164,24 +171,34 @@ export default function Camera(props) {
     startVideo();
 
     // 창 크기 조절 이벤트 핸들러
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(
-        
-        window.innerWidth * devicePixelRatio,
-        window.innerHeight * devicePixelRatio
-      );
-  
+    const resizeCanvas = () => {
+      const canvas = rendererRef.current.domElement;
+  const { current: camera } = cameraRef;
+
+  // Canvas의 크기를 창의 크기와 동일하게 설정
+  canvas.width = window.innerWidth * devicePixelRatio;
+  if (window.innerWidth <= 600) {
+    canvas.height = 300 * devicePixelRatio; // 600px 이하의 화면 높이
+  } else if (window.innerWidth <= 1024) {
+    canvas.height = 400 * devicePixelRatio; // 601px에서 1024px 사이의 화면 높이
+  } else {
+    canvas.height = 600 * devicePixelRatio; // 1025px 이상의 화면 높이
+  }
+  // Three.js의 렌더러 크기도 업데이트
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
     };
 
-    // 창 크기 조절 이벤트 리스너 등록
-    window.addEventListener("resize", handleResize);
+    
 
+    // 창 크기 조절 이벤트 리스너 등록
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas()
     // useEffect의 cleanup 함수
     return () => {
       // 이벤트 리스너 제거
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", resizeCanvas);
       // 비디오 스트림 정리
       const { current: videoStream } = videoStreamRef;
       if (videoStream) {
@@ -191,6 +208,14 @@ export default function Camera(props) {
     };
   }, [facingMode]); // facingMode 변수가 변경될 때마다 useEffect가 다시 실행됨
   // 요기까지 유즈 이펙트
+
+  useEffect(() => {
+    // facingMode가 environment인 경우 scaleX(1)로 설정
+    if (facingMode === "environment") {
+      const canvas = canvasRef.current;
+      canvas.style.transform = "scaleX(1)";
+    }
+  }, [facingMode]);
 
   return (
     <div>
@@ -210,9 +235,9 @@ export default function Camera(props) {
             ref={canvasRef}
             id="canvas"
             style={{
-              width: "100%",
+              width: "600px",
               // maxWidth: "100vw",
-              height: "100%",
+              height: "768px",
               transform: "scaleX(-1)",
             }}
           ></canvas>

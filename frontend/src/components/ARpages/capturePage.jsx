@@ -43,7 +43,7 @@ export default function Capture(props) {
         address: address
       };
       const res = await axios.post(`${process.env.REACT_APP_PUBLIC_URL}v1/culturalheritage/list`, postData);
-      console.log(postAPI(),"postApi v")
+      console.log("정상적으로 실행되었습니다.")
     } catch (e) {
       console.log(e.response);
     }
@@ -59,8 +59,9 @@ export default function Capture(props) {
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
-      alert("사진이 저장되었습니다.")
-      backMap()
+      alert("사진이 저장되었습니다.");
+      postAPI();
+      backMap();
     } else {
       console.error("No captured image data to download.");
     }
@@ -70,8 +71,9 @@ export default function Capture(props) {
   const handleCloseModal = () => {
     // 모달 상태를 닫음
     props.setCaptureState(false);
+    postAPI()
     backMap()
-    
+    console.log(postAPI(), "닫아서 나오는 화면")
   };
 
 
