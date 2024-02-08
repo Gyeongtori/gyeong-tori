@@ -5,66 +5,59 @@ import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useCookies } from 'react-cookie';
+// import { useCookies } from 'react-cookie';
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [id, setId] = useState('')
-  const [nickname, setNickname] = useState('')
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [id, setId] = useState("");
+  const [nickname, setNickname] = useState("");
 
   const getUserInfo = async () => {
     try {
-      const response = await axios.get('/v1/user/retrieve');
+      const response = await axios.get("/v1/user/retrieve");
       const userInfo = response.data.data_body;
-      console.log('userinfo', userInfo)
-      setId(userInfo.id)
-      setNickname(userInfo.nickname)
+      console.log("userinfo", userInfo);
+      setId(userInfo.id);
+      setNickname(userInfo.nickname);
     } catch (error) {
-      console.error('Error fetching user info:', error);
+      console.error("Error fetching user info:", error);
     }
-  }
-
-
-
+  };
 
   const handleLogin = async () => {
-    if(email === "") {
+    if (email === "") {
       alert("이메일을 입력해주세요.");
     } else if (password === "") {
-      alert("비밀번호를 입력해주세요.")
+      alert("비밀번호를 입력해주세요.");
     } else {
       try {
         const response = await axios.post(`/v1/auth/login`, {
           email,
-          password
+          password,
         });
         const status = response.data.data_header.result_code;
-        if(status === "204 NO_CONTENT") {
-          console.log('로그인 성공!')
-          getUserInfo()
+        if (status === "204 NO_CONTENT") {
+          console.log("로그인 성공!");
+          getUserInfo();
 
-          goMain()
-
-
+          goMain();
 
           // localStorage.setItem('accessToken', response.data.accessToken);
           // localStorage.setItem("refreshToken", response.data.refreshToken);
         }
-      } catch(error) {
-        const status = error
-        console.log('status: ', status);
+      } catch (error) {
+        const status = error;
+        console.log("status: ", status);
 
-      //   if(status.result_code === 'NOT_EXISTS') {
-      //     alert(status.result_message)
-      // }
-    }}
+        //   if(status.result_code === 'NOT_EXISTS') {
+        //     alert(status.result_message)
+        // }
+      }
+    }
   };
-
-
 
   const goSignUp = () => {
     navigate("/signup");
@@ -72,15 +65,12 @@ const Login = () => {
   const goMain = () => {
     navigate("/maps");
   };
-  const goCamera =()=> {
+  const goCamera = () => {
     navigate("/camera");
-  }
-  const goArPage = ()=>{
-    navigate("/arpage")
-  }
-
-
-
+  };
+  const goArPage = () => {
+    navigate("/arpage");
+  };
 
   return (
     <BodyBlock>
@@ -100,25 +90,27 @@ const Login = () => {
           type="password"
           onChange={(e) => setPassword(e.target.value)}
         ></ButtonBlank>
-        <ButtonFull onClick={handleLogin} color="#758467" activecolor="#9DAF89" >
+        <ButtonFull onClick={handleLogin} color="#758467" activecolor="#9DAF89">
           로그인하기
         </ButtonFull>
-        <ButtonFull onClick={goMain} color="#9DAF89" activecolor="#758467" >
+        <ButtonFull onClick={goMain} color="#9DAF89" activecolor="#758467">
           게스트로 입장하기
         </ButtonFull>
         <p>
-          아직 회원이 아니신가요? <span onClick={goSignUp} style={{ color: '#758467'}}>회원가입</span>
+          아직 회원이 아니신가요?{" "}
+          <span onClick={goSignUp} style={{ color: "#758467" }}>
+            회원가입
+          </span>
         </p>
       </LoginBlock>
     </BodyBlock>
-
   );
 };
 
 export default Login;
 
 const BodyBlock = styled.div`
-  background-color: #DFE7DA;
+  background-color: #dfe7da;
   width: 100%;
   height: 100vh;
   overflow: auto;
@@ -136,9 +128,6 @@ const LoginBlock = styled.div`
   left: 0;
   border-radius: 50px 50px 0px 0px;
   background-color: white;
-  
 
   /* border: 1px solid black; */
 `;
-
-

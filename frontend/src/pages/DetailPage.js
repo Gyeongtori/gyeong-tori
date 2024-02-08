@@ -50,7 +50,7 @@ const Des = styled.div`
   margin: 5px auto;
   width: 80%;
   padding: 10px;
-  max-height: 30vh;
+  height: 40vh;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 20px;
