@@ -64,37 +64,7 @@ const Login = () => {
     }}
   };
 
-//   const createAxiosInstance = () => {
-//     return axios.create({
-//       baseURL: "{baseURL 적기}",
-//     });
-//   };
 
-//   let axiosInstance = createAxiosInstance();
-
-//   axiosInstance.interceptors.response.use(
-//     (response) => response,
-//     async (error) => {
-//       const statusCode = error.response?.status;
-//       if (statusCode === 401) {
-//         try {
-//           const refreshResponse = await axios.get("/v1/auth/refresh");
-//           console.log(refreshResponse);
-//           const newToken = refreshResponse.data.accessToken;
-//           setCookie("jwt", newToken);
-//           axiosInstance = createAxiosInstance();
-//           error.config.headers["Authorization"] = `Bearer ${newToken}`;
-//           // return axiosInstance(error.config);
-//         } catch (refreshError) {
-//           removeCookie("jwt");
-//           navigate("/");
-   
-//         }
-//       }
-
-//     }
-//   );
-// };
 
   const goSignUp = () => {
     navigate("/signup");
