@@ -49,17 +49,15 @@ const Header = () => {
   };
 
   return (
-    <>
-      <Head>
-        <Back>
-          <FaChevronLeft onClick={goPerv} />
-        </Back>
-        <Title>
-          <strong>{name}</strong>님이 모은 카드
-        </Title>
-        <Rank>랭킹</Rank>
-      </Head>
-    </>
+    <Head>
+      <Back>
+        <FaChevronLeft onClick={goPerv} />
+      </Back>
+      <Title>
+        <strong>{name}</strong>님이 모은 카드
+      </Title>
+      <Rank>랭킹</Rank>
+    </Head>
   );
 };
 

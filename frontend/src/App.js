@@ -11,6 +11,7 @@ import SearchPage from "./pages/SearchPage";
 
 import Camera from "./components/ARpages/arCamera";
 import Test from "./pages/Test";
+import DetailPage from "./pages/DetailPage";
 
 function App() {
   // PWA 적용을 위한 vh변환 함수
@@ -33,6 +34,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/maps" element={<Maps />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/detail" element={<DetailPage />} />
 
         <Route path="/camera" element={<Camera />} />
         <Route path="/test" element={<Test />} />
