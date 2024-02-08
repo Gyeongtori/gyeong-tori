@@ -1,28 +1,41 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, { useEffect } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Cards from "./pages/Cards";
+import Main from "./pages/Main";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Maps from "./pages/Maps";
+import SearchPage from "./pages/SearchPage";
+
+import Camera from "./components/ARpages/Camera";
+import Test from "./pages/Test";
 
 function App() {
+  // PWA 적용을 위한 vh변환 함수
+  function setScreenSize() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
+
+  useEffect(() => {
+    setScreenSize();
+  }, []);
+
   return (
-    <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
+    <div className="App" id="App">
       <Routes>
         <Route path="/cards" element={<Cards />} />
+        <Route path="/main" element={<Main />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/maps" element={<Maps />} />
+        <Route path="/search" element={<SearchPage />} />
+
+        <Route path="/camera" element={<Camera />} />
+        <Route path="/test" element={<Test />} />
       </Routes>
     </div>
   );
