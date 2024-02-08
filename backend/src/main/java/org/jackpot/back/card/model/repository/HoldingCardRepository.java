@@ -29,4 +29,8 @@ public interface HoldingCardRepository extends JpaRepository<HoldingCard, Long> 
             "GROUP BY u.id, u.profileImage, u.nickname, u.grade " +
             "ORDER BY COUNT(hc.card.number) DESC")
     List<GetCardRankResponse> getCardRanking();
+
+    //보유 카드 개수 조회
+    @Query("select count(hc.user.id) from HoldingCard hc where hc.user.id=:userId group by hc.user.id")
+    Integer getCardCount(@Param("userId") Long userId);
 }

@@ -1,7 +1,5 @@
 package org.jackpot.back.culturalHeritage.model.dto.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class GetCulturalHeritageListRequest {
+public class GetCulturalHeritageDistanceListRequest {
     String lng; //경도
     String lat; //위도
 }

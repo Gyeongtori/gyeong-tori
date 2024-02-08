@@ -63,7 +63,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     public void saveUser(OAuth2UserInfo oAuth2UserInfo){
         String email = oAuth2UserInfo.getEmail();
         String nickname = "익명"; //임의 닉네임
-        String password =  bCryptPasswordEncoder.encode("비밀번호"); //임의 비밀번호 값 암호화 (중요X)
+        String password =  bCryptPasswordEncoder.encode("${oauth2.password}"); //임의 비밀번호 값 암호화 (중요X)
         String profileImage = oAuth2UserInfo.getProfile();
         AuthProvider authProvider = oAuth2UserInfo.getProvider();
         UserRole role = UserRole.USER;

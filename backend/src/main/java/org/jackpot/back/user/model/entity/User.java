@@ -18,11 +18,12 @@ import java.util.Collections;
 import java.util.Map;
 
 @Entity
-@Table(name="Users")
+@Table(name="users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Getter
+@Setter
 @ToString
 public class User implements UserDetails {
     @Id
