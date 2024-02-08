@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Toggle from './Toggle';
 
 import { IoSettingsOutline } from "react-icons/io5";
-import { GiHandBag } from "react-icons/gi";
 import { FaTrophy } from "react-icons/fa";
 import axios from 'axios';
 
@@ -69,37 +68,31 @@ const InfoTop = (props) => {
 
   }
 
-  const goProfile = () => {
-    navigate("/profile")
-  }
 
-  const goCard = () => {
-    navigate("/cards")
-  }
 
 
   return (
     <div>
       <Info>
         <InfoHeader>
-          <img src={`https://openweathermap.com/img/w/${icon}.png`} alt="" />
-          <div>{ temp }°C</div>
-          <div>{ address && address.structure.level4L }</div> 
+          <WeatherContainer>
+            <WeatherBlock>
+              <img src={`https://openweathermap.com/img/w/${icon}.png`} alt="" />
+            </WeatherBlock>
+            <WeatherInfo>
+              <div>{ address && address.structure.level4L }</div>
+              <div>{ temp }°C</div>
+            </WeatherInfo>
+          </WeatherContainer>
         </InfoHeader>
 
         <InfoHeaderRight>
-          < Toggle setIsOn={setIsOn} />
-          <IoSettingsOutline 
-          size={25} 
-          onClick={goProfile}
-          
-          />
+          <Toggle setIsOn={setIsOn} />
+
         </InfoHeaderRight>
       </Info>
 
       <InfoSide>
-        <GiHandBag onClick={goCard} size={25} />
-        
         {isOn && <FaTrophy size={25} />}
       </InfoSide>
 
@@ -131,7 +124,9 @@ const Info = styled.div`
 `
 
 const InfoHeader = styled.div`
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 
@@ -157,3 +152,25 @@ const InfoSide = styled.div`
   }
 `
 
+const WeatherContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const WeatherBlock = styled.div`
+  background-color: white;
+  margin: 1rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: 5px solid rgb(114, 161, 111, 0.5);
+`;
+
+const WeatherInfo = styled.div`
+  margin-top: -40px;
+  color: black;
+  font-size: 15px;
+
+`;
+
+  
