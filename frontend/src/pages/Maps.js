@@ -120,14 +120,7 @@ export default function Maps () {
 // 마크 클릭 이벤트
   const goGetCard = (event) => {
     console.log(event)
-    navigate("/camera", {
-      state: {
-        no: `${event.no}`,
-        lat: `${event.lat}`,
-        lng: `${event.lng}`,
-        // 이외 info 추가 예정
-      }
-    });
+    navigate("/camera");
     
   }
 
@@ -159,10 +152,6 @@ export default function Maps () {
       const res = await axios.post("v1/culturalheritage/list", {
               'lat' : `${center.lat}`,
               'lng' : `${center.lng}` }
-      // {headers: {
-      //   'Content-Type': `application/json`,
-      //   'ngrok-skip-browser-warning': '69420',
-      // }},
       );
       setApi(res? [...res.data.data_body, ...places] : [...places])
     } catch (e) {
