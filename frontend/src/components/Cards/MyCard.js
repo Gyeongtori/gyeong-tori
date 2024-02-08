@@ -69,9 +69,7 @@ const MyCard = () => {
 
   const getMyCards = async () => {
     try {
-      const res = await axios.post("/v1/card/list", {
-        user_email: "test@test.com",
-      });
+      const res = await axios.get("/v1/card/list");
       const data = await res.data.data_body;
       const list = data.filter((item) => item.have === true);
       console.log(list);

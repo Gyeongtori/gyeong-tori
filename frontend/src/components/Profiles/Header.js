@@ -36,18 +36,16 @@ const Title = styled.div`
 `;
 
 const Head = styled.div`
-  height: 6vh;
+
   position: sticky;
-  top: 0;
+  top: 1rem;
   left: 0;
   right: 0;
   background-color: white;
   color: white;
   display: flex;
   align-items: center;
-  padding: 1px 20px;
-  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); */
-  z-index: 100;
+
 `;
 
 const Back = styled.div`

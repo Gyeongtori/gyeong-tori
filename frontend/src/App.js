@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Maps from "./pages/Maps";
 import SearchPage from "./pages/SearchPage";
 
+import Camera from "./components/ARpages/arCamera";
 import Test from "./pages/Test";
 import DetailPage from "./pages/DetailPage";
 
@@ -34,6 +35,8 @@ function App() {
         <Route path="/maps" element={<Maps />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/detail" element={<DetailPage />} />
+
+        <Route path="/camera" element={<Camera />} />
         <Route path="/test" element={<Test />} />
       </Routes>
     </div>

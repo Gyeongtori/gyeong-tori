@@ -3,18 +3,6 @@ import styled, { css } from 'styled-components';
 
 
 
-// const colorStyles = css`
-//   ${({ props }) => {
-//     return css`
-//       background: ${props.color};
-//       &:active {
-//         background: ${props.activecolor};
-//       }
-//     `;
-//   }}
-// `;
-
-
 const StyledButton = styled.button`
   /* 공통 스타일 */
   display: inline-block;
@@ -31,7 +19,7 @@ const StyledButton = styled.button`
 
   /* 크기 */
   height: 3.125rem;
-  width: 20rem;
+  width: 18.5rem;
   font-size: 1rem;
 
   /* 색상 */

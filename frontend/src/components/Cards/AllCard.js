@@ -73,9 +73,7 @@ const AllCard = () => {
 
   const getCards = async () => {
     try {
-      const res = await axios.post("/v1/card/list", {
-        user_email: "test@test.com",
-      });
+      const res = await axios.get("/v1/card/list");
       console.log(res);
       const data = await res.data.data_body;
       const currnet = data.length;

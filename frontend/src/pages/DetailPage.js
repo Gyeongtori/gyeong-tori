@@ -32,7 +32,11 @@ const Title = styled.div`
 `;
 const Grade = styled.div`
   display: flex;
+  width: 100%;
   justify-content: flex-end;
+  div {
+    margin: 0 31.5px;
+  }
 `;
 const CardImg = styled.div`
   width: 270px;
@@ -43,7 +47,7 @@ const CardImg = styled.div`
 const Des = styled.div`
   display: flex;
   justify-content: center;
-  margin: 10px auto;
+  margin: 5px auto;
   width: 80%;
   padding: 10px;
   max-height: 30vh;
@@ -63,14 +67,59 @@ const Des = styled.div`
 const Dates = styled.div`
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-  border-radius: 20px;
-  background-color: white;
-  color: black;
-  &:hover {
+  margin: 0 31.5px;
+  div {
+    align-items: center;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: white;
+    color: black;
+  }
+  .div:hover {
     color: white;
     background-color: #9daf89;
   }
+`;
+const MoveBtn = styled.button`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+
+  display: inline-block;
+  width: auto;
+
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+`;
+const CloseBtn = styled.button`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+
+  display: inline-block;
+  width: auto;
+
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  border-radius: 50px;
 `;
 const Footer = styled.div`
   margin: 0 auto;
@@ -79,29 +128,34 @@ const Footer = styled.div`
   align-items: center;
   bottom: 0px;
   width: 80%;
-  .close {
-    border-radius: 50px;
-  }
 `;
 const DetailPage = () => {
   let navigate = useNavigate();
   const { state } = useLocation();
   const [getGrade, setGrade] = useState(1);
+  const [prevAble, setPrevAble] = useState(true);
+  const [nextAble, setNextAble] = useState(false);
   const [getDate, setDate] = useState(false);
-  const ARRAY = [0, 1, 2, 3, 4];
-
+  const ARRAY = [1, 2, 3, 4, 5];
   const prev = () => {
-    if (getGrade === 1) console.log("1 등급");
-    else setGrade(getGrade - 1);
+    console.log(getGrade);
+    if (getGrade === 1) setPrevAble(true);
+    else {
+      setGrade(getGrade - 1);
+      setNextAble(false);
+    }
   };
   const next = () => {
-    if (getGrade === 5) console.log("5 등급");
-    else setGrade(getGrade + 1);
+    setGrade(getGrade + 1);
+    setPrevAble(false);
+    console.log(getGrade);
+    if (getGrade === 4) setNextAble(true);
   };
   const getDates = () => {
     setDate(true);
+    console.log(state.grade_cards[getGrade - 1].holding_cards);
   };
-  console.log(state);
+  // console.log(state);
   return (
     <>
       <Frame>
@@ -109,13 +163,15 @@ const DetailPage = () => {
           <Box>
             <Title>{state.cultural_heritage_name}</Title>
             <Grade>
-              {ARRAY.map((item, index) =>
-                getGrade <= index + 1 ? (
-                  <GiAcorn key={index} style={{ color: "red" }} />
-                ) : (
-                  <GiAcorn key={index} style={{ color: "gray" }} />
-                )
-              )}
+              <div>
+                {ARRAY.map((index) =>
+                  getGrade >= index ? (
+                    <GiAcorn key={index} style={{ color: "brown" }} />
+                  ) : (
+                    <GiAcorn key={index} style={{ color: "gray" }} />
+                  )
+                )}
+              </div>
             </Grade>
             <CardImg $cardImg={state.image} />
             <div>
@@ -124,19 +180,21 @@ const DetailPage = () => {
             </div>
           </Box>
         </Section>
-        <Dates onClick={getDates}>획득일</Dates>
+        <Dates>
+          <div onClick={getDates}>획득일</div>
+        </Dates>
         <Des>{state.description}</Des>
 
         <Footer>
-          <button onClick={prev}>
+          <MoveBtn onClick={prev} disabled={prevAble}>
             <GrLinkPrevious />
-          </button>
-          <button className="close" onClick={() => navigate("/cards")}>
+          </MoveBtn>
+          <CloseBtn onClick={() => navigate("/cards")}>
             <GrClose />
-          </button>
-          <button onClick={next}>
+          </CloseBtn>
+          <MoveBtn onClick={next} disabled={nextAble}>
             <GrLinkNext />
-          </button>
+          </MoveBtn>
         </Footer>
       </Frame>
     </>
