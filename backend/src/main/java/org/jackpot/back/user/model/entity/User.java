@@ -3,6 +3,8 @@ package org.jackpot.back.user.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.jackpot.back.global.utils.MaskUtils;
+import org.jackpot.back.user.model.dto.response.UserInfoResponse;
 import org.jackpot.back.user.model.entity.enums.AuthProvider;
 import org.jackpot.back.user.model.entity.enums.UserRole;
 import org.jackpot.back.user.model.entity.enums.UserStatus;
@@ -16,11 +18,12 @@ import java.util.Collections;
 import java.util.Map;
 
 @Entity
-@Table(name="Users")
+@Table(name="users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Getter
+@Setter
 @ToString
 public class User implements UserDetails {
     @Id
@@ -60,6 +63,17 @@ public class User implements UserDetails {
     @Column(columnDefinition = "varchar(10) not null default 'ACTIVE'")
     @NotNull
     private UserStatus status;
+
+
+    public UserInfoResponse toPublicInfo(){
+        return UserInfoResponse.builder()
+                .id(id)
+                .email(email)
+                .grade(grade)
+                .nickname(nickname)
+                .password(MaskUtils.passwordMask(password))
+                .build();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

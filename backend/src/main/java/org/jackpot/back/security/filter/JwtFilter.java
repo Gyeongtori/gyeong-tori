@@ -20,21 +20,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer_";
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader=null;
-
+        log.debug("========= jwt filter =========");
         Cookie[] cookies = request.getCookies();
+        log.debug(Arrays.toString(cookies));
         if(cookies!=null){
             for(Cookie cookie : cookies){
                 if("accessToken".equals(cookie.getName())){
@@ -58,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         //access token 추출
-        String authToken=authHeader.split(" ")[1];
+        String authToken=authHeader.substring(7);
 
         //access token 검증
         Jws<Claims> claimsJws = jwtUtil.validateAccessToken(authToken);
@@ -72,6 +72,5 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request,response);
-
     }
 }
