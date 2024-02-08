@@ -72,6 +72,12 @@ const Login = () => {
   const goMain = () => {
     navigate("/maps");
   };
+  const goCamera =()=> {
+    navigate("/camera");
+  }
+  const goArPage = ()=>{
+    navigate("/arpage")
+  }
 
 
 

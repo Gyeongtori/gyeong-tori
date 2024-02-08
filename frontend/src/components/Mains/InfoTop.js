@@ -1,75 +1,78 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Toggle from './Toggle';
+import Toggle from "./Toggle";
 
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaTrophy } from "react-icons/fa";
-import axios from 'axios';
+import axios from "axios";
 
 const InfoTop = (props) => {
-  
   // 내 위치
-  const [center, setCenter] = useState({ lat: props.center.lat, lng: props.center.lng});
+  const [center, setCenter] = useState({
+    lat: props.center.lat,
+    lng: props.center.lng,
+  });
   // console.log(center, 'info 센터값입니다')
 
   // 초기 온도 상태 설정
-  const [temp, setTemp] = useState(null)
-  const [icon, setIcon] = useState(null)
-  
+  const [temp, setTemp] = useState(null);
+  const [icon, setIcon] = useState(null);
+
   // Toggle option
   const [isOn, setIsOn] = useState(false);
-  
-  
-  const navigate = useNavigate()
 
-  useEffect(()=>{
-    getWeatherByCurrentLocation()
+  const navigate = useNavigate();
 
-  }, [])
+  useEffect(() => {
+    getWeatherByCurrentLocation();
+  }, []);
 
-
-  const [address, setAddress] = useState();	
+  const [address, setAddress] = useState();
 
   useEffect((props) => {
-    getAddress();
+    // getAddress();
   }, []);
-    
-  const getAddress = async () => {
-    try {
-      // res에는 결과 값이 담겨옴
 
-      const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`, 
-      // const res = await axios.get(`${process.env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process.env.REACT_APP_SIDO_KEY}`
-      // https://api.vworld.kr/req/address?service=address&request=getCoord&key=&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2127.766922,35.907757
-      // {headers: {
-      //   'Access-Control-Allow-Origin' : 'http://localhost:3000/maps'
-      // }}
-      );
-      setAddress(res.data.response.result[0])
-      // console.log(address.structure.level4L, '00동')
-    } catch (e) {
-      console.log(e.response);
-    }
-  };
-  
+  // const getAddress = async () => {
+  //   try {
+  //     // res에는 결과 값이 담겨옴
+
+  //     const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
+  //     // const res = await axios.get(`${process.env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process.env.REACT_APP_SIDO_KEY}`
+  //     // https://api.vworld.kr/req/address?service=address&request=getCoord&key=&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2127.766922,35.907757
+  //     // {headers: {
+  //     //   'Access-Control-Allow-Origin' : 'http://localhost:3000/maps'
+  //     // }}
+  //     );
+  //     setAddress(res.data.response.result[0])
+  //     // console.log(address.structure.level4L, '00동')
+  //   } catch (e) {
+  //     console.log(e.response);
+  //   }
+  // };
+
   // console.log('주소위치 찍기',`${process.env.REACT_APP_SIDO_API_URL}${process.env.REACT_APP_SIDO_KEY}${center.lng},${center.lat}`)
 
-// 현재 날씨 받아오기
-  const getWeatherByCurrentLocation= async ()=>{
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${center.lat}&lon=${center.lng}&appid=101694a50d5922c2274bdd9982d0eacd&units=metric`
-    let response = await fetch(url)
+  // 현재 날씨 받아오기
+  const getWeatherByCurrentLocation = async () => {
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${center.lat}&lon=${center.lng}&appid=101694a50d5922c2274bdd9982d0eacd&units=metric`;
+    let response = await fetch(url);
     let data = await response.json();
     // console.log(data, '이게 될까?');
 
     // 온도 정보 업데이트
-    setTemp(data.main.temp)
-    setIcon(data.weather[0].icon)
+    setTemp(data.main.temp);
+    setIcon(data.weather[0].icon);
+  };
 
-  }
+  const goProfile = () => {
+    navigate("/profile");
+  };
 
-
-
+  const goCard = () => {
+    navigate("/cards");
+  };
 
   return (
     <div>
@@ -77,30 +80,29 @@ const InfoTop = (props) => {
         <InfoHeader>
           <WeatherContainer>
             <WeatherBlock>
-              <img src={`https://openweathermap.com/img/w/${icon}.png`} alt="" />
+              <img
+                src={`https://openweathermap.com/img/w/${icon}.png`}
+                alt=""
+              />
             </WeatherBlock>
             <WeatherInfo>
-              <div>{ address && address.structure.level4L }</div>
-              <div>{ temp }°C</div>
+              <div>{address && address.structure.level4L}</div>
+              <div>{temp}°C</div>
             </WeatherInfo>
           </WeatherContainer>
         </InfoHeader>
 
         <InfoHeaderRight>
           <Toggle setIsOn={setIsOn} />
-
         </InfoHeaderRight>
       </Info>
 
-      <InfoSide>
-        {isOn && <FaTrophy size={25} />}
-      </InfoSide>
-
+      <InfoSide>{isOn && <FaTrophy size={25} />}</InfoSide>
     </div>
-  )
-}
+  );
+};
 
-export default InfoTop
+export default InfoTop;
 
 /* <ToggleSwitch
   checked={isActive} // isToggleOn 상태를 확인하여 토글 상태를 설정
@@ -113,22 +115,19 @@ export default InfoTop
   className="custom-switch" // 커스텀 클래스 추가
 /> */
 
-
 const Info = styled.div`
-
   /* background-color: wheat; */
 
   display: flex;
   justify-content: space-between;
   align-items: center; /* 세로 중앙 정렬 */
-`
+`;
 
 const InfoHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
-
+`;
 
 const InfoHeaderRight = styled.div`
   display: flex;
@@ -138,8 +137,7 @@ const InfoHeaderRight = styled.div`
   & > :first-child {
     margin-right: 10px;
   }
-
-`
+`;
 
 const InfoSide = styled.div`
   display: flex;
@@ -150,7 +148,7 @@ const InfoSide = styled.div`
   & > :first-child {
     margin-bottom: 10px;
   }
-`
+`;
 
 const WeatherContainer = styled.div`
   display: flex;
@@ -170,7 +168,4 @@ const WeatherInfo = styled.div`
   margin-top: -40px;
   color: black;
   font-size: 15px;
-
 `;
-
-  
