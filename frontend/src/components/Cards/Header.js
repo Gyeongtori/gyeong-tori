@@ -2,22 +2,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FaChevronLeft } from "react-icons/fa6";
 let Head = styled.div`
-  height: 6vh;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  background-color: white;
+  /* left: 0;
+  right: 0; */
+  width: 20.8125rem;
+  height: 2.8125rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1px 20px;
+  padding: 0.0625rem 1.25rem;
   /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); */
   z-index: 100;
 `;
 let Back = styled.div`
-  margin-left: 5px;
+  margin-left: 0.3125rem;
   svg {
     color: rgba(128, 128, 128, 0.623);
     &:hover {
@@ -27,12 +30,13 @@ let Back = styled.div`
   }
 `;
 let Title = styled.div`
-  font-size: 20px;
+  font-size: 1.25rem;
   color: black;
   /* font-weight: bold; */
 `;
 
 let Rank = styled.div`
+  font-size: 0.875rem;
   color: black;
 `;
 const Header = () => {

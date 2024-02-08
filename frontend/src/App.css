@@ -1,8 +1,21 @@
 .App {
-  text-align: center;
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  max-width: 415px;
+  height: --webkit-fill-available;
+  height: 100%;
+  margin: auto;
+  border: 0;
+  touch-action: pan-y;
+  /* background-color: beige; */
 }
-
-.App-logo {
+::-webkit-scrollbar {
+  display: none;
+}
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -35,4 +48,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
