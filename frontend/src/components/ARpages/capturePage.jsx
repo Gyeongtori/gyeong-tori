@@ -13,22 +13,18 @@ export default function Capture(props) {
 
   const navigate = useNavigate();
   const backMap = () => {
-    navigate(("/maps"));
+    navigate("/maps");
   };
   const [api, setApi] = useState();
-
-  useEffect(() => {
-    postAPI();
-  }, []);
 
   const postAPI = async () => {
     try {
       const postData = {
         cultural_heritage_id: cultural_heritage_id,
-        address: address
+        address: address,
       };
-      const res = await axios.post(`${process.env.REACT_APP_PUBLIC_URL}v1/culturalheritage/list`, postData);
-      console.log("정상적으로 실행되었습니다.")
+      const res = await axios.post(`/v1/card/add`, postData);
+      console.log("정상적으로 실행되었습니다.");
     } catch (e) {
       console.log(e.response);
     }
@@ -53,13 +49,11 @@ export default function Capture(props) {
     }
   };
 
-
   const handleCloseModal = () => {
     // 모달 상태를 닫음
     props.setCaptureState(false);
     postAPI();
     backMap();
-    console.log(postAPI(), "닫아서 나오는 화면")
   };
 
   return (
@@ -67,13 +61,26 @@ export default function Capture(props) {
       {props.captureState && (
         <div>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <button style={{ marginRight: "10px", marginBottom: "10px" }} onClick={handleDownload}>사진저장하기</button>
-            <button style={{ marginBottom: "10px" }} onClick={handleCloseModal}>닫기</button>
+            <button
+              style={{ marginRight: "10px", marginBottom: "10px" }}
+              onClick={handleDownload}
+            >
+              사진저장하기
+            </button>
+            <button style={{ marginBottom: "10px" }} onClick={handleCloseModal}>
+              닫기
+            </button>
           </div>
-          {/* 닫기 버튼 추가 */}
+        
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ width: "300px", height: "642px" }}>
-              {<img src={url} alt="Captured" style={{ width: "100%", height: "100%" }} />}
+              {
+                <img
+                  src={url}
+                  alt="Captured"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              }
             </div>
           </div>
         </div>

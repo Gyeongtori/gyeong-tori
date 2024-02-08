@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from "three";
 import html2canvas from "html2canvas";
@@ -7,8 +7,11 @@ import Capture from "./capturePage";
 
 export default function Camera(props) {
   const { state } = useLocation();
+  const navigate = useNavigate();
   console.log(state, "이거는 상속받아온 값입니다.");
-
+  const backMap = () => {
+    navigate("/maps");
+  }; 
   // const [isModalOpen, setIsModalOpen] = useState(false);
   const rendererRef = useRef(null);
   const sceneRef = useRef(null);
@@ -109,7 +112,7 @@ export default function Camera(props) {
 
   const animate = () => {
     // 비디오 텍스처 갱신
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    if (videoMeshRef.current && videoMeshRef.current.material.map){
         videoMeshRef.current.material.map.needsUpdate = true;
     }
 
@@ -246,6 +249,9 @@ export default function Camera(props) {
               카메라 전환하기
             </button>
             <button onClick={handelCapture}>캡쳐하기</button>
+            <button style={{ marginBottom: "10px" }} onClick={backMap}>
+              닫기
+            </button>
           </div>
         </div>
       ) }

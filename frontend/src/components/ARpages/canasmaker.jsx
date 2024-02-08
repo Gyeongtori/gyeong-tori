@@ -1,99 +1,98 @@
-let scene = new THREE.Scene();
-        let renderer = new THREE.WebGLRenderer();
-        // let loader = new THREE.GLTFLoader();
-        // loader.load('../static/img/tory.gltf', function (gltf) {
-        //     scene.add(gltf.scene);
-        // });
-        let loader = new GLTFLoader();
-        loader.load('../static/img/tory.gltf', (gltf) => {
-            this.scene.add(gltf.scene);
-        });
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import html2canvas from "html2canvas";
+import Capture from "./capturePage";
+import { Model } from './Model'; // Model 컴포넌트를 import 합니다.
 
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
+export default function Camera(props) {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  console.log(state, "이거는 상속받아온 값입니다.");
 
-        // 비디오와 비디오 스트림 변수 초기화
-        this.video = document.createElement('video');
-        this.videoStream = null; // 초기에는 비디오 스트림을 null로 설정
+  // 캔버스 관련 상태 및 레퍼런스
+  const canvasRef = useRef(null);
+  const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
+  const [facingMode, setFacingMode] = useState("user");
+  const [captureState, setCaptureState] = useState(false);
 
-        // 카메라 초기 위치 설정
-        this.camera.position.z = 7;
+  // 캔버스 캡처 함수
+  const handleCapture = () => {
+    const canvas = canvasRef.current;
+    html2canvas(canvas)
+      .then((canvas) => {
+        const imageDataURL = canvas.toDataURL();
+        setCapturedImageDataURL(imageDataURL);
+        // 캡처 완료 상태 업데이트
+        setCaptureState(true);
+      })
+      .catch((error) => {
+        console.error("Error capturing canvas:", error);
+      });
+  };
 
-        // 비디오 텍스처 및 재질, 지오메트리 생성 및 메시에 적용
-        this.videoTexture = new THREE.VideoTexture(this.video);
-        const videoMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture });
-        const videoGeometry = new THREE.PlaneGeometry(16, 9);
-        this.videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-        this.scene.add(this.videoMesh);
+  // 카메라 전환 함수
+  const toggleFacingMode = () => {
+    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+  };
 
-        // 애니메이션 함수 정의
-        const animate = () => {
-            // 비디오 데이터가 충분히 확보되면 텍스처 업데이트
-            if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-                this.videoTexture.needsUpdate = true;
-            }
+  useEffect(() => {
+    // 캔버스 크기 조정 함수
+    const resizeCanvas = () => {
+      const canvas = canvasRef.current;
+      // 캔버스 크기 조정 로직 추가
+    };
 
-            // 렌더링 및 다음 프레임 요청
-            this.renderer.render(this.scene, this.camera);
-            requestAnimationFrame(animate);
-        };
+    // 창 크기 변경 이벤트 리스너 등록
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas(); // 초기 캔버스 크기 설정
 
-        // 애니메이션 시작
-        animate();
-    }
+    // useEffect의 cleanup 함수
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+    };
+  }, []); // 컴포넌트가 처음 렌더링될 때만 실행
 
-    // 웹캠 시작 함수
-    startVideo() {
-        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-            this.video.srcObject = stream;
-            this.video.play();
+  return (
+    <div>
+      {captureState === true ? (
+        captureState && (
+          <Capture
+            url={capturedImageDataURL}
+            state={state}
+            captureState={captureState}
+            setCaptureState={setCaptureState}
+          />
+        )
+      ) : (
+        <div>
+          {/* 캔버스 */}
+          <canvas
+            ref={canvasRef}
+            id="canvas"
+            style={{
+              width: "600px",
+              height: "768px",
+              transform: "scaleX(-1)",
+            }}
+          ></canvas>
 
-            // 이전 웹캠 스트림 중지
-            this.stopVideo();
+          {/* GLTF 모델 */}
+          <Model />
 
-            // 비디오 스트림 저장
-            this.videoStream = stream;
-        }).catch((error) => {
-            console.error('Error accessing webcam:', error);
-        });
-    }
-
-    // 웹캠 정지 함수
-    stopVideo() {
-        // 이전 웹캠 스트림 중지
-        if (this.videoStream) {
-            const tracks = this.videoStream.getTracks();
-            tracks.forEach(track => track.stop());
-        }
-    }
-
-    // 프론트/백 카메라 전환 함수
-    switchCamera() {
-        // 카메라 전환 로직 추가
-        console.log('Switching camera...');
-    }
+          {/* 카메라 컨트롤 버튼 */}
+          <div>
+            <button color="primary" onClick={toggleFacingMode}>
+              카메라 전환하기
+            </button>
+            <button onClick={handleCapture}>캡처하기</button>
+            <button style={{ marginBottom: "10px" }} onClick={backMap}>
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
-
-// Three.js 및 XR 활성화 코드
-const cs03Instance = new Cs03();
-
-// 웹캠 시작 버튼 클릭 이벤트
-document.getElementById('btn-front').addEventListener('click', () => {
-    cs03Instance.startVideo();
-});
-
-// 후면 카메라 버튼 클릭 이벤트
-document.getElementById('btn-back').addEventListener('click', () => {
-    cs03Instance.stopVideo();
-    cs03Instance.switchCamera();
-});
-
-// 창 크기 변경 이벤트 리스너
-window.addEventListener('resize', () => {
-    cs03Instance.camera.aspect = window.innerWidth / window.innerHeight;
-    cs03Instance.camera.updateProjectionMatrix();
-    cs03Instance.renderer.setSize(window.innerWidth, window.innerHeight);
-});
