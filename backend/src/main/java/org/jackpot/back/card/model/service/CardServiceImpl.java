@@ -238,6 +238,11 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public List<ReadCardResponse> searchCard(SearchCardRequest searchCardRequest) {
+        //키워드, 종목 코드, 속성 -> 정렬 (이름순, 최신순)
+        List<Card> cardList = cardRepository.searchCard(searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+        for (Card card : cardList) {
+            System.out.println(card.toString());
+        }
         return null;
     }
 

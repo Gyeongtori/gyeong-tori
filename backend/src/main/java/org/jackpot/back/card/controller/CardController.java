@@ -54,8 +54,8 @@ public class CardController {
 
 
     @PostMapping("/search")
-    public ResponseEntity searchCard(@AuthenticationPrincipal User user, @RequestBody SearchCardRequest searchCardRequest) {
-        searchCardRequest.setUserEmail(user.getEmail());
+    public ResponseEntity searchCard(@RequestBody SearchCardRequest searchCardRequest) {
+//        searchCardRequest.setUserEmail(user.getEmail());
         return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
     }
 
