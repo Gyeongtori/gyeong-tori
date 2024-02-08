@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Maps from "../../pages/Maps";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
@@ -8,34 +8,19 @@ export default function Capture(props) {
   console.log(props.url, props.state, props.isModalOpen);
   const url = props.url;
   const state = props.state;
-  const cultural_heritage_id = state.cultural_heritage_id
-  const address =state.address
+  const cultural_heritage_id = state.cultural_heritage_id;
+  const address = state.address;
 
   const navigate = useNavigate();
-  const backMap = () =>{
-      navigate(("/maps"))    
-  }
-  const [api, setApi] = useState();	
-  
-  // useEffect(() => {
-  //   getAPI();
-  // }, []);
+  const backMap = () => {
+    navigate(("/maps"));
+  };
+  const [api, setApi] = useState();
 
-  useEffect(()=>{
+  useEffect(() => {
     postAPI();
-  },[])
-    
-  // const getAPI = async () => {
-  //   try {
-  //     const res = await axios.get("v1/culturalheritage/list",{
+  }, []);
 
-  //     });
-  //     // res에는 결과 값이 담겨옴
-  //     setApi(res);
-  //   } catch (e) {
-  //     console.log(e.response);
-  //   }
-  // };
   const postAPI = async () => {
     try {
       const postData = {
@@ -48,7 +33,8 @@ export default function Capture(props) {
       console.log(e.response);
     }
   };
-  const handleDownload = (p) => {
+
+  const handleDownload = () => {
     // 캡쳐된 이미지 데이터 URL을 이용하여 다운로드
     if (url) {
       const downloadLink = document.createElement("a");
@@ -71,22 +57,23 @@ export default function Capture(props) {
   const handleCloseModal = () => {
     // 모달 상태를 닫음
     props.setCaptureState(false);
-    postAPI()
-    backMap()
+    postAPI();
+    backMap();
     console.log(postAPI(), "닫아서 나오는 화면")
   };
-
 
   return (
     <div>
       {props.captureState && (
         <div>
-          <div>
-            <button onClick={handleDownload}>사진저장하기</button>
-            <button onClick={handleCloseModal}>닫기</button>
-            {/* 닫기 버튼 추가 */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <button style={{ marginRight: "10px", marginBottom: "10px" }} onClick={handleDownload}>사진저장하기</button>
+            <button style={{ marginBottom: "10px" }} onClick={handleCloseModal}>닫기</button>
+          </div>
+          {/* 닫기 버튼 추가 */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ width: "300px", height: "642px" }}>
-              {<img src={url} alt="Captured" />}
+              {<img src={url} alt="Captured" style={{ width: "100%", height: "100%" }} />}
             </div>
           </div>
         </div>
