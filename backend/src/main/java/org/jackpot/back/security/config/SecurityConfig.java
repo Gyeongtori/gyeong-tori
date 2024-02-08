@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
     private static final String[] ALLOWED_URIS={
             "/v1/auth/login",
+            "/v1/email/**",
             "/v1/user/regist",
             "/v1/auth/refresh",
             "/v1/culturalheritage/**",

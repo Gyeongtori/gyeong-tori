@@ -2,7 +2,9 @@ package org.jackpot.back.security.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.jackpot.back.global.utils.MessageUtils;
+import org.jackpot.back.security.model.dto.request.EmailConfirmRequest;
 import org.jackpot.back.security.model.dto.request.EmailRequest;
+import org.jackpot.back.security.model.service.EmailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
