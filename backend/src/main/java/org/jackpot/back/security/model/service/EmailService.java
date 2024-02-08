@@ -111,9 +111,10 @@ public class EmailService {
 
     private String makeCodeTemplate(String code){
         String mainColor = "#9CAF88";
+        String secondaryColor = "#1E1E1E";
         String title = "GYEONGTORI_AUTH_SERVICE";
         String template =
-                "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box;\">"+
+                "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box; color: "+secondaryColor+";\">"+
                         "\t<h1 style=\"margin: 0; padding: 0 5px; font-size: 28px; font-weight: 400;\">"+
                         "\t\t<span style=\"font-size: 15px; margin: 0 0 10px 3px;\">"+title+"</span><br />"+
                         "\t\t<span style=\"color: "+mainColor+";\">이메일 인증</span> 안내입니다."+
@@ -139,9 +140,10 @@ public class EmailService {
 
     private String makeTempPasswordTemplate(String tempPassword){
         String mainColor = "#9CAF88";
+        String secondaryColor = "#1E1E1E";
         String title = "GYEONGTORI_AUTH_SERVICE";
         String template =
-                "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box;\">"+
+                "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box; color: "+secondaryColor+";\">"+
                         "\t<h1 style=\"margin: 0; padding: 0 5px; font-size: 28px; font-weight: 400;\">"+
                         "\t\t<span style=\"font-size: 15px; margin: 0 0 10px 3px;\">"+title+"</span><br />"+
                         "\t\t<span style=\"color: "+mainColor+";\">임시 비밀번호</span> 안내입니다."+
