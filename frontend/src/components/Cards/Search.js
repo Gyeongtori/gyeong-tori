@@ -12,6 +12,7 @@ let SearchBar = styled.div`
   align-items: center;
   margin: 1.25rem 1.25rem;
   padding: 0.3125rem;
+  width: 100%;
   z-index: 1;
   opacity: 1;
   transition: border 0.3s ease;
@@ -68,6 +69,7 @@ const Search = (props) => {
   const inputRef = useRef(null);
   const locationNow = useLocation();
   let [category, setCategory] = useState([]);
+  let [nowPath, setNowPath] = useState(false);
   useEffect(() => {
     // '/search'에서만 컴포넌트가 마운트될 때 input 요소에 포커스 맞추기
     if (locationNow.pathname === "/search" && inputRef.current) {
@@ -80,9 +82,12 @@ const Search = (props) => {
       // '/search'에서만 컴포넌트가 마운트될 때 선택된 태그 값 가져오기
       if (locationNow.pathname === "/search") {
         // console.log(selectedTags);
+        setNowPath(true);
         setCategory(
           props.filterState.passingTags.filter((tag) => tag.status === true)
         );
+      } else {
+        setNowPath(false);
       }
     },
     [props.filterState] // filterState 값이 변경 될 때 실행
@@ -95,7 +100,7 @@ const Search = (props) => {
   };
 
   return (
-    <>
+    <div style={{ display: "flex", width: "100%" }}>
       <SearchBar>
         <div>
           <FaSearch />
@@ -127,23 +132,21 @@ const Search = (props) => {
         ) : null}
       </SearchBar>
       <div>
-        {category.length !== 0 ? (
-          category.map((val) => (
-            <SearchTag
-              key={val.id}
-              id={val.id}
-              bg={val.color}
-              onClick={props.handleFilter}
-            >
-              {val.name}
-              <IoCloseOutline id={val.id} />
-            </SearchTag>
-          ))
-        ) : (
-          <div style={{ height: "28.3px" }}></div>
-        )}
+        {nowPath && category.length !== 0
+          ? category.map((val) => (
+              <SearchTag
+                key={val.id}
+                id={val.id}
+                bg={val.color}
+                onClick={props.handleFilter}
+              >
+                {val.name}
+                <IoCloseOutline id={val.id} />
+              </SearchTag>
+            ))
+          : nowPath && <div style={{ height: "28.3px" }}></div>}
       </div>
-    </>
+    </div>
   );
 };
 export default Search;
