@@ -14,8 +14,8 @@ const StyledButton = styled.input`
   margin:  0.4rem;
 
   /* 크기 */
-  height: 3.125rem;
-  width: 17.5rem;
+  height: 2.8rem;
+  width: 16rem;
   font-size: 0.875rem;
 
 
@@ -32,12 +32,11 @@ const StyledButton = styled.input`
 `;
 
 
-const ButtonBlank = ({  color, activecolor, borderwidth, type = "text",  ...rest }) => {
+const ButtonBlank = ({  color, activecolor,  type = "text",  ...rest }) => {
     return <StyledButton 
         {...rest}
         color={color}
         activecolor={activecolor}
-        borderwidth={borderwidth}
         type={type}
       >
       </StyledButton>;
