@@ -83,7 +83,7 @@ public class CardServiceImpl implements CardService{
                             .address(addCardToCollectionRequest.getAddress())
                             .build()
             );
-            
+
             //사용자 등급 확인 및 업데이트
             int cardCount = holdingCardRepository.getCardCount(findUser.get().getId()); //총 카드 개수
             User user = findUser.get();
@@ -238,12 +238,133 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public List<ReadCardResponse> searchCard(SearchCardRequest searchCardRequest) {
-        //키워드, 종목 코드, 속성 -> 정렬 (이름순, 최신순)
-        List<Card> cardList = cardRepository.searchCard(searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
-        for (Card card : cardList) {
-            System.out.println(card.toString());
+        try {
+            //사용자 정보 조회
+            Optional<User> findUser = userRepository.findByEmail(searchCardRequest.getUserEmail());
+
+            List<ReadCardResponse> response = new ArrayList<>();
+
+            //카드 조건에 맞게 조회
+            List<Card> cardList = null;
+
+            //정렬 조건
+            switch (searchCardRequest.getSort()){
+                case 1 : //이름 오름차순
+                    cardList = cardRepository.searchCardSortNameASC(searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+                    break;
+                case 2: //이름 내림차순
+                    cardList = cardRepository.searchCardSortNameDESC(searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+                    break;
+                case 3: //최신순
+                    cardList = cardRepository.searchCardSortDate(findUser.get().getId(), searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+
+//                    for(Card card : cardList){
+//                        System.out.println("카드: " + card.getCulturalHeritage().getNameKr() + " " + card.getNumber());
+//                    }
+                    break;
+
+            }
+
+            //카드 리스트 순회
+            for(Card card : cardList){
+                if(response.isEmpty()){
+                    ReadCardResponse readCardResponse = new ReadCardResponse();
+                    //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
+                    Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(card.getCulturalHeritage().getNo());
+                    readCardResponse.setNo(culturalHeritageRedis.get().getNo());
+                    readCardResponse.setHave(false);
+                    readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                    readCardResponse.setDivision(culturalHeritageRedis.get().getDivision());
+                    readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                    readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                    readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
+                    readCardResponse.setField(String.valueOf(card.getField()));
+                    readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
+
+                    //카드 정보 삽입
+                    List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
+                    CardGradeDto cardGradeDto = new CardGradeDto();
+                    cardGradeDto.setCardNumber(card.getNumber());
+                    cardGradeDto.setGrade(card.getRating());
+
+                    //보유 카드 조회
+                    List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
+                    List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
+                    cardGradeDto.setHoldingCards(holdingCards);
+                    //보유하고 있는 경우
+                    if(!holdingCardList.isEmpty()){
+                        readCardResponse.setHave(true);
+                        readCardResponse.setAddress(holdingCardList.get(0).getAddress());
+                    }
+
+                    cardGradeDtoList.add(cardGradeDto);
+                    readCardResponse.setGradeCards(cardGradeDtoList);
+                    response.add(readCardResponse);
+                }
+                else {
+                    Optional<ReadCardResponse> findCardRes = response.stream()
+                            .filter(readCardResponse -> readCardResponse.getNo().equals(card.getCulturalHeritage().getNo()))
+                            .findFirst();
+
+                    //문화재 정보 존재할 경우
+                    if(findCardRes.isPresent()) {
+                        List<CardGradeDto> findCardGradeDto = findCardRes.get().getGradeCards();
+                        //카드 정보 삽입
+                        CardGradeDto cardGradeDto = new CardGradeDto();
+                        cardGradeDto.setCardNumber(card.getNumber());
+                        cardGradeDto.setGrade(card.getRating());
+                        List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
+                        //보유하고 있는 경우
+                        if(!holdingCards.isEmpty()){
+                            findCardRes.get().setHave(true);
+                        }
+                        cardGradeDto.setHoldingCards(holdingCards);
+
+                        //리스트에 추가
+                        findCardGradeDto.add(cardGradeDto);
+                        findCardRes.get().setGradeCards(findCardGradeDto);
+                    }
+                    else{
+                        ReadCardResponse readCardResponse = new ReadCardResponse();
+                        //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
+                        Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageRedisRepository.findById(card.getCulturalHeritage().getNo());
+                        readCardResponse.setNo(culturalHeritageRedis.get().getNo());
+                        readCardResponse.setHave(false);
+                        readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                        readCardResponse.setDivision(culturalHeritageRedis.get().getDivision());
+                        readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                        readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                        readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
+                        readCardResponse.setField(String.valueOf(card.getField()));
+                        readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
+
+                        //카드 정보 삽입
+                        List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
+                        CardGradeDto cardGradeDto = new CardGradeDto();
+                        cardGradeDto.setCardNumber(card.getNumber());
+                        cardGradeDto.setGrade(card.getRating());
+
+                        //보유 카드 조회
+                        List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
+                        List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
+                        cardGradeDto.setHoldingCards(holdingCards);
+                        //보유하고 있는 경우
+                        if(!holdingCardList.isEmpty()){
+                            readCardResponse.setHave(true);
+                            readCardResponse.setAddress(holdingCardList.get(0).getAddress());
+                        }
+
+                        cardGradeDtoList.add(cardGradeDto);
+                        readCardResponse.setGradeCards(cardGradeDtoList);
+                        response.add(readCardResponse);
+                    }
+                }
+            }
+            return response;
+
+        } catch (Exception e){
+            throw new CardException(TRANSACTION_FAIL);
         }
-        return null;
     }
 
     @Override

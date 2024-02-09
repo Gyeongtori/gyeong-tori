@@ -20,5 +20,5 @@ public class SearchCardRequest {
     String keywrod; //검색어
     String division; //종목
     CardField field; //속성
-    int sort; //1(이름순) or 2(최신순) or 3(등급순_내림차순) or 4(등급순_오름차순)
+    int sort; //1(이름순_오름차순) or 2(이름순_내림차순) or 3(최신순)
 }
