@@ -170,7 +170,7 @@ export default function Maps() {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.post("v1/culturalheritage/list", {
+      const res = await axios.get("v1/culturalheritage/list", {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
