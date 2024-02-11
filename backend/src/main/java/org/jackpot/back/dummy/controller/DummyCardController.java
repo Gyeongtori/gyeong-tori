@@ -34,42 +34,42 @@ public class DummyCardController {
          List<ReadCardResponse> readCardResponseList = new ArrayList<>();
 
          List<CardGradeDto> cardGradeDtoList1 = new ArrayList<>();
-         cardGradeDtoList1.add(new CardGradeDto(1L, 1, List.of(
+         cardGradeDtoList1.add(new CardGradeDto(1L, 1, "card/1/BulguksaTempleDabotapPagoda.png", List.of(
                  LocalDate.parse("2024-01-01"),
                  LocalDate.parse("2024-01-02"),
                  LocalDate.parse("2024-01-03")
          )));
-         cardGradeDtoList1.add(new CardGradeDto(2L, 2, List.of(
+         cardGradeDtoList1.add(new CardGradeDto(2L, 2, "card/2/BulguksaTempleDabotapPagoda.png", List.of(
                  LocalDate.parse("2024-01-02"),
                  LocalDate.parse("2024-01-03")
          )));
-         cardGradeDtoList1.add(new CardGradeDto(3L, 3, null));
-         cardGradeDtoList1.add(new CardGradeDto(4L, 4, List.of(
+         cardGradeDtoList1.add(new CardGradeDto(3L, 3, "card/3/BulguksaTempleDabotapPagoda.png", null));
+         cardGradeDtoList1.add(new CardGradeDto(4L, 4, "card/4/BulguksaTempleDabotapPagoda.png", List.of(
                  LocalDate.parse("2024-01-06")
          )));
-         cardGradeDtoList1.add(new CardGradeDto(5L, 5, null));
+         cardGradeDtoList1.add(new CardGradeDto(5L, 5, "card/5/BulguksaTempleDabotapPagoda.png", null));
          readCardResponseList.add(new ReadCardResponse(320, true, "경주 불국사 다보탑", "11", "경북", "경주시", "경북 경주시 불국로 385", cardGradeDtoList1,
                  "http://www.cha.go.kr/unisearch/images/national_treasure/1612673.jpg", "ATTACK",
                  "법화경에 의하면 “석가모니가 영취산(靈鷲山)에서 법화경을 설파할 때 다보여래의 진신사리를 모셔둔 탑이 땅 밑에서 솟아나오고, 그 탑 속에서 소리를 내어 석가모니의 설법을 참된 진리라고 찬탄하고 증명하였다”라고 한다. 참고로 석가모니가 자신 다음에 부처가 될것이라 수기(예언)을 내린 부처도 다보불이다. 이를 근원으로 세워진 탑이 다보여래상주증명탑, 줄여서 다보탑이다. 즉 절의 대웅전 마당에 다보탑을 세우는 것은 석가모니의 영취산을 절에서 재현하는 의미다."));
 
          List<CardGradeDto> cardGradeDtoList2 = new ArrayList<>();
-         cardGradeDtoList2.add(new CardGradeDto(6L, 1, List.of(
+         cardGradeDtoList2.add(new CardGradeDto(6L, 1, "card/1/BulguksaThreeStoryStonePagoda.png", List.of(
                  LocalDate.parse("2024-01-01"),
                  LocalDate.parse("2024-01-02"),
                  LocalDate.parse("2024-01-03")
          )));
-         cardGradeDtoList2.add(new CardGradeDto(7L, 2, List.of(
+         cardGradeDtoList2.add(new CardGradeDto(7L, 2, "card/2/BulguksaThreeStoryStonePagoda.png", List.of(
                  LocalDate.parse("2024-01-02"),
                  LocalDate.parse("2024-01-03")
          )));
-         cardGradeDtoList2.add(new CardGradeDto(8L, 3, List.of(
+         cardGradeDtoList2.add(new CardGradeDto(8L, 3, "card/3/BulguksaThreeStoryStonePagoda.png", List.of(
                  LocalDate.parse("2024-01-11")
          )));
-         cardGradeDtoList2.add(new CardGradeDto(9L, 4, List.of(
+         cardGradeDtoList2.add(new CardGradeDto(9L, 4, "card/4/BulguksaThreeStoryStonePagoda.png", List.of(
                  LocalDate.parse("2024-01-06"),
                  LocalDate.parse("2024-01-30")
          )));
-         cardGradeDtoList2.add(new CardGradeDto(10L, 5, List.of(
+         cardGradeDtoList2.add(new CardGradeDto(10L, 5, "card/5/BulguksaThreeStoryStonePagoda.png", List.of(
                  LocalDate.parse("2024-01-23")
          )));
          readCardResponseList.add(new ReadCardResponse(321, true, "경주 불국사 삼층석탑", "11", "경북", "경주시", "경북 경주시 불국로 385 불국사", cardGradeDtoList2,

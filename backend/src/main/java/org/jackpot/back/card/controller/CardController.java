@@ -52,10 +52,14 @@ public class CardController {
         return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail())));
     }
 
-
+    /**
+     * 카드 검색 및 정렬
+     * @param searchCardRequest
+     * @return List<ReadCardResponse>
+     */
     @PostMapping("/search")
-    public ResponseEntity searchCard(@RequestBody SearchCardRequest searchCardRequest) {
-//        searchCardRequest.setUserEmail(user.getEmail());
+    public ResponseEntity searchCard(@AuthenticationPrincipal User user, @RequestBody SearchCardRequest searchCardRequest) {
+        searchCardRequest.setUserEmail(user.getEmail());
         return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
     }
 
