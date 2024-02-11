@@ -16,6 +16,12 @@ const Signup = () => {
   });
   const [checkPw, setCheckPw] = useState("");
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
+
+  const emailCheck = (email) => {
+    let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    return regExp.test(email);
+  };
 
   const goSignIn = () => {
     navigate("/");
@@ -45,12 +51,14 @@ const Signup = () => {
         }
       } catch (e) {
         console.log('e: ', e);
-        const status = e.response.data.status;
+        const status = e.response.status;
+        const alertMSG = e.response.data.data_header.result_message;
+        // console.log('alertMSG: ', alertMSG);
+        // console.log('status: ', status);
         if (status === 500) {
           alert("서버오류!");
-        } else if (status === "") {
-          alert("이미 등록된 사용자 입니다.");
-          
+        } else if (status === 400) {
+          alert(alertMSG);
         }
       }
     }
@@ -60,7 +68,8 @@ const Signup = () => {
     <SignupBlock>
 
       <div style={{'margin-bottom': '0.5rem'}}>
-        <HiOutlineArrowNarrowLeft size='25' onClick={() => { navigate(-1); }}/>
+        <HiOutlineArrowNarrowLeft size='25' style={{marginBottom: '2rem'}}
+        onClick={() => { navigate(-1); }}/>
         <TitleText>회원가입</TitleText >
         <TitleInfo>경토리에 회원가입 하시면</TitleInfo>
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
@@ -79,9 +88,15 @@ const Signup = () => {
             email: email,
             password: userInput.password,
             name: userInput.name,
-          });
+          })
+          if (!emailCheck(email)) {
+            setEmailError("이메일 형식으로 입력해주세요."); 
+          } else {
+            setEmailError("");
+          };
         }}
       ></ButtonBlank>
+      {emailError && <ErrorMSG>{emailError}</ErrorMSG>}
 
       <InputText>닉네임</InputText>
       <ButtonBlank
@@ -129,9 +144,9 @@ const Signup = () => {
         }}
       ></ButtonBlank>
       {userInput.password !== checkPw ? (
-        <div>비밀번호를 다시 확인해주세요.</div>
+        <ErrorMSG>비밀번호를 다시 확인해주세요.</ErrorMSG>
       ) : userInput.password !== "" ? (
-        <div>Check!</div>
+        <ErrorMSG>Check!</ErrorMSG>
       ) : null}
 
       <SignupBtn>
@@ -139,7 +154,7 @@ const Signup = () => {
           회원가입
         </ButtonFull>
         <InfoText>
-          이미 계정이 있으신가요? <span onClick={goSignIn} >로그인</span>
+          이미 계정이 있으신가요? <span onClick={goSignIn} style={{ color: "#758467" }} >로그인</span>
         </InfoText>
       </SignupBtn>
     </SignupBlock>
@@ -182,4 +197,12 @@ const SignupBtn = styled.div`
 
 const InfoText = styled.div`
   text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+`;
+
+const ErrorMSG = styled.div`
+  color: red;
+  font-size: 0.7rem;
+  margin: 0.3rem 0 0 1rem;
 `;

@@ -13,6 +13,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^10.7.2",
     "html2canvas": "^1.4.1",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-cookie": "^7.0.2",
     "react-dom": "^18.2.0",
@@ -38,7 +39,7 @@
     "zustand": "^4.5.0"
   },
   "scripts": {
-    "start": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
