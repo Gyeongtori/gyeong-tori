@@ -1,4 +1,4 @@
-package org.jackpot.back.socket.model.entity;
+package org.jackpot.back.question.model.dto.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,17 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.jackpot.back.card.model.entity.enums.CardField;
 
-@Data
-@SuperBuilder
+import java.util.ArrayList;
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+@Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Action extends BaseAction{
-    public String message;
-    public CardField field;
-    public Integer heart;
-    public Boolean status;
+public class QuestionRequest {
+    ArrayList<Long> cardList;
 }

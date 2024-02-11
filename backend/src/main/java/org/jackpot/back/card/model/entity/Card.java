@@ -3,6 +3,8 @@ package org.jackpot.back.card.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.jackpot.back.card.model.dto.response.CardDto;
 import org.jackpot.back.card.model.entity.enums.CardField;
 import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 
@@ -10,7 +12,7 @@ import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 @Table(name="card")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
 @ToString
 public class Card {
@@ -35,5 +37,14 @@ public class Card {
     @Column(name = "image")
     @NotNull
     private String image; //이미지 주소
+
+    public CardDto toDto(){
+        return CardDto.builder()
+                .number(number)
+                .culturalHeritage(culturalHeritage)
+                .field(field)
+                .rating(rating)
+                .build();
+    }
 
 }

@@ -23,11 +23,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
     private static final String[] ALLOWED_URIS={
             "/v1/auth/login",
+            "/v1/email/**",
             "/v1/user/regist",
             "/v1/auth/refresh",
             "/v1/culturalheritage/**",
             "/v1/card/**",
             "/v1/dummy/**",
+            "/v1/question/list",
             //swagger 접근 위한 whitelist
             "/favicon.ico",
             "/error",
@@ -58,7 +60,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 나머지 경로는 인증 요구
                 );
 
-        httpSecurity.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        httpSecurity
                 .oauth2Login(oauth2Login -> oauth2Login //소셜 로그인
                                 .successHandler(oauth2AuthenticationSuccessHandler) // 로그인 성공했을 경우 handelr 처리
                                 .failureHandler(oauth2AuthenticationFailureHandler)
