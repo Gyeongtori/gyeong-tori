@@ -7,6 +7,7 @@ import useStore from "../stores/store";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 
 
@@ -44,7 +45,6 @@ const Login = () => {
         const status = response.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
-
           getUserInfo();
           goMain();
         }
@@ -58,6 +58,37 @@ const Login = () => {
       }
     }
   };
+  const getAccessToken = Cookies.get('accessToken')
+  const [accessToken, setAccessToken] = useState(getAccessToken)
+
+  const refreshToken = Cookies.get('refreshToken')
+
+  useEffect(() => {
+    if(accessToken === undefined){
+      refreshAccessToken()
+      console.log('리프레시 요청 과연??')
+    }
+    console.log(accessToken, '토큰테스트~~~')
+  }, [accessToken])
+
+
+  
+  const refreshAccessToken = async () => {
+    console.log('refreshToken: ', refreshToken);
+    
+    try {
+      const res = await axios.get('/v1/auth/refresh', {
+        refresh_token: refreshToken
+      });
+      // if(res.response.status === 500 ) {
+      // 
+      // }
+      console.log(res, '리프레시 요청중~~')
+    } catch (error) {
+      console.log('error: ', error);
+
+    }
+  }
 
   const goSignUp = () => {
     navigate("/signup");
