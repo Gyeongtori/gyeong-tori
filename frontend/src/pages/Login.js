@@ -3,25 +3,28 @@ import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
+import useStore from "../stores/store";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { useCookies } from 'react-cookie';
+
+
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useStore(state => state.setUser);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [id, setId] = useState("");
-  const [nickname, setNickname] = useState("");
+
 
   const getUserInfo = async () => {
     try {
       const response = await axios.get("/v1/user/retrieve");
       const userInfo = response.data.data_body;
       console.log("userinfo", userInfo);
-      setId(userInfo.id);
-      setNickname(userInfo.nickname);
+
+      setUser({ id: userInfo.id, nickname: userInfo.nickname, email: userInfo.email, grade: userInfo.grade });
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -64,12 +67,6 @@ const Login = () => {
   };
   const goMain = () => {
     navigate("/maps");
-  };
-  const goCamera = () => {
-    navigate("/camera");
-  };
-  const goArPage = () => {
-    navigate("/arpage");
   };
 
   return (
