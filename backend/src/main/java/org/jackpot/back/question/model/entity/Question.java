@@ -2,6 +2,7 @@ package org.jackpot.back.question.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.jackpot.back.card.model.entity.Card;
 import org.jackpot.back.question.model.dto.QuestionDto;
 
@@ -9,7 +10,7 @@ import org.jackpot.back.question.model.dto.QuestionDto;
 @Table(name="question")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
 @ToString
 public class Question {
@@ -33,7 +34,7 @@ public class Question {
                 .id(id)
                 .detail(detail)
                 .answer(answer)
-                .card(card)
+//                .card(card.toDto())
                 .build();
     }
 }
