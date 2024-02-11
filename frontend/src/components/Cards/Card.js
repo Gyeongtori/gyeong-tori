@@ -1,20 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AllCard from "./AllCard";
+import { db } from "../../firebase";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { IoChevronDownCircleOutline } from "react-icons/io5";
 import { FaArrowUp } from "react-icons/fa";
 import MyCard from "./MyCard";
-let Division = styled.span`
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
-  color: ${(props) => (props.$border ? "rgba(229, 154, 89, 100)" : "black")};
-  border-bottom: solid 0.125rem
-    ${(props) => (props.$border ? "rgba(229, 154, 89, 100)" : "black")};
-`;
+import CardDetail from "./CardDetail";
+import Header from "./Header";
+import Search from "./Search";
+import axios from "axios";
+
 let Sorts = styled.div`
   display: flex;
   justify-content: space-between;
@@ -104,55 +101,115 @@ const scrollToTop = () => {
 };
 
 const Card = () => {
-  // let [divis, setDivis] = useState(true);
   const [checked, setChecked] = useState(false);
+  const [loading, setLoad] = useState(false);
+  const [card, setCard] = useState([]); // 전체 카드 리스트(주소, 설명, 이미지주소, 등급 등등)
+  const [list, setList] = useState([]); // 내 컬렉션 리스트
+  const [getdetail, setDetail] = useState(false); // 카드 상세 설명 팝업 컴포넌트 열고 닫기
+  const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(db); // firebase 연결 테스트
+    getCards();
+    return () => {
+      setLoad(false);
+    };
+  }, []);
+
+  const getCards = async () => {
+    try {
+      const res = await axios.get("/v1/card/list");
+      console.log(res);
+      const data = await res.data.data_body;
+
+      // Firebase Img 불러오기
+      // const promises = res.data.data_body.card_list.map(async (card, index) => {
+      //   const storage = getStorage();
+      //   const imageUrl = await getDownloadURL(ref(storage, card.img));
+      //   // console.log(imageUrl);
+      //   cardImgs[index] = imageUrl;
+      //   // console.log(cardImgs[index], cardImgs);
+      // });
+      // await Promise.all(promises);
+
+      const listData = await data.filter((item) => item.have === true);
+      setCard(data);
+      setList(listData);
+      // console.log(card);
+      // console.log(list);
+      setLoad(true);
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
   return (
     <>
-      {/* <div>
-        <Division
-          $border={divis}
-          onClick={() => {
-            if (!divis) setDivis(!divis);
-          }}
-        >
-          전체
-        </Division>
-        <Division
-          $border={!divis}
-          onClick={() => {
-            if (divis) setDivis(!divis);
-          }}
-        >
-          컬렉션
-        </Division>
-      </div> */}
-      <div style={{ display: "flex" }}>
-        <Sorts>
-          <CheckBox>
-            <input
-              type="checkbox"
-              id="collection"
-              checked={checked}
-              onChange={(e) => {
-                setChecked(e.target.checked);
-              }}
-            />
-            <label htmlFor="collection">
-              <span>내 컬렉션</span>
-            </label>
-          </CheckBox>
-          <Title>
-            기본순&nbsp;
-            <IoChevronDownCircleOutline />
-          </Title>
-        </Sorts>
-      </div>
-      {!checked ? <AllCard /> : <MyCard />}
-      <Scroll>
-        <TopBtn onClick={scrollToTop}>
-          <FaArrowUp />
-        </TopBtn>
-      </Scroll>
+      {getdetail &&
+        (!checked ? (
+          <CardDetail setDetail={setDetail} card={card[cardId]} />
+        ) : (
+          <CardDetail setDetail={setDetail} card={list[cardId]} />
+        ))}
+      {!getdetail && (
+        <>
+          <Header />
+          {/* search 활성화 시 검색 페이지로 이동 */}
+          <div
+            style={{ display: "flex" }}
+            onClick={() => {
+              navigate("/search");
+            }}
+          >
+            <Search />
+          </div>
+          <div style={{ display: "flex" }}>
+            <Sorts>
+              <CheckBox>
+                <input
+                  type="checkbox"
+                  id="collection"
+                  checked={checked}
+                  onChange={(e) => {
+                    setChecked(e.target.checked);
+                  }}
+                />
+                <label htmlFor="collection">
+                  <span>내 컬렉션</span>
+                </label>
+              </CheckBox>
+              <Title>
+                기본순&nbsp;
+                <IoChevronDownCircleOutline />
+              </Title>
+            </Sorts>
+          </div>
+          {loading ? (
+            !checked ? (
+              <AllCard
+                checked={checked}
+                card={card}
+                setDetail={setDetail}
+                setCardId={setCardId}
+              />
+            ) : (
+              <MyCard
+                checked={checked}
+                card={list}
+                setDetail={setDetail}
+                setCardId={setCardId}
+              />
+            )
+          ) : (
+            <div>로딩중...</div>
+          )}
+          <Scroll>
+            <TopBtn onClick={scrollToTop}>
+              <FaArrowUp />
+            </TopBtn>
+          </Scroll>
+        </>
+      )}
     </>
   );
 };
