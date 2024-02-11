@@ -34,6 +34,10 @@ public class Card {
     @NotNull
     private CardField field; //속성 (공,수,힐)
 
+    @Column(name = "image")
+    @NotNull
+    private String image; //이미지 주소
+
     public CardDto toDto(){
         return CardDto.builder()
                 .number(number)
@@ -42,4 +46,5 @@ public class Card {
                 .rating(rating)
                 .build();
     }
+
 }
