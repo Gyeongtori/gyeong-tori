@@ -32,4 +32,8 @@ public class Card {
     @NotNull
     private CardField field; //속성 (공,수,힐)
 
+    @Column(name = "image")
+    @NotNull
+    private String image; //이미지 주소
+
 }

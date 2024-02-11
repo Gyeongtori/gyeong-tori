@@ -22,7 +22,7 @@ public class ReadCardResponse {
     private String sido;
     private String gugun;
     private String address;
-    private List<CardGradeDto> gradeCards; //등급별 보유 현황
+    private List<CardGradeDto> gradeCards; //등급별 카드
     private String image;
     private String field; //속성
     private String description;

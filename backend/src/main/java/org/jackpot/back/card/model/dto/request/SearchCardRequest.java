@@ -17,7 +17,7 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class SearchCardRequest {
     String userEmail;
-    String keywrod; //검색어
+    String keyword; //검색어
     String division; //종목
     CardField field; //속성
     int sort; //1(이름순_오름차순) or 2(이름순_내림차순) or 3(최신순)

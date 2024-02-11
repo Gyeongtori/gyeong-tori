@@ -54,6 +54,7 @@ public class CardServiceImpl implements CardService{
                         .culturalHeritageRedis(culturalHeritageRedis.get())
                         .rating(card.getRating())
                         .field(card.getField())
+                        .image(card.getImage())
                         .build();
 
                 cardRedisRepository.save(cardRedis);
@@ -155,6 +156,7 @@ public class CardServiceImpl implements CardService{
                     CardGradeDto cardGradeDto = new CardGradeDto();
                     cardGradeDto.setCardNumber(cardRedis.getNumber());
                     cardGradeDto.setGrade(cardRedis.getRating());
+                    cardGradeDto.setImage(cardRedis.getImage());
 
                     //보유 카드 조회
                     List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
@@ -182,6 +184,7 @@ public class CardServiceImpl implements CardService{
                         CardGradeDto cardGradeDto = new CardGradeDto();
                         cardGradeDto.setCardNumber(cardRedis.getNumber());
                         cardGradeDto.setGrade(cardRedis.getRating());
+                        cardGradeDto.setImage(cardRedis.getImage());
                         List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
                         //보유하고 있는 경우
                         if(!holdingCards.isEmpty()){
@@ -212,6 +215,7 @@ public class CardServiceImpl implements CardService{
                         CardGradeDto cardGradeDto = new CardGradeDto();
                         cardGradeDto.setCardNumber(cardRedis.getNumber());
                         cardGradeDto.setGrade(cardRedis.getRating());
+                        cardGradeDto.setImage(cardRedis.getImage());
 
                         //보유 카드 조회
                         List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
@@ -250,13 +254,13 @@ public class CardServiceImpl implements CardService{
             //정렬 조건
             switch (searchCardRequest.getSort()){
                 case 1 : //이름 오름차순
-                    cardList = cardRepository.searchCardSortNameASC(searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+                    cardList = cardRepository.searchCardSortNameASC(searchCardRequest.getKeyword(), searchCardRequest.getDivision(), searchCardRequest.getField());
                     break;
                 case 2: //이름 내림차순
-                    cardList = cardRepository.searchCardSortNameDESC(searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+                    cardList = cardRepository.searchCardSortNameDESC(searchCardRequest.getKeyword(), searchCardRequest.getDivision(), searchCardRequest.getField());
                     break;
                 case 3: //최신순
-                    cardList = cardRepository.searchCardSortDate(findUser.get().getId(), searchCardRequest.getKeywrod(), searchCardRequest.getDivision(), searchCardRequest.getField());
+                    cardList = cardRepository.searchCardSortDate(findUser.get().getId(), searchCardRequest.getKeyword(), searchCardRequest.getDivision(), searchCardRequest.getField());
 
 //                    for(Card card : cardList){
 //                        System.out.println("카드: " + card.getCulturalHeritage().getNameKr() + " " + card.getNumber());
@@ -286,6 +290,7 @@ public class CardServiceImpl implements CardService{
                     CardGradeDto cardGradeDto = new CardGradeDto();
                     cardGradeDto.setCardNumber(card.getNumber());
                     cardGradeDto.setGrade(card.getRating());
+                    cardGradeDto.setImage(card.getImage());
 
                     //보유 카드 조회
                     List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
@@ -313,6 +318,8 @@ public class CardServiceImpl implements CardService{
                         CardGradeDto cardGradeDto = new CardGradeDto();
                         cardGradeDto.setCardNumber(card.getNumber());
                         cardGradeDto.setGrade(card.getRating());
+                        cardGradeDto.setImage(card.getImage());
+
                         List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
                         //보유하고 있는 경우
                         if(!holdingCards.isEmpty()){
@@ -343,6 +350,7 @@ public class CardServiceImpl implements CardService{
                         CardGradeDto cardGradeDto = new CardGradeDto();
                         cardGradeDto.setCardNumber(card.getNumber());
                         cardGradeDto.setGrade(card.getRating());
+                        cardGradeDto.setImage(card.getImage());
 
                         //보유 카드 조회
                         List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), card.getNumber());
