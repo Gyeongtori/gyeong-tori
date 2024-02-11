@@ -22,7 +22,7 @@ const Login = () => {
     try {
       const response = await axios.get("/v1/user/retrieve");
       const userInfo = response.data.data_body;
-      console.log("userinfo", userInfo);
+      // console.log("userinfo", userInfo);
 
       setUser({ id: userInfo.id, nickname: userInfo.nickname, email: userInfo.email, grade: userInfo.grade });
     } catch (error) {
@@ -44,20 +44,17 @@ const Login = () => {
         const status = response.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
+
           getUserInfo();
-
           goMain();
-
-          // localStorage.setItem('accessToken', response.data.accessToken);
-          // localStorage.setItem("refreshToken", response.data.refreshToken);
         }
       } catch (error) {
-        const status = error;
-        console.log("status: ", status);
-
-        //   if(status.result_code === 'NOT_EXISTS') {
-        //     alert(status.result_message)
-        // }
+        const status = error.response;
+        if(status.statusText === 'Internal Server Error') {
+          alert('아이디를 다시 확인해 주세요')
+        }else if(status.statusText === 'Unauthorized'){
+          alert('비밀번호를 다시 확인해 주세요')
+        }
       }
     }
   };
