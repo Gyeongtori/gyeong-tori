@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { db } from "../../firebase";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -57,48 +53,19 @@ const CardImg = styled.div`
   background-size: cover;
   margin: 0 auto;
 `;
-const MyCard = () => {
+const MyCard = (props) => {
   const [states, setStates] = useState([]); // 카드 CSS 적용 모두 담기
-  const [card, setCard] = useState([]); // 카드 CSS 빼고 나머지(주소, 설명, 이미지주소, 등급 등등)
 
-  let navigate = useNavigate();
   useEffect(() => {
-    console.log(db); // firebase 연결 테스트
-    getMyCards();
+    let setting = Array(props.card.length).fill({
+      rotation: "perspective(350px) rotateY(0deg) rotateX(0deg)",
+      position: "50%",
+      filter: "opacity(0)",
+    }); // CSS 적용
+    setStates((pre) => {
+      return setting;
+    });
   }, []);
-
-  const getMyCards = async () => {
-    try {
-      const res = await axios.get("/v1/card/list");
-      const data = await res.data.data_body;
-      const list = data.filter((item) => item.have === true);
-      console.log(list);
-      const currnet = list.length;
-      let setting = Array(currnet).fill({
-        rotation: "perspective(350px) rotateY(0deg) rotateX(0deg)",
-        position: "50%",
-        filter: "opacity(0)",
-      }); // CSS 적용
-      setCard(list);
-
-      // Firebase Img 불러오기
-      // const promises = res.data.data_body.card_list.map(async (card, index) => {
-      //   const storage = getStorage();
-      //   const imageUrl = await getDownloadURL(ref(storage, card.img));
-      //   // console.log(imageUrl);
-      //   cardImgs[index] = imageUrl;
-      //   des[index] = card.description;
-      //   // console.log(cardImgs[index], cardImgs);
-      // });
-      // await Promise.all(promises);
-
-      setStates((pre) => {
-        return setting;
-      });
-    } catch (e) {
-      console.log(e.response);
-    }
-  };
 
   const handleMouseMove = (index, e) => {
     const x = e.nativeEvent.offsetX;
@@ -161,7 +128,10 @@ const MyCard = () => {
   };
   const handleDetail = (e) => {
     const id = e.target.id;
-    navigate("/detail", { state: card[id] });
+    console.log(id);
+    props.setCardId(id);
+    props.setDetail(true);
+    // navigate("/detail", { state: card[id] });
   };
   return (
     <>
@@ -170,7 +140,7 @@ const MyCard = () => {
           {states &&
             states.map(
               (state, index) =>
-                card[index].have && (
+                props.card[index].have && (
                   <Container
                     key={index}
                     $rotation={state.rotation}
@@ -185,7 +155,7 @@ const MyCard = () => {
                       $position={state.position}
                       $filter={state.filter}
                     />
-                    <CardImg $url={card[index].image} />
+                    <CardImg $url={props.card[index].image} />
                   </Container>
                 )
             )}
