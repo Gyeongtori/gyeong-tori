@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jackpot.back.card.model.dto.response.CardDto;
 import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 
 @AllArgsConstructor
@@ -17,5 +18,5 @@ public class QuestionDto {
     public Long id;
     public String detail;
     public String answer;
-    public ReadCardResponse card;
+    public CardDto card;
 }

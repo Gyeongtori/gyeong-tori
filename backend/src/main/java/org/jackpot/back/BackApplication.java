@@ -7,7 +7,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"org.jackpot.back.user.model.repository","org.jackpot.back.culturalHeritage.model.repository", "org.jackpot.back.card.model.repository"})
+@EnableJpaRepositories(basePackages = {
+        "org.jackpot.back.user.model.repository",
+        "org.jackpot.back.culturalHeritage.model.repository",
+        "org.jackpot.back.card.model.repository",
+        "org.jackpot.back.question.model.repository"
+})
 public class BackApplication {
     public static void main(String[] args) {
 

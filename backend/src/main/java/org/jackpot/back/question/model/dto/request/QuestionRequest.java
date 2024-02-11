@@ -16,5 +16,4 @@ import java.util.ArrayList;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class QuestionRequest {
     ArrayList<Long> cardList;
-
 }

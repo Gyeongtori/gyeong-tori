@@ -34,7 +34,7 @@ public class Question {
                 .id(id)
                 .detail(detail)
                 .answer(answer)
-//                .card(card.toDto())
+                .card(card.toDto())
                 .build();
     }
 }
