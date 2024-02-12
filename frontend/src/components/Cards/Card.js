@@ -110,7 +110,7 @@ const Card = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    console.log(db); // firebase 연결 테스트
+    // console.log(db); // firebase 연결 테스트
     getCards();
     return () => {
       setLoad(false);
