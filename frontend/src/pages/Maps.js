@@ -110,14 +110,14 @@ export default function Maps() {
     const res = await getAddress(event.lat, event.lng)
     console.log('res: ', res);
 
-    // navigate("/camera", {
-    //   state: {
-    //     'no': `${event.no}`,
-    //     'lat': `${event.lat}`,
-    //     'lng': `${event.lng}`,
-    //     'address': `${res}`,
-    //   },
-    // });
+    navigate("/camera", {
+    state: {
+     'no': `${event.no}`,
+         'lat': `${event.lat}`,
+         'lng': `${event.lng}`,
+         'address': `${res}`,
+       },
+     });
   }
 
   const getAddress = async (getlat, getlng) => {
