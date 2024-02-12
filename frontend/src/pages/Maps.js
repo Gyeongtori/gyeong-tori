@@ -38,27 +38,27 @@ export default function Maps() {
 
   const navigate = useNavigate();
 
-  // const { isLoaded } = useJsApiLoader({
-  //   id: "google-map-script",
-  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-  //   // googleMapsApiKey: "AIzaSyBZrBxO1en2t7fU6-47ooo_DxPyeTF4Xi8",
-  //   language: "KR",
-  // });
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    // googleMapsApiKey: "AIzaSyBZrBxO1en2t7fU6-47ooo_DxPyeTF4Xi8",
+    language: "ko",
+  });
 
   const onUnmount = useCallback(function callback() {
     setMap(null);
   }, []);
 
-  const options = {
-    zoom: 16,
-    // mapTypeId: 'satellite' // 위성 뷰로 지정
-  };
+  // const options = {
+  //   zoom: 16,
+  //   // mapTypeId: 'satellite' // 위성 뷰로 지정
+  // };
 
-  const onLoad = useCallback((map) => {
-    map.setCenter(center);
-    map.setOptions(options);
-    map.setHeading(90);
-  }, []);
+  // const onLoad = useCallback((map) => {
+  //   map.setCenter(center);
+  //   map.setOptions(options);
+  //   map.setHeading(90);
+  // }, []);
 
   const goProfile = () => {
     navigate("/profile");
@@ -106,16 +106,18 @@ export default function Maps() {
 
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
+    console.log(event.lat, event.lng, '이벤트 값!!!')
     const res = await getAddress(event.lat, event.lng)
+    console.log('res: ', res);
 
-    navigate("/camera", {
-      state: {
-        'no': `${event.no}`,
-        'lat': `${event.lat}`,
-        'lng': `${event.lng}`,
-        'address': `${res}`,
-      },
-    });
+    // navigate("/camera", {
+    //   state: {
+    //     'no': `${event.no}`,
+    //     'lat': `${event.lat}`,
+    //     'lng': `${event.lng}`,
+    //     'address': `${res}`,
+    //   },
+    // });
   }
 
   const getAddress = async (getlat, getlng) => {
@@ -123,14 +125,17 @@ export default function Maps() {
       // res에는 결과 값이 담겨옴
       const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
       );
+      console.log('res: getAddress 함수 ', res);
+      console.log(getlat, getlng, '위도 경도 잘 들어왔나')
+
       // 이렇게 저장하면 오류남...
       // setAddress(res.data.response.result[0])
 
       // 임시 해결로 바로 데이터 전송함
       return res.data.response.result[0].text
     }
-     catch (e) {
-      console.log(e.response);
+     catch (error) {
+      console.log(error);
     }
   };
 
@@ -177,7 +182,7 @@ export default function Maps() {
     radius: 10,
   };
 
-  // if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded) return <div>Loading...</div>;
 
   return (
     <div style={{ width: "100%", height: "100%" }}>

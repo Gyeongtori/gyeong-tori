@@ -30,9 +30,9 @@ const InfoTop = (props) => {
 
   const [address, setAddress] = useState();
 
-  useEffect((props) => {
-    // getAddress();
-  }, []);
+  // useEffect((props) => {
+  //   getAddress();
+  // }, []);
 
   // const getAddress = async () => {
   //   try {
@@ -66,13 +66,7 @@ const InfoTop = (props) => {
     setIcon(data.weather[0].icon);
   };
 
-  const goProfile = () => {
-    navigate("/profile");
-  };
 
-  const goCard = () => {
-    navigate("/cards");
-  };
 
   return (
     <div>
@@ -97,7 +91,6 @@ const InfoTop = (props) => {
         </InfoHeaderRight>
       </Info>
 
-      <InfoSide>{isOn && <FaTrophy size={25} />}</InfoSide>
     </div>
   );
 };
@@ -120,7 +113,7 @@ const Info = styled.div`
 
   display: flex;
   justify-content: space-between;
-  align-items: center; /* 세로 중앙 정렬 */
+  align-items: center; 
 `;
 
 const InfoHeader = styled.div`
@@ -136,17 +129,6 @@ const InfoHeaderRight = styled.div`
 
   & > :first-child {
     margin-right: 10px;
-  }
-`;
-
-const InfoSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-right: 10px;
-
-  & > :first-child {
-    margin-bottom: 10px;
   }
 `;
 
