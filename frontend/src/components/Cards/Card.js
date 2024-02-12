@@ -110,7 +110,7 @@ const Card = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    // console.log(db); // firebase 연결 테스트
+    console.log(db); // firebase 연결 테스트
     getCards();
     return () => {
       setLoad(false);
@@ -120,18 +120,17 @@ const Card = () => {
   const getCards = async () => {
     try {
       const res = await axios.get("/v1/card/list");
-      console.log(res);
+      // console.log(res);
       const data = await res.data.data_body;
-
+      // console.log(data);
       // Firebase Img 불러오기
-      // const promises = res.data.data_body.card_list.map(async (card, index) => {
-      //   const storage = getStorage();
-      //   const imageUrl = await getDownloadURL(ref(storage, card.img));
-      //   // console.log(imageUrl);
-      //   cardImgs[index] = imageUrl;
-      //   // console.log(cardImgs[index], cardImgs);
-      // });
-      // await Promise.all(promises);
+      const promises = data.map(async (card, index) => {
+        const storage = getStorage();
+        const imageUrl = await getDownloadURL(ref(storage, card.image));
+        // console.log(imageUrl);
+        data[index].image = imageUrl;
+      });
+      await Promise.all(promises);
 
       const listData = await data.filter((item) => item.have === true);
       setCard(data);
