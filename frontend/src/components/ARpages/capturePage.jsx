@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Capture(props) {
+  
   console.log(props.url, props.state,);
   const url = props.url;
   const state = props.state;
