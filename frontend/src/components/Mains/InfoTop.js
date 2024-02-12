@@ -38,8 +38,8 @@ const InfoTop = (props) => {
   //   try {
   //     // res에는 결과 값이 담겨옴
 
-  //     const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
-  //     // const res = await axios.get(`${process.env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process.env.REACT_APP_SIDO_KEY}`
+  //     const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process..env.REACT_APP_SIDO_KEY}`,
+  //     // const res = await axios.get(`${process..env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process..env.REACT_APP_SIDO_KEY}`
   //     // https://api.vworld.kr/req/address?service=address&request=getCoord&key=&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2127.766922,35.907757
   //     // {headers: {
   //     //   'Access-Control-Allow-Origin' : 'http://localhost:3000/maps'
@@ -52,7 +52,7 @@ const InfoTop = (props) => {
   //   }
   // };
 
-  // console.log('주소위치 찍기',`${process.env.REACT_APP_SIDO_API_URL}${process.env.REACT_APP_SIDO_KEY}${center.lng},${center.lat}`)
+  // console.log('주소위치 찍기',`${process..env.REACT_APP_SIDO_API_URL}${process..env.REACT_APP_SIDO_KEY}${center.lng},${center.lat}`)
 
   // 현재 날씨 받아오기
   const getWeatherByCurrentLocation = async () => {
