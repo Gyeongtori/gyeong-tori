@@ -128,7 +128,7 @@ const MyCard = (props) => {
   };
   const handleDetail = (e) => {
     const id = e.target.id;
-    console.log(id);
+    // console.log(id);
     props.setCardId(id);
     props.setDetail(true);
     // navigate("/detail", { state: card[id] });

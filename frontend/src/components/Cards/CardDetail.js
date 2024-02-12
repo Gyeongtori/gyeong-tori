@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { GiAcorn } from "react-icons/gi";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { GrLinkPrevious, GrClose, GrLinkNext } from "react-icons/gr";
+import { db } from "../../firebase";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 const Frame = styled.div`
   display: flex;
@@ -179,6 +181,7 @@ const DateDetail = styled.div`
   z-index: 300;
 `;
 const CardDetail = (props) => {
+  const [loading, setLoad] = useState(false);
   const [getGrade, setGrade] = useState(1);
   const [prevAble, setPrevAble] = useState(true);
   const [nextAble, setNextAble] = useState(false);
@@ -195,8 +198,28 @@ const CardDetail = (props) => {
       document.removeEventListener("mousedown", handleDetail);
     };
   }, [cardRef]);
+
+  useEffect(() => {
+    // console.log(db); // firebase 연결 테스트
+    getImage();
+    return () => {
+      setLoad(false);
+    };
+  }, []);
+
+  const getImage = async () => {
+    const promises = props.card.grade_cards.map(async (card, index) => {
+      const storage = getStorage();
+      const imageUrl = await getDownloadURL(ref(storage, card.image));
+      props.card.grade_cards[index].image = imageUrl;
+      // cardImgs[index] = imageUrl;
+      // console.log(cardImgs[index], cardImgs);
+    });
+    await Promise.all(promises);
+    setLoad(true);
+  };
   const ARRAY = [1, 2, 3, 4, 5];
-  console.log(props);
+  // console.log(props);
   const prev = () => {
     if (getGrade === 1) setPrevAble(true);
     else setGrade(getGrade - 1);
@@ -221,118 +244,122 @@ const CardDetail = (props) => {
   };
   return (
     <>
-      <Frame>
-        <Section>
-          <Box>
-            <Title>{props.card.cultural_heritage_name}</Title>
-            <Grade>
-              <div>
-                {ARRAY.map((index) =>
-                  getGrade >= index ? (
-                    <GiAcorn key={index} style={{ color: "brown" }} />
-                  ) : (
-                    <GiAcorn key={index} style={{ color: "gray" }} />
-                  )
-                )}
-              </div>
-            </Grade>
-            {props.card.grade_cards[getGrade - 1] &&
-              (props.card.grade_cards[getGrade - 1].holding_cards.length ===
-              0 ? (
-                <>
-                  <CardImg
-                    style={{ backgroundSize: "contain" }}
-                    $cardImg="https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg"
-                  ></CardImg>
-                  <div style={{ marginTop: "5px" }}>
-                    <FaMapMarkerAlt />
-                    카드를 수집해주세요.
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    <CardImg $cardImg={props.card.image}></CardImg>
-                    <Tags style={{ top: "20px" }} $field={props.card.field}>
-                      {props.card.field === "ATTACK"
-                        ? "공격"
-                        : props.card.field === "DEFENCE"
-                        ? "수비"
-                        : props.card.field === "HEAL"
-                        ? "회복"
-                        : null}
-                    </Tags>
-                    <Tags
-                      style={{ top: "55px" }}
-                      $division={props.card.division}
+      {loading && (
+        <Frame>
+          <Section>
+            <Box>
+              <Title>{props.card.cultural_heritage_name}</Title>
+              <Grade>
+                <div>
+                  {ARRAY.map((index) =>
+                    getGrade >= index ? (
+                      <GiAcorn key={index} style={{ color: "brown" }} />
+                    ) : (
+                      <GiAcorn key={index} style={{ color: "gray" }} />
+                    )
+                  )}
+                </div>
+              </Grade>
+              {props.card.grade_cards[getGrade - 1] &&
+                (props.card.grade_cards[getGrade - 1].holding_cards.length ===
+                0 ? (
+                  <>
+                    <CardImg
+                      style={{ backgroundSize: "contain" }}
+                      $cardImg="https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg"
+                    ></CardImg>
+                    <div style={{ marginTop: "5px" }}>
+                      <FaMapMarkerAlt />
+                      카드를 수집해주세요.
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        position: "relative",
+                      }}
                     >
-                      {props.card.division === "11"
-                        ? "국보"
-                        : props.card.division === "12"
-                        ? "보물"
-                        : props.card.division === "13"
-                        ? "사적"
-                        : null}
-                    </Tags>
-                  </div>
-                  <div style={{ marginTop: "5px" }}>
-                    <FaMapMarkerAlt />
-                    {props.card.address}
-                  </div>
-                </>
-              ))}
-          </Box>
-        </Section>
-        <Dates>
-          <div onClick={getDates}>획득일</div>
-          {getDate && (
-            <Blurs>
-              <DateDetail ref={cardRef}>
-                {props.card.grade_cards[getGrade - 1] &&
-                  (props.card.grade_cards[getGrade - 1].holding_cards.length ===
-                  0 ? (
-                    <div>아직 카드를 수집하지 못했습니다.</div>
-                  ) : (
-                    [...props.card.grade_cards[getGrade - 1].holding_cards]
-                      .reverse()
-                      .map((item) => <div>{item}</div>)
-                  ))}
-              </DateDetail>
-            </Blurs>
+                      <CardImg
+                        $cardImg={props.card.grade_cards[getGrade - 1].image}
+                      ></CardImg>
+                      <Tags style={{ top: "20px" }} $field={props.card.field}>
+                        {props.card.field === "ATTACK"
+                          ? "공격"
+                          : props.card.field === "DEFENCE"
+                          ? "수비"
+                          : props.card.field === "HEAL"
+                          ? "회복"
+                          : null}
+                      </Tags>
+                      <Tags
+                        style={{ top: "55px" }}
+                        $division={props.card.division}
+                      >
+                        {props.card.division === "11"
+                          ? "국보"
+                          : props.card.division === "12"
+                          ? "보물"
+                          : props.card.division === "13"
+                          ? "사적"
+                          : null}
+                      </Tags>
+                    </div>
+                    <div style={{ marginTop: "5px" }}>
+                      <FaMapMarkerAlt />
+                      {props.card.address}
+                    </div>
+                  </>
+                ))}
+            </Box>
+          </Section>
+          <Dates>
+            <div onClick={getDates}>획득일</div>
+            {getDate && (
+              <Blurs>
+                <DateDetail ref={cardRef}>
+                  {props.card.grade_cards[getGrade - 1] &&
+                    (props.card.grade_cards[getGrade - 1].holding_cards
+                      .length === 0 ? (
+                      <div>아직 카드를 수집하지 못했습니다.</div>
+                    ) : (
+                      [...props.card.grade_cards[getGrade - 1].holding_cards]
+                        .reverse()
+                        .map((item) => <div>{item}</div>)
+                    ))}
+                </DateDetail>
+              </Blurs>
+            )}
+          </Dates>
+          {props.card.grade_cards[getGrade - 1] &&
+          props.card.grade_cards[getGrade - 1].holding_cards.length === 0 ? (
+            <Des>
+              {props.card.address}에 도착하여 사진을 찍으면{" "}
+              {props.card.cultural_heritage_name} 문화재 카드를 수집할 수
+              있습니다.
+            </Des>
+          ) : (
+            <Des>{props.card.description}</Des>
           )}
-        </Dates>
-        {props.card.grade_cards[getGrade - 1] &&
-        props.card.grade_cards[getGrade - 1].holding_cards.length === 0 ? (
-          <Des>
-            {props.card.address}에 도착하여 사진을 찍으면{" "}
-            {props.card.cultural_heritage_name} 문화재 카드를 수집할 수
-            있습니다.
-          </Des>
-        ) : (
-          <Des>{props.card.description}</Des>
-        )}
 
-        <Footer>
-          <MoveBtn onClick={prev} disabled={prevAble}>
-            <GrLinkPrevious />
-          </MoveBtn>
-          <CloseBtn onClick={() => props.setDetail(false)}>
-            <GrClose />
-          </CloseBtn>
-          <MoveBtn onClick={next} disabled={nextAble}>
-            <GrLinkNext />
-          </MoveBtn>
-        </Footer>
-      </Frame>
+          <Footer>
+            <MoveBtn onClick={prev} disabled={prevAble}>
+              <GrLinkPrevious />
+            </MoveBtn>
+            <CloseBtn onClick={() => props.setDetail(false)}>
+              <GrClose />
+            </CloseBtn>
+            <MoveBtn onClick={next} disabled={nextAble}>
+              <GrLinkNext />
+            </MoveBtn>
+          </Footer>
+        </Frame>
+      )}
     </>
   );
 };
