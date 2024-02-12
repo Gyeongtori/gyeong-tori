@@ -30,9 +30,9 @@ const InfoTop = (props) => {
 
   const [address, setAddress] = useState();
 
-  useEffect((props) => {
-    // getAddress();
-  }, []);
+  // useEffect((props) => {
+  //   getAddress();
+  // }, []);
 
   // const getAddress = async () => {
   //   try {
