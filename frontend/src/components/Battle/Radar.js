@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-/**
- *
- * socket.io message example
- * https://youtu.be/djMy4QsPWiI?si=YY0xH8yQO5_eUJbi
- *
- * @author TakHaYoon
- *
- */
-// socket.io-client 라이브러리 import
+import axios from "axios";
 import io from "socket.io-client";
 
 // 1. io.connect와 동일하게 설정
@@ -71,36 +63,20 @@ const GreenScanner = styled.div`
   z-index: -1;
 `;
 const Radar = () => {
-  // message를 받을 때마다 호출
-  // 즉, 서버에서 이벤트가 발생할 때마다 실행되는 함수와 같은 역할
-
   useEffect(() => {
-    // 이벤트가 발생할 경우를 대비하여 이벤트를 수신하고 있다고 선언
-    // socket.on() : 이벤트 수신
-    // .on("수신 이벤트 함수", 데이터 수신 콜백 함수)
-    // socket.on("receive_message", (data) => {
-    //   // alert(data.message);
-    //   // console.log(data.message);
-    //   setMessageReceived(data.message);
-    // });
-    // socket.connect();
     socket.on("get_location", (data) => {
       console.log(data);
+    });
+    socket.emit("send_location", {
+      lng: "127.00004",
+      lat: "67.55553",
+      nickname: "nick",
+      user_id: 6,
     });
   }, [socket]); // socket이 변경될 때마다(이벤트 발생) useEffect가 실행되도록 종속성 목록에 포함
 
   const [username, setUsername] = useState("");
 
-  const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState("");
-  const [room, setRoom] = useState(""); // server에서 join 이벤트 사용 [socket.on("join_room", (data) => {socket.join(data)})]
-  // 사용자가 직접 room 번호를 입력한 경우
-  const joinRoom = () => {
-    if (room !== "") {
-      // 이벤트를 내보내고 사용자가 입력한 방 번호 전송
-      socket.emit("join_room", room); // 해당하는 방 번호에 참여하기 위한 이벤트 발생
-    }
-  };
   const sendMessage = () => {
     socket.emit("send_location", {
       lng: "127.00004",
@@ -109,21 +85,27 @@ const Radar = () => {
       user_id: 6,
     });
   };
-
-  // setMessage("Hello");
-  // message example
-  // socket.emit() : message 방출
-  // .emit("전달할 함수 명", 전달할 값)
-  // const sendMessage = () => {
-  //   // socket.emit("send_message", { message: "Hello" });
-  //   // room을 지정한 경우 이 메시지를 누구에게 보낼지 지정해야 하기 때문에 어느 방에 있는지 보내기
-  //   socket.emit("send_message", { message, room });
-  //   // 서버에서는 socket.to(data.room).emit("receive_message", data)로 room에 해당하는 클라이언트에게만 메시지 전송
-  // };
+  const sendQuestion = async () => {
+    const res = await axios.post("/v1/question/list", {
+      card_list: [51, 52, 53, 54],
+    });
+    console.log(res);
+  };
+  const getUsers = () => {
+    socket.on("get_location", (data) => {
+      console.log(data);
+    });
+  };
   return (
     <>
+      <button style={{ zIndex: 1000 }} onClick={getUsers}>
+        사용자 불러오기
+      </button>
       <button style={{ zIndex: 1000 }} onClick={sendMessage}>
         위치
+      </button>
+      <button style={{ zIndex: 1000 }} onClick={sendQuestion}>
+        문제 제시
       </button>
       <OuterCircle>
         <GreenScanner></GreenScanner>

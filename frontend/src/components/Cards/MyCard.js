@@ -53,22 +53,18 @@ const CardImg = styled.div`
   background-size: cover;
   margin: 0 auto;
 `;
-
-const AllCard = (props) => {
+const MyCard = (props) => {
   const [states, setStates] = useState([]); // 카드 CSS 적용 모두 담기
-  const [load, setLoad] = useState(false);
 
   useEffect(() => {
-    // console.log(db); // firebase 연결 테스트
-    let lens = props.card.length;
-    let setting = [];
-    setting = Array(lens).fill({
+    let setting = Array(props.card.length).fill({
       rotation: "perspective(350px) rotateY(0deg) rotateX(0deg)",
       position: "50%",
       filter: "opacity(0)",
+    }); // CSS 적용
+    setStates((pre) => {
+      return setting;
     });
-    setStates(setting);
-    setLoad(true);
   }, []);
 
   const handleMouseMove = (index, e) => {
@@ -139,12 +135,12 @@ const AllCard = (props) => {
   };
   return (
     <>
-      {load && (
-        <div>
-          <CardGrid>
-            {states &&
-              states.map((state, index) =>
-                props.card[index].have ? (
+      <div>
+        <CardGrid>
+          {states &&
+            states.map(
+              (state, index) =>
+                props.card[index].have && (
                   <Container
                     key={index}
                     $rotation={state.rotation}
@@ -161,25 +157,12 @@ const AllCard = (props) => {
                     />
                     <CardImg $url={props.card[index].image} />
                   </Container>
-                ) : (
-                  <Container key={index} $rotation={state.rotation}>
-                    <Overlay
-                      id={index}
-                      $position={state.position}
-                      $filter={state.filter}
-                    />
-                    <CardImg
-                      $url={props.card[index].image}
-                      $black={"rgba(0, 0, 0, 0.7)"}
-                    />
-                  </Container>
                 )
-              )}
-          </CardGrid>
-        </div>
-      )}
+            )}
+        </CardGrid>
+      </div>
     </>
   );
 };
 
-export default AllCard;
+export default MyCard;
