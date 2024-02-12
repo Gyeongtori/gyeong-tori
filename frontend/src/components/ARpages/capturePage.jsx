@@ -5,12 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Capture(props) {
-<<<<<<< Updated upstream
-  
-  console.log(props.url, props.state,);
-=======
   console.log(props.url, props.state);
->>>>>>> Stashed changes
   const url = props.url;
   const state = props.state;
   const cultural_heritage_id = state.no;
@@ -21,11 +16,6 @@ export default function Capture(props) {
     navigate("/maps");
   };
   const [api, setApi] = useState();
-<<<<<<< Updated upstream
-  
-=======
-
->>>>>>> Stashed changes
   const postAPI = async () => {
     try {
       const postData = {
@@ -58,22 +48,13 @@ export default function Capture(props) {
       console.error("No captured image data to download.");
     }
   };
-<<<<<<< Updated upstream
-  
-=======
-
->>>>>>> Stashed changes
   const handleCloseModal = () => {
     // 모달 상태를 닫음
     props.setCaptureState(false);
     postAPI();
     backMap();
-<<<<<<< Updated upstream
-=======
-    // console.log(postAPI(), "닫아서 나오는 화면");
->>>>>>> Stashed changes
   };
-  
+
   return (
     <div>
       {props.captureState && (
@@ -89,7 +70,7 @@ export default function Capture(props) {
               닫기
             </button>
           </div>
-        
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ width: "300px", height: "642px" }}>
               {
