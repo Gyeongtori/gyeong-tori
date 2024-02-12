@@ -88,7 +88,7 @@ export default function Camera(props) {
       let loader = new GLTFLoader();
       loader.load("metarial/1234.gltf", (gltf) => {
         const model = gltf.scene;
-        model.position.set(-4, -14, -5);
+        model.position.set(-3, -9, -5);
 
         // 모델이 로드된 후에 재질에 조명을 추가합니다.
         model.traverse((child) => {
