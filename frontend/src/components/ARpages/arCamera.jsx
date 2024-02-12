@@ -22,7 +22,6 @@ export default function Camera(props) {
   const videoMeshRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
-
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
   const [facingMode, setFacingMode] = useState("user");
   const [captureState, setCaptureState] = useState(false);

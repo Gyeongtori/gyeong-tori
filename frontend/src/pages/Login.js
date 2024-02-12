@@ -3,25 +3,29 @@ import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
+import useStore from "../stores/store";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { useCookies } from 'react-cookie';
+import Cookies from 'js-cookie';
+
+
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useStore(state => state.setUser);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [id, setId] = useState("");
-  const [nickname, setNickname] = useState("");
+
 
   const getUserInfo = async () => {
     try {
       const response = await axios.get("/v1/user/retrieve");
       const userInfo = response.data.data_body;
-      console.log("userinfo", userInfo);
-      setId(userInfo.id);
-      setNickname(userInfo.nickname);
+      // console.log("userinfo", userInfo);
+
+      setUser({ id: userInfo.id, nickname: userInfo.nickname, email: userInfo.email, grade: userInfo.grade });
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -42,34 +46,55 @@ const Login = () => {
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
           getUserInfo();
-
           goMain();
-
-          // localStorage.setItem('accessToken', response.data.accessToken);
-          // localStorage.setItem("refreshToken", response.data.refreshToken);
         }
       } catch (error) {
-        const status = error;
-        console.log("status: ", status);
-
-        //   if(status.result_code === 'NOT_EXISTS') {
-        //     alert(status.result_message)
-        // }
+        const status = error.response;
+        if(status.statusText === 'Internal Server Error') {
+          alert('아이디를 다시 확인해 주세요')
+        }else if(status.statusText === 'Unauthorized'){
+          alert('비밀번호를 다시 확인해 주세요')
+        }
       }
     }
   };
+  const getAccessToken = Cookies.get('accessToken')
+  const [accessToken, setAccessToken] = useState(getAccessToken)
+
+  const refreshToken = Cookies.get('refreshToken')
+
+  useEffect(() => {
+    if(accessToken === undefined){
+      refreshAccessToken()
+      console.log('리프레시 요청 과연??')
+    }
+    console.log(accessToken, '토큰테스트~~~')
+  }, [accessToken])
+
+
+  
+  const refreshAccessToken = async () => {
+    console.log('refreshToken: ', refreshToken);
+    
+    try {
+      const res = await axios.get('/v1/auth/refresh', {
+        refresh_token: refreshToken
+      });
+      // if(res.response.status === 500 ) {
+      // 
+      // }
+      console.log(res, '리프레시 요청중~~')
+    } catch (error) {
+      console.log('error: ', error);
+
+    }
+  }
 
   const goSignUp = () => {
     navigate("/signup");
   };
   const goMain = () => {
     navigate("/maps");
-  };
-  const goCamera = () => {
-    navigate("/camera");
-  };
-  const goArPage = () => {
-    navigate("/arpage");
   };
 
   return (

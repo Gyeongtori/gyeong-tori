@@ -10,20 +10,20 @@ const Frame = styled.div`
 `;
 
 const Cards = () => {
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
   return (
     <>
       <Frame>
-        <Header />
+        {/* <Header /> */}
         {/* search 활성화 시 검색 페이지로 이동 */}
-        <div
+        {/* <div
           style={{ display: "flex" }}
           onClick={() => {
             navigate("/search");
           }}
         >
           <Search />
-        </div>
+        </div> */}
         <Card />
       </Frame>
     </>

@@ -5,12 +5,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Capture(props) {
-  console.log(state.no,"state.no 값입니다.")
-  console.log(props.url, props.state, props.isModalOpen);
+  console.log(props.url, props.state,);
   const url = props.url;
   const state = props.state;
-  const cultural_heritage_id = props.state.no;
-  const address = props.state.address;
+  const cultural_heritage_id = state.no;
+  const address = state.address;
 
   const navigate = useNavigate();
   const backMap = () => {
@@ -25,7 +24,7 @@ export default function Capture(props) {
         address: address,
       };
       const res = await axios.post(`/v1/card/add`, postData);
-      console.log("정상적으로 실행되었습니다.");
+      console.log("정상적으로 실행되었습니다.")
     } catch (e) {
       console.log(e.response);
     }
