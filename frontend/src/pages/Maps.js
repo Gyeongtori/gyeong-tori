@@ -105,6 +105,7 @@ export default function Maps() {
       const newLocation = {
         lat: center.lat,
         lng: center.lng,
+
       };
       setMapCenter(newLocation);
       if (map) {
@@ -119,7 +120,7 @@ export default function Maps() {
     console.log(event);
     navigate("/camera", {
       state: {
-        cultural_heritage_id: `${event.cultural_heritage_id}`,
+        cultural_heritage_id: `${event.no}`,
         lat: `${event.lat}`,
         lng: `${event.lng}`,
         address: `${event.address}`,

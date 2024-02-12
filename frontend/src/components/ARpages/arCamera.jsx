@@ -8,7 +8,10 @@ import Capture from "./capturePage";
 export default function Camera(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
-  console.log(state, "이거는 상속받아온 값입니다.");
+  const cultural_heritage_id = state.no;
+
+  
+  console.log(state,state.cultural_heritage_id, state.address, "이거는 상속받아온 값입니다.");
 
   const rendererRef = useRef(null);
   const videoSceneRef = useRef(new THREE.Scene()); // 비디오 씬
@@ -213,6 +216,8 @@ export default function Camera(props) {
           <Capture
             url={capturedImageDataURL}
             state={state}
+            address= {state.address}
+            cultural_heritage_id = {state.no}
             captureState={captureState}
             setCaptureState={setCaptureState}
           />
