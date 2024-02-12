@@ -29,7 +29,6 @@ public class SecurityConfig {
             "/v1/culturalheritage/**",
             "/v1/card/**",
             "/v1/dummy/**",
-            "/v1/question/list",
             //swagger 접근 위한 whitelist
             "/favicon.ico",
             "/error",
