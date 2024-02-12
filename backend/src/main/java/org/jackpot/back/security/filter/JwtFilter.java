@@ -54,13 +54,15 @@ public class JwtFilter extends OncePerRequestFilter {
         //access token이 없는 경우
         if(!StringUtils.hasText(authHeader)){
             log.debug("ACCESS DENIED : "+"헤더가 없습니다.");
-            jwtExceptionHandler(response,objectMapper,JwtErrorCode.NO_TOKEN);
+//            jwtExceptionHandler(response,objectMapper,JwtErrorCode.NO_TOKEN);
+            doFilter(request,response,filterChain);
             return;
         }
         //access token request 형식 오류 Bearer token
         if(!authHeader.startsWith(BEARER_PREFIX)){
             log.debug("ACCESS DENIED : "+"bearer 형식이 잘못되었습니다.");
-            jwtExceptionHandler(response,objectMapper,JwtErrorCode.NOT_SUPPORT_TOKEN);
+//            jwtExceptionHandler(response,objectMapper,JwtErrorCode.NOT_SUPPORT_TOKEN);
+            doFilter(request,response,filterChain);
             return;
         }
         //access token 추출
@@ -73,7 +75,8 @@ public class JwtFilter extends OncePerRequestFilter {
             Optional<User> user=null;
             user=userRepository.findById(jwtUtil.getUserIdFromAccessToken(authToken));
             if(user.isEmpty()){
-                userExceptionHandler(response,objectMapper,UserErrorCode.NOT_EXISTS_USER);
+//                userExceptionHandler(response,objectMapper,UserErrorCode.NOT_EXISTS_USER);
+                doFilter(request,response,filterChain);
                 return;
             }
             System.out.println(user.get().toString());
