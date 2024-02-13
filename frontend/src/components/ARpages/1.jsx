@@ -58,6 +58,8 @@ export default function Camera(props) {
 
   function toggleFacingMode() {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+    stopVideo(); // 이전 비디오 멈추기
+    startVideo();
   }
 
   useEffect(() => {
@@ -214,8 +216,6 @@ export default function Camera(props) {
     } else if (facingMode === "user") {
       canvas.style.transform = "scaleX(-1)";
     }
-    stopVideo();
-    startVideo();
   }, [facingMode]);
   return (
     <div>

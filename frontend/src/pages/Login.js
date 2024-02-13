@@ -44,7 +44,7 @@ const Login = () => {
         });
         const status = response.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
-          console.log("로그인 성공!");
+          // console.log("로그인 성공!");
           getUserInfo();
           goMain();
         }
@@ -66,9 +66,9 @@ const Login = () => {
   useEffect(() => {
     if(accessToken === undefined){
       refreshAccessToken()
-      console.log('리프레시 요청 과연??')
+      // console.log('리프레시 요청 과연??')
     }
-    console.log(accessToken, '토큰테스트~~~')
+    // console.log(accessToken, '토큰테스트~~~')
   }, [accessToken])
 
 
@@ -83,9 +83,9 @@ const Login = () => {
       // if(res.response.status === 500 ) {
       // 
       // }
-      console.log(res, '리프레시 요청중~~')
+      // console.log(res, '리프레시 요청중~~')
     } catch (error) {
-      console.log('error: ', error);
+      // console.log('error: ', error);
 
     }
   }

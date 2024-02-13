@@ -8,7 +8,7 @@ import {
 } from "@react-google-maps/api";
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
-import useStore from '../stores/store';
+import useStore from "../stores/store";
 import { Sample1 } from "../components/Styles/MapStyles";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GiHandBag } from "react-icons/gi";
@@ -25,7 +25,7 @@ const google = (window.google = window.google ? window.google : {});
 
 export default function Maps() {
   const [map, setMap] = useState(null);
-  const user = useStore(state => state.user);
+  const user = useStore((state) => state.user);
 
   // 경주 기준점
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
@@ -75,15 +75,15 @@ export default function Maps() {
           const latNow = position.coords.latitude;
           const lngNow = position.coords.longitude;
 
-          console.log(latNow, lngNow, "현재위치 받아왔어요");
+          // console.log(latNow, lngNow, "현재위치 받아왔어요");
           setCenter({ lat: latNow, lng: lngNow });
 
           const headNow = position.coords.heading;
           if (headNow !== null) {
             setHead(headNow);
-            console.log(headNow, "현재 방향을 받아왔어요");
+            // console.log(headNow, "현재 방향을 받아왔어요");
           } else {
-            console.log("방향 정보를 받아오지 못했습니다");
+            // console.log("방향 정보를 받아오지 못했습니다");
           }
         },
         function (error) {
@@ -101,44 +101,47 @@ export default function Maps() {
     }
   }, []);
 
-
   // const [address, setAddress] = useState(null)
-
-  // 마크 클릭 이벤트
-  const goGetCard = async (event) => {
-    console.log(event.lat, event.lng, '이벤트 값!!!')
-    const res = await getAddress(event.lat, event.lng)
-    console.log('res: ', res);
-
-    navigate("/camera", {
-    state: {
-     'no': `${event.no}`,
-         'lat': `${event.lat}`,
-         'lng': `${event.lng}`,
-         'address': `${res}`,
-       },
-     });
-  }
-
   const getAddress = async (getlat, getlng) => {
     try {
+
+      console.log("getlat : ",getlat, "getlng:", getlng)
       // res에는 결과 값이 담겨옴
-      const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
+      const res = await axios.get(
+        `https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`
       );
-      console.log('res: getAddress 함수 ', res);
-      console.log(getlat, getlng, '위도 경도 잘 들어왔나')
+      console.log("res: getAddress 함수 ", res);
+      console.log(getlat, getlng, "위도 경도 잘 들어왔나");
 
       // 이렇게 저장하면 오류남...
       // setAddress(res.data.response.result[0])
+      console.log("결과 값 :" ,res.data.response.result[0].text)
 
       // 임시 해결로 바로 데이터 전송함
-      return res.data.response.result[0].text
-    }
-     catch (error) {
+      return res.data.response.result[0].text;
+    } catch (error) {
       console.log(error);
     }
   };
 
+  // 마크 클릭 이벤트
+  const goGetCard = async (event) => {
+    // console.log(event.lat, event.lng, '이벤트 값!!!')
+    console.log(event)
+    console.log("event.lat :",event.lat, "event.lng : " , event.lng)
+    
+    const address = await getAddress(event.lat, event.lng);
+    console.log("res: ", address);
+    console.log(event, "event 값이예요");
+    navigate("/camera", {
+      state: {
+        no: `${event.no}`,
+        lat: `${event.lat}`,
+        lng: `${event.lng}`,
+        address: `${address}`,
+      },
+    });
+  };
 
   // 문화재 요청
   const [api, setApi] = useState();
@@ -150,12 +153,11 @@ export default function Maps() {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get("v1/culturalheritage/list", {
+      const res = await axios.get("/v1/culturalheritage/list", {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
       setApi(res.data.data_body);
-
     } catch (e) {
       console.log(e.response);
     }
@@ -188,7 +190,7 @@ export default function Maps() {
     <div style={{ width: "100%", height: "100%" }}>
       <div style={{ position: "relative" }}>
         <GoogleMap
-          zoom={17}
+          zoom={7}
           center={center}
           mapContainerClassName="map-container"
           onUnmount={onUnmount}
@@ -202,7 +204,11 @@ export default function Maps() {
           mapContainerStyle={{ width: "100%", height: "100vh" }}
         >
           {/* 중심 레이더 옵션 */}
-          <Circle center={center} options={circleRangeOptions} style={{zindex: 10}} />
+          <Circle
+            center={center}
+            options={circleRangeOptions}
+            style={{ zindex: 10 }}
+          />
           <Circle center={center} options={markerCircleOptions} />
 
           {/* 문화재 마커 */}
@@ -220,7 +226,6 @@ export default function Maps() {
                       onClick={() => {
                         goGetCard(place);
                       }}
-
                       icon={{
                         url: `${Pin}`,
                         scaledSize: new google.maps.Size(50, 50),
@@ -287,8 +292,8 @@ const ToggleButton = styled.button`
   border-radius: 50%;
 
   background-image: url(${mapBtn});
-  background-size: cover; 
-  background-repeat: no-repeat; 
+  background-size: cover;
+  background-repeat: no-repeat;
   border: none;
 `;
 
@@ -322,13 +327,11 @@ const SemiCircle = styled.div`
   }
 `;
 
-
-
 const SemiCircleButton = styled.button`
   width: 80px;
   height: 80px;
   border: 1px solid #72a16f;
-  background-color: #f0f4ef; 
+  background-color: #f0f4ef;
   border-radius: 50%;
   border: 2px solid #72a16f;
 `;
