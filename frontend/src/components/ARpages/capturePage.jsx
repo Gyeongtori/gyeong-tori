@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Capture(props) {
-  console.log(props.url, props.state, props.isModalOpen);
+  console.log(props.url, props.state);
   const url = props.url;
   const state = props.state;
-  const cultural_heritage_id = state.cultural_heritage_id;
+  const cultural_heritage_id = state.no;
   const address = state.address;
 
   const navigate = useNavigate();
@@ -16,7 +16,6 @@ export default function Capture(props) {
     navigate("/maps");
   };
   const [api, setApi] = useState();
-
   const postAPI = async () => {
     try {
       const postData = {
@@ -24,6 +23,7 @@ export default function Capture(props) {
         address: address,
       };
       const res = await axios.post(`/v1/card/add`, postData);
+      console.log(res);
       console.log("정상적으로 실행되었습니다.");
     } catch (e) {
       console.log(e.response);
@@ -48,7 +48,6 @@ export default function Capture(props) {
       console.error("No captured image data to download.");
     }
   };
-
   const handleCloseModal = () => {
     // 모달 상태를 닫음
     props.setCaptureState(false);
@@ -71,7 +70,7 @@ export default function Capture(props) {
               닫기
             </button>
           </div>
-        
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ width: "300px", height: "642px" }}>
               {

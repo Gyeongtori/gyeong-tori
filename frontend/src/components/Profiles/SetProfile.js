@@ -5,17 +5,21 @@ import styled from 'styled-components';
 const SetProfile = () => {
   return (
     
-    <div>
+    <InfoBlock>
       <ProfileImg />
       <ProfileInfo>
 
       </ProfileInfo>
-    </div>
+    </InfoBlock>
   )
 }
 
 export default SetProfile
 
+const InfoBlock = styled.div`
+  margin-top: 5rem;
+  
+`;
 
 const ProfileInfo = styled.div`
 
