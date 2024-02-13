@@ -12,6 +12,7 @@ import useStore from '../stores/store';
 import { Sample1 } from "../components/Styles/MapStyles";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GiHandBag } from "react-icons/gi";
+import { RiBoxingLine } from "react-icons/ri";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +59,10 @@ export default function Maps() {
 
   const goCard = () => {
     navigate("/cards");
+  };
+
+  const goBattle = () => {
+    navigate("/battle");
   };
 
   const [disApi, setDisApi] = useState();
@@ -303,7 +308,7 @@ export default function Maps() {
               <SemiCircle show={showSemiCircle}>
                 <div>
                   <SemiCircleButton>
-                    <GiHandBag onClick={goCard} size={35} />
+                    <RiBoxingLine onClick={goBattle} size={35} />
                   </SemiCircleButton>
                 </div>
                 <div>

@@ -43,4 +43,6 @@ const MyCardInfos = styled.div`
   justify-content: space-around;
   background-color: #DFE7DA; opacity: 0.5;
   margin: auto;
+  padding: 1rem 0.4rem;
+  border-radius: 10px;
 `;
