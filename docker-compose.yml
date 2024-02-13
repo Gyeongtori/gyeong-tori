@@ -46,6 +46,19 @@ services:
     networks:
       - jenkins-network
 
+  front-tiki:
+    container_name: front-tiki
+    image: kimdahui/toritest-front-tiki
+    #    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:3000"
+    networks:
+      - jenkins-network
+
   back:
     container_name: back
     image: kimdahui/toritest-back:${TAG}
