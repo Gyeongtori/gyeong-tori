@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from '../components/Profiles/Header'
 import SetProfile from '../components/Profiles/SetProfile';
+import MyCard from '../components/Profiles/MyCard';
 import styled from 'styled-components';
 
 
@@ -9,10 +10,8 @@ const Profile = () => {
   return (
     <Mobile>
       <Header />
-
       <SetProfile />
-
-
+      <MyCard />
 
     </Mobile>
   )
@@ -29,4 +28,6 @@ const Mobile = styled.div`
   background-color: #f2f2f2;
   display: flex;
   flex-direction: column;
+  margin: 2rem;
+
 `;
