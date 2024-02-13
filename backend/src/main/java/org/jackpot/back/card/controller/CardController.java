@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/card")
@@ -43,6 +42,11 @@ public class CardController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
+    /**
+     * 카드 개별 조회
+     * @param cardIndividualReadRequest
+     * @return CardIndividualReadResponse
+     */
     @GetMapping("/read")
     public ResponseEntity cardIndividualRead(@RequestBody CardIndividualReadRequest cardIndividualReadRequest) {
         return ResponseEntity.ok().body(MessageUtils.success(cardService.cardIndividualRead(cardIndividualReadRequest)));
