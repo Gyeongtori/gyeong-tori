@@ -32,13 +32,13 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfcce2IjhzDkYHn7rZBilMDHw4f1c4IwU&callback=initMap"
+    <!-- <script
+      src="https://maps.googleapis.com/maps/api/js?key=%REACT_APP_GOOGLE_MAPS_API_KEY%&callback=initMap"
       async
       defer
-    ></script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZrBxO1en2t7fU6-47ooo_DxPyeTF4Xi8
-    &callback=initMap"></script> -->
+    ></script> -->
+
+    <Script strategy="beforeInteractive" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=%REACT_APP_KAKAO_MAPS_API_KEY&libraries=services&autoload=false"></Script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -59,10 +59,10 @@ const InfoTop = (props) => {
     let url = `https://api.openweathermap.org/data/2.5/weather?lat=${center.lat}&lon=${center.lng}&appid=101694a50d5922c2274bdd9982d0eacd&units=metric`;
     let response = await fetch(url);
     let data = await response.json();
-    // console.log(data, '이게 될까?');
+    // console.log(data.main.temp, '?????');
 
     // 온도 정보 업데이트
-    setTemp(data.main.temp);
+    setTemp(Math.floor(data.main.temp));
     setIcon(data.weather[0].icon);
   };
 
