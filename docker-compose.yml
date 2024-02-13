@@ -63,6 +63,7 @@ services:
       - jenkins-network
     environment:
       - "PORT=4000"
+      - "PUBLIC_URL=./thayoon"
 
   back:
     container_name: back
