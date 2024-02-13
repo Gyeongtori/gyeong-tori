@@ -3,6 +3,7 @@ package org.jackpot.back.card.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
+import org.jackpot.back.card.model.dto.request.CardIndividualReadRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.service.CardService;
 import org.jackpot.back.global.utils.MessageUtils;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/card")
@@ -40,6 +40,16 @@ public class CardController {
         addCardToCollectionRequest.setUserEmail(user.getEmail());
         cardService.addCardToCollection(addCardToCollectionRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    /**
+     * 카드 개별 조회
+     * @param cardIndividualReadRequest
+     * @return CardIndividualReadResponse
+     */
+    @GetMapping("/read")
+    public ResponseEntity cardIndividualRead(@RequestBody CardIndividualReadRequest cardIndividualReadRequest) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.cardIndividualRead(cardIndividualReadRequest)));
     }
 
     /**
