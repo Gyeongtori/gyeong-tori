@@ -1,7 +1,7 @@
 def component = [
         front: false,
         back: true,
-        nginx: true,
+        nginx: false,
         redis: false,
         certbot: false
 ]
