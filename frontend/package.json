@@ -2,7 +2,11 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+<<<<<<< HEAD
   "homepage": "/thayoon",
+=======
+  "homepage":"/thayoon",
+>>>>>>> 18f7d812944dd26d6cf5034af2f45947e64ce077
   "dependencies": {
     "@react-google-maps/api": "^2.19.2",
     "@testing-library/jest-dom": "^5.17.0",
