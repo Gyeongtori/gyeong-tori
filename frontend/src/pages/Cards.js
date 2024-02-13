@@ -5,6 +5,7 @@ import Card from "../components/Cards/Card";
 import { useNavigate } from "react-router-dom";
 
 const Frame = styled.div`
+  display: flex;
   flex-direction: column;
 `;
 
@@ -14,8 +15,9 @@ const Cards = () => {
     <>
       <Frame>
         <Header />
-        {/* search 활성화 시 검색 페이지로 이동해야함 */}
+        {/* search 활성화 시 검색 페이지로 이동 */}
         <div
+          style={{ display: "flex" }}
           onClick={() => {
             navigate("/search");
           }}
