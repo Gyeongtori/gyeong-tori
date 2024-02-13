@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
@@ -13,10 +13,41 @@ const Signup = () => {
     email: "",
     password: "",
     name: "",
+    profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   });
   const [checkPw, setCheckPw] = useState("");
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
+  
+  const fileInput = useRef(null)
+
+  const onChange = (e) => {
+    if(e.target.files[0]){
+        setUserInput({profile_img :e.target.files[0],
+          email: userInput.email,
+          password: userInput.password,
+          name: userInput.name,})
+          }else{ //업로드 취소할 시
+            setUserInput({profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+            email: userInput.email,
+            password: userInput.password,
+            name: userInput.name,
+          })
+              return
+          }
+    //화면에 프로필 사진 표시
+          const reader = new FileReader();
+          reader.onload = () => {
+              if(reader.readyState === 2){
+                setUserInput({profile_img:reader.result,
+                  email: userInput.email,
+                  password: userInput.password,
+                  name: userInput.name,
+                })
+              }
+          }
+          reader.readAsDataURL(e.target.files[0])
+      }
 
   const emailCheck = (email) => {
     let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -74,6 +105,20 @@ const Signup = () => {
         <TitleInfo>경토리에 회원가입 하시면</TitleInfo>
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
       </div>
+
+      <Avatar 
+        src={userInput.profile_img} 
+        style={{margin:'20px'}} 
+        size={200} 
+        />
+      <input 
+ 	    type='file' 
+    	// style={{display:'none'}}
+        accept='image/jpg,impge/png,image/jpeg' 
+        name='profile_img'
+        onChange={onChange}
+        ref={fileInput}/>
+     
 
       <InputText>이메일</InputText>
       <ButtonBlank
@@ -205,4 +250,9 @@ const ErrorMSG = styled.div`
   color: red;
   font-size: 0.7rem;
   margin: 0.3rem 0 0 1rem;
+`;
+
+const Avatar = styled.img`
+  width: 50px;
+  height: 50px;
 `;
