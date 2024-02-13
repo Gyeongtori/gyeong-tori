@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.exception.CardException;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
+import org.jackpot.back.card.model.dto.request.CardIndividualReadRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.dto.response.CardGradeDto;
+import org.jackpot.back.card.model.dto.response.CardIndividualReadResponse;
 import org.jackpot.back.card.model.dto.response.GetCardRankResponse;
 import org.jackpot.back.card.model.dto.response.ReadCardResponse;
 import org.jackpot.back.card.model.entity.Card;
@@ -123,6 +125,23 @@ public class CardServiceImpl implements CardService{
         } catch (Exception e) {
             throw new CardException(TRANSACTION_FAIL);
         }
+    }
+
+    @Override
+    public CardIndividualReadResponse cardIndividualRead(CardIndividualReadRequest cardIndividualReadRequest) {
+        Optional<CardRedis> cardRedis = cardRedisRepository.findById(cardIndividualReadRequest.getCardNumber());
+        return CardIndividualReadResponse.builder()
+                .no(cardRedis.get().getCulturalHeritageRedis().getNo())
+                .culturalHeritageName(cardRedis.get().getCulturalHeritageRedis().getNameKr())
+                .division(cardRedis.get().getCulturalHeritageRedis().getDivision())
+                .sido(cardRedis.get().getCulturalHeritageRedis().getSidoName())
+                .gugun(cardRedis.get().getCulturalHeritageRedis().getGugunName())
+                .content(cardRedis.get().getCulturalHeritageRedis().getContent())
+                .number(cardRedis.get().getNumber())
+                .field(String.valueOf(cardRedis.get().getField()))
+                .rating(cardRedis.get().getRating())
+                .image(cardRedis.get().getImage())
+                .build();
     }
 
     @Override
