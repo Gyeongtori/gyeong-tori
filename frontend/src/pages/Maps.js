@@ -73,26 +73,26 @@ export default function Maps() {
           setCenter({ lat: latNow, lng: lngNow });
 
           // 내주변 문화재 탐색
-          const getDisAPI = async () => {
-            try {
-              // res에는 결과 값이 담겨옴
-              const res = await axios.get("v1/culturalheritage/distance", {
-                lat: latNow,
-                lng: lngNow,
-              });
-              console.log(res, '내 주변 문화재')
-              if(res.status === 401) {
-                useStore.getState().updateToken();
-                getAPI()
-              }
-              setApi(res.data.data_body);
+          // const getDisAPI = async () => {
+          //   try {
+          //     // res에는 결과 값이 담겨옴
+          //     const res = await axios.get("v1/culturalheritage/distance", {
+          //       lat: `${latNow}`,
+          //       lng: `${lngNow}`,
+          //     });
+          //     console.log(res, '내 주변 문화재')
+          //     if(res.status === 401) {
+          //       useStore.getState().updateToken();
+          //       getAPI()
+          //     }
+          //     setApi(res.data.data_body);
 
-            } catch (e) {
-              console.log(e.response);
-            }
-          };
+          //   } catch (e) {
+          //     console.log(e.response);
+          //   }
+          // };
 
-          getDisAPI()
+          // getDisAPI()
 
           const headNow = position.coords.heading;
           if (headNow !== null) {
@@ -187,6 +187,7 @@ export default function Maps() {
 
 
 
+
   // 문화재 요청
   const [api, setApi] = useState();
 
@@ -222,8 +223,8 @@ export default function Maps() {
     strokeColor: "#FF7575",
     strokeOpacity: 0,
     strokeWeight: 0,
-    fillColor: "#C779D0",
-    fillOpacity: 0.3,
+    fillColor: "#F2A55D",
+    fillOpacity: 0.5,
     radius: 80,
   };
 
@@ -231,7 +232,7 @@ export default function Maps() {
     strokeColor: "#FFFFFF",
     strokeOpacity: 1,
     strokeWeight: 2,
-    fillColor: "#C779D0",
+    fillColor: "#F2A55D",
     fillOpacity: 0.35,
     radius: 10,
   };
