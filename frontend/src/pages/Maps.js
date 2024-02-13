@@ -8,7 +8,7 @@ import {
 } from "@react-google-maps/api";
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
-import useStore from '../stores/store';
+import useStore from "../stores/store";
 import { Sample1 } from "../components/Styles/MapStyles";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GiHandBag } from "react-icons/gi";
@@ -25,9 +25,7 @@ const google = (window.google = window.google ? window.google : {});
 
 export default function Maps() {
   const [map, setMap] = useState(null);
-  const user = JSON.parse(localStorage.getItem('user'));
-
-  
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // 경주 기준점
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
@@ -50,7 +48,6 @@ export default function Maps() {
   const onUnmount = useCallback(function callback() {
     setMap(null);
   }, []);
-
 
   const goProfile = () => {
     navigate("/profile");
@@ -80,19 +77,18 @@ export default function Maps() {
                 lat: latNow,
                 lng: lngNow,
               });
-              console.log(res, '내 주변 문화재')
-              if(res.status === 401) {
+              console.log(res, "내 주변 문화재");
+              if (res.status === 401) {
                 useStore.getState().updateToken();
-                getAPI()
+                getAPI();
               }
               setApi(res.data.data_body);
-
             } catch (e) {
               console.log(e.response);
             }
           };
 
-          getDisAPI()
+          getDisAPI();
 
           const headNow = position.coords.heading;
           if (headNow !== null) {
@@ -117,50 +113,48 @@ export default function Maps() {
     }
   }, []);
 
-
   // const [address, setAddress] = useState(null)
 
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
-    console.log(event.lat, event.lng, '이벤트 값!!!')
-    const res = await getAddress(event.lat, event.lng)
-    console.log('res: ', res);
+    console.log(event.lat, event.lng, "이벤트 값!!!");
+    const res = await getAddress(event.lat, event.lng);
+    console.log("res: ", res);
 
     navigate("/camera", {
-    state: {
-     'no': `${event.no}`,
-         'lat': `${event.lat}`,
-         'lng': `${event.lng}`,
-         'address': `${res}`,
-       },
-     });
-  }
+      state: {
+        no: `${event.no}`,
+        lat: `${event.lat}`,
+        lng: `${event.lng}`,
+        address: `${res}`,
+      },
+    });
+  };
 
   const getAddress = async (getlat, getlng) => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
+      const res = await axios.get(
+        `/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`
       );
-      if(res.status === 401) {
+      if (res.status === 401) {
         useStore.getState().updateToken();
-        getAddress()
+        getAddress();
       }
-      console.log('res: getAddress 함수 ', res);
-      console.log('test2', res.data.response.result)
+      console.log("res: getAddress 함수 ", res);
+      console.log("test2", res.data.response.result);
 
       // 이렇게 저장하면 오류남...
       // setAddress(res.data.response.result[0])
 
       // 임시 해결로 바로 데이터 전송함
-      return res.data.response.result[0].text
-    }
-     catch (error) {
+      return res.data.response.result[0].text;
+    } catch (error) {
       console.log(error);
     }
   };
 
-
-// KAKAO MAP TEST
+  // KAKAO MAP TEST
 
   // const { kakao } = window
   // const container = document.getElementById('map')
@@ -168,7 +162,7 @@ export default function Maps() {
   //   center: new kakao.map.Lating(33.45701, 126.570667),
   //   level: 3
   // }
-  
+
   // let geocoder = new kakao.maps.services.Geocoder();
 
   //   // 마크 클릭 이벤트
@@ -185,8 +179,6 @@ export default function Maps() {
   //    });
   // }
 
-
-
   // 문화재 요청
   const [api, setApi] = useState();
 
@@ -201,19 +193,15 @@ export default function Maps() {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
-      if(res.status === 401) {
+      if (res.status === 401) {
         useStore.getState().updateToken();
-        getAPI()
+        getAPI();
       }
       setApi(res.data.data_body);
-
     } catch (e) {
       console.log(e.response);
     }
   };
-
-
-
 
   /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
              division, lng, lat, image_source, image_detail, narration, video_source} */
@@ -256,7 +244,11 @@ export default function Maps() {
           mapContainerStyle={{ width: "100%", height: "100vh" }}
         >
           {/* 중심 레이더 옵션 */}
-          <Circle center={center} options={circleRangeOptions} style={{zindex: 10}} />
+          <Circle
+            center={center}
+            options={circleRangeOptions}
+            style={{ zindex: 10 }}
+          />
           <Circle center={center} options={markerCircleOptions} />
 
           {/* 문화재 마커 */}
@@ -271,11 +263,9 @@ export default function Maps() {
                         lat: Number(place.lat),
                         lng: Number(place.lng),
                       }}
-                    
                       onClick={() => {
                         goGetCard(place);
                       }}
-
                       icon={{
                         url: `${Pin}`,
                         scaledSize: new google.maps.Size(50, 50),
@@ -342,8 +332,8 @@ const ToggleButton = styled.button`
   border-radius: 50%;
 
   background-image: url(${mapBtn});
-  background-size: cover; 
-  background-repeat: no-repeat; 
+  background-size: cover;
+  background-repeat: no-repeat;
   border: none;
 `;
 
@@ -377,13 +367,11 @@ const SemiCircle = styled.div`
   }
 `;
 
-
-
 const SemiCircleButton = styled.button`
   width: 80px;
   height: 80px;
   border: 1px solid #72a16f;
-  background-color: #f0f4ef; 
+  background-color: #f0f4ef;
   border-radius: 50%;
   border: 2px solid #72a16f;
 `;
