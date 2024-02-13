@@ -3,10 +3,12 @@ package org.jackpot.back.card.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
-import org.jackpot.back.card.model.dto.response.ReadCardResponse;
+import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.service.CardService;
 import org.jackpot.back.global.utils.MessageUtils;
+import org.jackpot.back.user.model.entity.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,19 +36,39 @@ public class CardController {
      * @return
      */
     @PostMapping("/add")
-    public ResponseEntity addCardToCollection(@RequestBody AddCardToCollectionRequest addCardToCollectionRequest) {
+    public ResponseEntity addCardToCollection(@AuthenticationPrincipal User user, @RequestBody AddCardToCollectionRequest addCardToCollectionRequest) {
+        addCardToCollectionRequest.setUserEmail(user.getEmail());
         cardService.addCardToCollection(addCardToCollectionRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
     /**
      * 카드 조회 (전체, 상세)
-     * @param userEmail
+     * @param
      * @return List<ReadCardResponse>
      */
-    @PostMapping("/list")
-    public ResponseEntity getCardList(@RequestBody String userEmail) {
-        List<ReadCardResponse> readCardResponse = cardService.getCardList(userEmail);
-        return ResponseEntity.ok().body(MessageUtils.success(readCardResponse));
+    @GetMapping("/list")
+    public ResponseEntity getCardList(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail())));
+    }
+
+    /**
+     * 카드 검색 및 정렬
+     * @param searchCardRequest
+     * @return List<ReadCardResponse>
+     */
+    @PostMapping("/search")
+    public ResponseEntity searchCard(@AuthenticationPrincipal User user, @RequestBody SearchCardRequest searchCardRequest) {
+        searchCardRequest.setUserEmail(user.getEmail());
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
+    }
+
+    /**
+     * 카드 랭킹
+     * @return List<GetCardRankResponse>
+     */
+    @GetMapping("/rank")
+    public ResponseEntity getCardRank() {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardRank()));
     }
 }

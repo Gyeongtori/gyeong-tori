@@ -26,6 +26,7 @@ public class JwtUtil {
     private static final ZoneId zoneId = ZoneId.of("Asia/Seoul");
     private String accessSecretKey;
     private String refreshSecretKey;
+    public static final String BEARER_PREFIX = "Bearer_";
 
     //의존성 주입 후 acccessSecretKey, refreshSecretKey 생성
     @PostConstruct
@@ -63,7 +64,7 @@ public class JwtUtil {
      * 액세스 토큰 생성
      */
     public String generateAccessToken(Long id){
-        return Jwts.builder()
+        return BEARER_PREFIX+Jwts.builder()
                 .setSubject(String.valueOf(id))
                 .setIssuedAt(getIssuedDate())
                 .setExpiration(getExpireDate(accessPeriod))
@@ -75,7 +76,7 @@ public class JwtUtil {
      * 리프레쉬 토큰 생성
      */
     public String generateRefreshToken(Long id){
-        return Jwts.builder()
+        return  Jwts.builder()
                 .setSubject(String.valueOf(id))
                 .setIssuedAt(getIssuedDate())
                 .setExpiration(getExpireDate(refreshPeriod))
@@ -93,6 +94,7 @@ public class JwtUtil {
             return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token);
         } catch (SignatureException | MalformedJwtException e) {
             log.info("exception : 잘못된 엑세스 토큰 시그니처");
+            log.info("토큰 >> "+token);
             throw new JwtException(JwtErrorCode.TOKEN_SIGNATURE_ERROR);
         } catch (ExpiredJwtException e) {
             log.info("exception : 엑세스 토큰 기간 만료");

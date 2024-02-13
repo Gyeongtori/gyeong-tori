@@ -20,6 +20,7 @@ public class RegistUserRequest {
     private String name;
     private String email;
     private String password;
+    private String profileImg;
 
     public User toEntity(){
         return User.builder()
@@ -27,7 +28,7 @@ public class RegistUserRequest {
                 .email(email)
                 .nickname(name)
                 .password(password)
-                .profileImage(null)
+                .profileImage(profileImg)
                 .grade(1)
                 .provider(AuthProvider.JACKPOT)
                 .role(UserRole.USER)

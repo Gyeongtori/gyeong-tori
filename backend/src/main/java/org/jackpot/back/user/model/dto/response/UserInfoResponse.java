@@ -1,4 +1,4 @@
-package org.jackpot.back.battle.model.dto;
+package org.jackpot.back.user.model.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -8,9 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class BattleCreateRequest {
-
+public class UserInfoResponse {
+    public Long id;
+    public String email;
+    public String password;
+    public String nickname;
+    public Integer grade;
 }

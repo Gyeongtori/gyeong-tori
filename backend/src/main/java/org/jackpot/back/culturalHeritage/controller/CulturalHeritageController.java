@@ -2,7 +2,7 @@ package org.jackpot.back.culturalHeritage.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
+import org.jackpot.back.culturalHeritage.model.dto.request.GetCulturalHeritageDistanceListRequest;
 import org.jackpot.back.culturalHeritage.model.service.CulturalHeritageService;
 import org.jackpot.back.culturalHeritage.model.service.WebClientService;
 import org.jackpot.back.global.utils.MessageUtils;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/culturalheritage")
@@ -49,8 +48,16 @@ public class CulturalHeritageController {
      */
     @GetMapping("/list")
     public ResponseEntity getCulturalHeritageList() {
-        List<CulturalHeritage> culturalHeritageList = culturalHeritageService.getList();
-        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageList));
+        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getCulturalHeritageList()));
+    }
+
+    /**
+     * 문화재 거리 기반 조회 (반경 500m 이내)
+     * @return List<CulturalHeritage>
+     */
+    @GetMapping("/distance")
+    public ResponseEntity getCulturalHeritageDistanceList(@RequestBody GetCulturalHeritageDistanceListRequest getCulturalHeritageDistanceListRequest) {
+        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getCulturalHeritageDistanceList(getCulturalHeritageDistanceListRequest)));
     }
 
 }
