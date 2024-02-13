@@ -14,7 +14,7 @@ pipeline {
         stage("Checkout") {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'develop-fe']],
+                        branches: [[name: 'feat/S10P12C107-253-websocket']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
                         userRemoteConfigs: [[credentialsId: 'Github-access-token', url: 'https://github.com/KimDahui42/jackpot-settings']]
                 )
