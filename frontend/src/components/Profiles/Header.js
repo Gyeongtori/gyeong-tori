@@ -41,7 +41,7 @@ const Head = styled.div`
   top: 1rem;
   left: 0;
   right: 0;
-  background-color: white;
+  /* background-color: white; */
   color: white;
   display: flex;
   align-items: flex-start;
@@ -49,7 +49,8 @@ const Head = styled.div`
 `;
 
 const Back = styled.div`
-  margin-left: 5px;
+  margin-left: 2rem;
+  margin-top: 2rem;
   svg {
     color: rgba(128, 128, 128, 0.623);
     &:hover {
