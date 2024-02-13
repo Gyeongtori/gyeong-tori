@@ -55,9 +55,11 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "4000:3000"
+      - "4000:4000"
     networks:
       - jenkins-network
+    environment:
+      - "PORT=4000"
 
   back:
     container_name: back
