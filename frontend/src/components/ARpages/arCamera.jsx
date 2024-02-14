@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import * as THREE from "three";
 import html2canvas from "html2canvas";
 import Capture from "./capturePage";
 
 export default function FrontCamera(props) {
   const { state } = useLocation();
+  console.log(state)
   const navigate = useNavigate();
   console.log(state, " <- 스테이트 값이에여");
   console.log(state.cultural_heritage_id);
@@ -14,36 +15,28 @@ export default function FrontCamera(props) {
   const rendererRef = useRef(null);
   const videoSceneRef = useRef(new THREE.Scene()); // 비디오 씬
   const modelSceneRef = useRef(new THREE.Scene()); // 모델 씬
-  const cameraRef = useRef(
-    new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    )
-  );
+  const cameraRef = useRef(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
 
   const videoTextureRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
-  const facingMode = "user";
+  const facingMode = "environment";
   const [captureState, setCaptureState] = useState(false);
 
   const backMap = () => {
     navigate("/maps");
   };
 
-  function toggleFacingMode(e) {
-    navigate("/camera", {
+  function toggleFacingMode(state) {
+    navigate('/frontcamera',{
       state: {
-        no: `${e.no}`,
-        lat: `${e.lat}`,
-        lng: `${e.lng}`,
-        address: `${e.address}`,
-        cultural_heritage_id: `${e.cultural_heritage_id}`,
-      },
-    });
+        no: `${state.no}`,
+        lat: `${state.lat}`,
+        lng: `${state.lng}`,
+        address: `${state.address}`,
+        cultural_heritage_id: `${state.cultural_heritage_id}`
+    }})
   }
 
   const stopVideo = () => {
@@ -67,15 +60,11 @@ export default function FrontCamera(props) {
         console.error("Error capturing canvas:", error);
       });
   };
+  
 
   useEffect(() => {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 10);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     const canvas = document.querySelector("#canvas");
@@ -91,12 +80,12 @@ export default function FrontCamera(props) {
     const ambientLight = new THREE.AmbientLight(0xffffff, 2);
     const directionalLight = new THREE.DirectionalLight(0xff0000, 3);
     directionalLight.position.copy(camera.position);
-    directionalLight.position.set(0, 10, 10);
-    directionalLight.target.position.set(0, 1, 1);
+    directionalLight.position.set(0, 10, 10); 
+    directionalLight.target.position.set(0,1,1);
 
     scene.add(ambientLight);
     scene.add(directionalLight);
-
+    
     modelSceneRef.current.add(ambientLight);
     modelSceneRef.current.add(directionalLight);
 
@@ -108,33 +97,30 @@ export default function FrontCamera(props) {
           const model = gltf.scene;
           model.position.set(-3, -9, -5);
 
-          // 모델이 로드된 후에 재질에 조명을 추가합니다.
-          model.traverse((child) => {
-            if (child.isMesh) {
-              // 텍스처가 이미 할당되어 있는지 확인
-              if (child.material.map) {
-                // 기존 머티리얼 속성을 유지하면서 새로운 머티리얼 생성
-                child.material = new THREE.MeshStandardMaterial({
-                  color: 0xffffff,
-                  map: child.material.map,
-                  roughness: 0.5,
-                  metalness: 0.5,
-                  depthTest: true, // 깊이 테스트 사용
-                  transparent: false,
-                });
-              }
+        // 모델이 로드된 후에 재질에 조명을 추가합니다.
+        model.traverse((child) => {
+          if (child.isMesh) {
+            // 텍스처가 이미 할당되어 있는지 확인
+            if (child.material.map) {
+              // 기존 머티리얼 속성을 유지하면서 새로운 머티리얼 생성
+              child.material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                map: child.material.map,
+                roughness: 0.5,
+                metalness: 0.5,
+                depthTest: true, // 깊이 테스트 사용
+                transparent: false,
+              });
             }
-          });
+          }
+        });
 
-          // 모델 씬에 모델을 추가합니다.
-          scene.add(model);
-        },
-        undefined,
-        (error) => {
-          // 모델 로드 실패
-          console.error("An error happened:", error);
-        }
-      );
+        // 모델 씬에 모델을 추가합니다.
+        scene.add(model);
+      }, undefined, (error) => {
+        // 모델 로드 실패
+        console.error('An error happened:', error);
+      });
     };
 
     const animate = () => {
@@ -213,7 +199,7 @@ export default function FrontCamera(props) {
     };
 
     window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    resizeCanvas()
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
@@ -255,7 +241,11 @@ export default function FrontCamera(props) {
             }}
           ></canvas>
           <div>
-            <button color="primary" onClick={toggleFacingMode}>
+            <button 
+            color="primary" 
+            onClick={toggleFacingMode}
+            state={state}
+            >
               카메라 전환하기
             </button>
             <button onClick={handelCapture}>캡쳐하기</button>

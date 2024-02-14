@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import Maps from "../../pages/Maps";
-import html2canvas from "html2canvas";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

@@ -10,6 +10,7 @@ import Maps from "./pages/Maps";
 import SearchPage from "./pages/SearchPage";
 import BattlePage from "./pages/BattlePage";
 
+import FrontCamera from "./components/ARpages/frontCamera";
 import Camera from "./components/ARpages/arCamera";
 import Test from "./pages/Test";
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/battle" element={<BattlePage />} />
 
+        <Route path="/frontcamera" element={<FrontCamera />} />
         <Route path="/camera" element={<Camera />} />
         <Route path="/test" element={<Test />} />
         <Route path="/battle" element={<BattlePage />} />
