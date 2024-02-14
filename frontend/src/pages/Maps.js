@@ -120,22 +120,6 @@ export default function Maps() {
 
   // const [address, setAddress] = useState(null)
 
-  // 마크 클릭 이벤트
-  const goGetCard = async (event) => {
-    console.log(event.lat, event.lng, "이벤트 값!!!");
-    const res = await getAddress(event.lat, event.lng);
-    console.log("res: ", res);
-
-    navigate("/camera", {
-      state: {
-        no: `${event.no}`,
-        lat: `${event.lat}`,
-        lng: `${event.lng}`,
-        address: `${res}`,
-      },
-    });
-  };
-
   const getAddress = async (getlat, getlng) => {
     try {
       console.log("getlat : ", getlat, "getlng:", getlng);
@@ -172,19 +156,19 @@ export default function Maps() {
 
   // let geocoder = new kakao.maps.services.Geocoder();
 
-  //   // 마크 클릭 이벤트
-  // const goGetCard = async (event) => {
-  //   console.log(event.lat, event.lng, '이벤트 값!!!')
+  // 마크 클릭 이벤트
+  const goGetCard = async (event) => {
+    console.log(event.lat, event.lng, "이벤트 값!!!");
 
-  //   navigate("/camera", {
-  //   state: {
-  //    'no': `${event.no}`,
-  //        'lat': `${event.lat}`,
-  //        'lng': `${event.lng}`,
-  //        'address': `${event}`,
-  //      },
-  //    });
-  // }
+    navigate("/camera", {
+      state: {
+        no: `${event.no}`,
+        lat: `${event.lat}`,
+        lng: `${event.lng}`,
+        address: `${event}`,
+      },
+    });
+  };
 
   // 문화재 요청
   const [api, setApi] = useState();
