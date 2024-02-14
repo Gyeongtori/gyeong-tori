@@ -23,7 +23,6 @@ export default function Camera(props) {
   );
 
   const videoTextureRef = useRef(null);
-  const videoMeshRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
@@ -58,8 +57,6 @@ export default function Camera(props) {
 
   function toggleFacingMode() {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
-    stopVideo(); // 이전 비디오 멈추기
-    startVideo();
   }
 
   useEffect(() => {
@@ -101,7 +98,7 @@ export default function Camera(props) {
         (gltf) => {
           const model = gltf.scene;
           model.position.set(-3, -7, -5);
-
+    
           // 모델이 로드된 후에 재질에 조명을 추가합니다.
           model.traverse((child) => {
             if (child.isMesh) {
@@ -119,7 +116,7 @@ export default function Camera(props) {
               }
             }
           });
-
+    
           // 모델 씬에 모델을 추가합니다.
           scene.add(model);
         },
@@ -130,26 +127,27 @@ export default function Camera(props) {
         }
       );
     };
-
+    
     const animate = () => {
       requestAnimationFrame(animate);
-
+    
       renderer.autoClear = false;
       renderer.clear();
       renderer.render(videoSceneRef.current, camera);
       renderer.clearDepth();
       renderer.render(modelSceneRef.current, camera);
     };
-
+    
     let video;
-
-    const startVideo = () => {
+    async function startVideo() {
+      stopVideo();
       try {
         const constraints = {
           video: { facingMode },
           audio: false,
         };
-
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        console.log("화면이 나오고 있는 카메라입니다.",facingMode)
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then((stream) => {
@@ -190,6 +188,8 @@ export default function Camera(props) {
       }
     };
 
+    
+
     startVideo();
 
     const resizeCanvas = () => {
@@ -199,7 +199,6 @@ export default function Camera(props) {
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
-
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
@@ -216,6 +215,7 @@ export default function Camera(props) {
     } else if (facingMode === "user") {
       canvas.style.transform = "scaleX(-1)";
     }
+    stopVideo();
   }, [facingMode]);
   return (
     <div>
@@ -247,4 +247,3 @@ export default function Camera(props) {
     </div>
   );
 }
-//변경전이예요
