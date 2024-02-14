@@ -4,9 +4,10 @@ import axios from "axios";
 import io from "socket.io-client";
 // 1. io.connect와 동일하게 설정
 // 2. 백엔드 서버에 대한 URL 전달
-const socket = io.connect(`${process.env.REACT_APP_SOCKET_SERVER_ADDRESS}`, {
+const socket = io.connect("/", {
   cors: { origin: "*" },
   transports: ["websocket"],
+  secure: true,
 });
 
 const OuterCircle = styled.div`
