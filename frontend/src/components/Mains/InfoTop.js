@@ -30,16 +30,16 @@ const InfoTop = (props) => {
 
   const [address, setAddress] = useState();
 
-  useEffect((props) => {
-    // getAddress();
-  }, []);
+  // useEffect((props) => {
+  //   getAddress();
+  // }, []);
 
   // const getAddress = async () => {
   //   try {
   //     // res에는 결과 값이 담겨옴
 
-  //     const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`,
-  //     // const res = await axios.get(`${process.env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process.env.REACT_APP_SIDO_KEY}`
+  //     const res = await axios.get(`https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${center.lng},${center.lat}&type=both&zipcode=true&simple=false&key=${process..env.REACT_APP_SIDO_KEY}`,
+  //     // const res = await axios.get(`${process..env.REACT_APP_SIDO_API_URL}${center.lng},${center.lat}${process..env.REACT_APP_SIDO_KEY}`
   //     // https://api.vworld.kr/req/address?service=address&request=getCoord&key=&type=both&zipcode=true&simple=false&key=1307BDF2-20BB-3FB6-B098-6C8FF3D01BE2127.766922,35.907757
   //     // {headers: {
   //     //   'Access-Control-Allow-Origin' : 'http://localhost:3000/maps'
@@ -52,27 +52,21 @@ const InfoTop = (props) => {
   //   }
   // };
 
-  // console.log('주소위치 찍기',`${process.env.REACT_APP_SIDO_API_URL}${process.env.REACT_APP_SIDO_KEY}${center.lng},${center.lat}`)
+  // console.log('주소위치 찍기',`${process..env.REACT_APP_SIDO_API_URL}${process..env.REACT_APP_SIDO_KEY}${center.lng},${center.lat}`)
 
   // 현재 날씨 받아오기
   const getWeatherByCurrentLocation = async () => {
     let url = `https://api.openweathermap.org/data/2.5/weather?lat=${center.lat}&lon=${center.lng}&appid=101694a50d5922c2274bdd9982d0eacd&units=metric`;
     let response = await fetch(url);
     let data = await response.json();
-    // console.log(data, '이게 될까?');
+    // console.log(data.main.temp, '?????');
 
     // 온도 정보 업데이트
-    setTemp(data.main.temp);
+    setTemp(Math.floor(data.main.temp));
     setIcon(data.weather[0].icon);
   };
 
-  const goProfile = () => {
-    navigate("/profile");
-  };
 
-  const goCard = () => {
-    navigate("/cards");
-  };
 
   return (
     <div>
@@ -93,11 +87,10 @@ const InfoTop = (props) => {
         </InfoHeader>
 
         <InfoHeaderRight>
-          <Toggle setIsOn={setIsOn} />
+          {/* <Toggle setIsOn={setIsOn} /> */}
         </InfoHeaderRight>
       </Info>
 
-      <InfoSide>{isOn && <FaTrophy size={25} />}</InfoSide>
     </div>
   );
 };
@@ -120,7 +113,7 @@ const Info = styled.div`
 
   display: flex;
   justify-content: space-between;
-  align-items: center; /* 세로 중앙 정렬 */
+  align-items: center; 
 `;
 
 const InfoHeader = styled.div`
@@ -136,17 +129,6 @@ const InfoHeaderRight = styled.div`
 
   & > :first-child {
     margin-right: 10px;
-  }
-`;
-
-const InfoSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-right: 10px;
-
-  & > :first-child {
-    margin-bottom: 10px;
   }
 `;
 

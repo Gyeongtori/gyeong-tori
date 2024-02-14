@@ -1,36 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { useLocation, useNavigate } from "react-router-dom";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 import html2canvas from "html2canvas";
 import Capture from "./capturePage";
 
 export default function Camera(props) {
   const { state } = useLocation();
-  console.log(state, "이거는 상속받아온 값입니다.");
+  const navigate = useNavigate();
+  console.log(state, "state값이예요");
 
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const rendererRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
+  const videoSceneRef = useRef(new THREE.Scene()); // 비디오 씬
+  const modelSceneRef = useRef(new THREE.Scene()); // 모델 씬
+  const cameraRef = useRef(
+    new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    )
+  );
+
   const videoTextureRef = useRef(null);
-  const videoMeshRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
-
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
-  const [facingMode, setFacingMode] = useState("user");
+  const [facingMode, setFacingMode] = useState("environment");
   const [captureState, setCaptureState] = useState(false);
 
+  const backMap = () => {
+    navigate("/maps");
+  };
+
   const stopVideo = () => {
-    // stopVideo 함수를 handelCapture 함수 밖에 정의
     const { current: videoStream } = videoStreamRef;
     if (videoStream) {
       const tracks = videoStream.getTracks();
       tracks.forEach((track) => track.stop());
     }
-    // 비디오 스트림이 중지되면 모달 창을 닫음
-    // setIsModalOpen(false);
   };
 
   const handelCapture = (e) => {
@@ -38,10 +46,8 @@ export default function Camera(props) {
     html2canvas(canvas)
       .then((canvas) => {
         const imageDataURL = canvas.toDataURL();
-        console.log(imageDataURL,imageDataURL);
         setCapturedImageDataURL(imageDataURL);
         stopVideo();
-        // setIsModalOpen(!isModalOpen);
         setCaptureState(true);
       })
       .catch((error) => {
@@ -49,172 +55,160 @@ export default function Camera(props) {
       });
   };
 
-  function toggleFacingMode() {
+  const toggleFacingMode = () => {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
-  }
-  // 여기부터
+    stopVideo(); // 현재 비디오 중단
+    startVideo(); // 비디오 다시 시작
+  };
+
+  const loadGltfModel = (scene) => {
+    let loader = new GLTFLoader();
+    loader.load(
+      "metarial/1234.gltf",
+      (gltf) => {
+        const model = gltf.scene;
+        model.position.set(-3, -7, -5);
+
+        // 모델이 로드된 후에 재질에 조명을 추가합니다.
+        model.traverse((child) => {
+          if (child.isMesh) {
+            // 텍스처가 이미 할당되어 있는지 확인
+            if (child.material.map) {
+              // 기존 머티리얼 속성을 유지하면서 새로운 머티리얼 생성
+              child.material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                map: child.material.map,
+                roughness: 0.5,
+                metalness: 0.5,
+                depthTest: true, // 깊이 테스트 사용
+                transparent: false,
+              });
+            }
+          }
+        });
+
+        // 모델 씬에 모델을 추가합니다.
+        scene.add(model);
+      },
+      undefined,
+      (error) => {
+        // 모델 로드 실패
+        console.error("An error happened:", error);
+      }
+    );
+  };
+
+  const animate = () => {
+    const renderer = rendererRef.current;
+    if (renderer) {
+      requestAnimationFrame(animate);
+
+      renderer.autoClear = false;
+      renderer.clear();
+      renderer.render(videoSceneRef.current, cameraRef.current);
+      renderer.clearDepth();
+      renderer.render(modelSceneRef.current, cameraRef.current);
+    }
+  };
+
+  const startVideo = async () => {
+    try {
+      const constraints = {
+        video: { facingMode },
+        audio: false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log("화면이 나오고 있는 카메라입니다.", facingMode)
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      video.play();
+
+      const videoTexture = new THREE.VideoTexture(video);
+      videoTextureRef.current = videoTexture;
+      const videoMaterial = new THREE.MeshBasicMaterial({
+        map: videoTexture,
+        depthTest: true, // 깊이 테스트 사용
+        transparent: true, // 깊이 정렬 및 투명도 설정
+      });
+
+      const videoGeometry = new THREE.PlaneGeometry(16, 12);
+      const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+      videoMesh.renderOrder = 0; // 비디오 메시를 먼저 렌더링
+
+      // 비디오 씬에 비디오 메시를 추가합니다.
+      videoSceneRef.current.add(videoMesh);
+
+      cameraRef.current.position.z = 7.5;
+      videoStreamRef.current = stream;
+
+      // 모델 로드 함수 호출
+      loadGltfModel(modelSceneRef.current);
+
+      // 애니메이션 시작
+      animate();
+    } catch (error) {
+      console.error("Error accessing webcam:", error);
+    }
+  };
+
   useEffect(() => {
-    // 새로운 THREE.js 씬, 카메라 및 렌더러 생성
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75, window.innerWidth / window.innerHeight, 0.1, 1000
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
     );
-    camera.position.set(0,0,10)
+    camera.position.set(0, 0, 10);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
     const canvas = document.querySelector("#canvas");
     const renderer = new THREE.WebGLRenderer({
       canvas,
       preserveDrawingBuffer: true,
-      antialias:true,
+      antialias: true,
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    // useRef를 사용하여 렌더러, 씬 및 카메라에 대한 참조 설정
     rendererRef.current = renderer;
-    // document.body.appendChild(renderer.domElement);
-    sceneRef.current = scene;
     cameraRef.current = camera;
 
-    
-    // 빛 설정
-    const ambientLight = new THREE.AmbientLight(0xffffff, 3); // 주변 조명
-    const directionalLight = new THREE.DirectionalLight(0xff0000, 1); // 방향 조명
-    directionalLight.position.set(1, 1, 1).normalize(); // 조명의 위치
-    // 씬에 빛 추가
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+    const directionalLight = new THREE.DirectionalLight(0xff0000, 3);
+    directionalLight.position.copy(camera.position);
+    directionalLight.position.set(0, 10, 10);
+    directionalLight.target.position.set(0, 1, 1);
+
     scene.add(ambientLight);
     scene.add(directionalLight);
-    //gltf instense 생성 및 로드
-    
-    const loadGltfModel = () => {
-      // GLTF 모델 로드
-      let loader = new GLTFLoader();
-  
-      loader.load("metarial/1234.gltf", (gltf) => {
-          console.log('GLTF 모델이 성공적으로 로드되었습니다.', gltf);
-  
-          if (gltf.scene) {
-              // 씬에 로드된 객체들 추가
-              gltf.scene.traverse((object) => {
-                  // traverse 함수 내에서 호출되는 콜백 함수를 이용하여 객체들을 씬에 추가합니다.
-                  sceneRef.current.add(object);
-              });
-  
-              // 애니메이션 시작
-              animate();
-          } else {
-              console.error('GLTF 모델의 씬이 정의되지 않았습니다.');
-          }
-      }, undefined, (error) => {
-          console.error('GLTF 모델 로딩 중 오류:', error);
-      });
-  }
 
-  const animate = () => {
-    // 비디오 텍스처 갱신
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        videoMeshRef.current.material.map.needsUpdate = true;
-    }
+    modelSceneRef.current.add(ambientLight);
+    modelSceneRef.current.add(directionalLight);
 
-    // 렌더링 및 애니메이션 재귀 호출
-    rendererRef.current.render(sceneRef.current, cameraRef.current);
-    requestAnimationFrame(() => animate(video));
-}
+    startVideo(); // 페이지 로드 시 비디오 시작
 
-    let video;
-
-    // 비디오 시작 함수
-    const startVideo = () => {
-      try {
-        const constraints = {
-          video: { facingMode },
-          audio: false,
-        };
-        
-        navigator.mediaDevices
-          .getUserMedia(constraints)
-          .then((stream) => {
-            video = document.createElement("video");
-            video.srcObject = stream;
-            video.play();
-
-            const videoTexture = new THREE.VideoTexture(video);
-            videoTextureRef.current = videoTexture;
-            const videoMaterial = new THREE.MeshBasicMaterial({
-              map: videoTexture,
-            });
-            const videoGeometry = new THREE.PlaneGeometry(16, 12);
-            const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-            scene.add(videoMesh);
-            videoMeshRef.current = videoMesh;
-            camera.position.y = 1
-            camera.position.z = 7;
-            videoStreamRef.current = stream;
-            loadGltfModel()
-            const animate = () => {
-              if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                videoTexture.needsUpdate = true;
-              }
-
-              renderer.render(scene, camera);
-              requestAnimationFrame(animate);
-            };
-
-            animate(video);
-          })
-          .catch((error) => {
-            console.error("Error accessing webcam:", error);
-          });
-      } catch (error) {
-        console.error("Error accessing webcam:", error);
-      }
-    };
-
-    // 비디오 시작 함수 호출
-    startVideo();
-
-    // 창 크기 조절 이벤트 핸들러
     const resizeCanvas = () => {
       const canvas = rendererRef.current.domElement;
-  const { current: camera } = cameraRef;
-
-  // Canvas의 크기를 창의 크기와 동일하게 설정
-  canvas.width = window.innerWidth * devicePixelRatio;
-  if (window.innerWidth <= 600) {
-    canvas.height = 300 * devicePixelRatio; // 600px 이하의 화면 높이
-  } else if (window.innerWidth <= 1024) {
-    canvas.height = 400 * devicePixelRatio; // 601px에서 1024px 사이의 화면 높이
-  } else {
-    canvas.height = 600 * devicePixelRatio; // 1025px 이상의 화면 높이
-  }
-  // Three.js의 렌더러 크기도 업데이트
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+      canvas.width = window.innerWidth * devicePixelRatio;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     };
-
-    
-
-    // 창 크기 조절 이벤트 리스너 등록
     window.addEventListener("resize", resizeCanvas);
-    resizeCanvas()
-    // useEffect의 cleanup 함수
+    resizeCanvas();
+
     return () => {
-      // 이벤트 리스너 제거
       window.removeEventListener("resize", resizeCanvas);
-      // 비디오 스트림 정리
-      const { current: videoStream } = videoStreamRef;
-      if (videoStream) {
-        const tracks = videoStream.getTracks();
-        tracks.forEach((track) => track.stop());
-      }
+      stopVideo();
     };
-  }, [facingMode]); // facingMode 변수가 변경될 때마다 useEffect가 다시 실행됨
-  // 요기까지 유즈 이펙트
+  }, [facingMode]);
 
   useEffect(() => {
-    // facingMode가 environment인 경우 scaleX(1)로 설정
+    const canvas = canvasRef.current;
     if (facingMode === "environment") {
-      const canvas = canvasRef.current;
       canvas.style.transform = "scaleX(1)";
+    } else if (facingMode === "user") {
+      canvas.style.transform = "scaleX(-1)";
     }
+    stopVideo(); // 방향 전환 시 비디오 중단
   }, [facingMode]);
 
   return (
@@ -224,32 +218,26 @@ export default function Camera(props) {
           <Capture
             url={capturedImageDataURL}
             state={state}
+            address={state.address}
+            cultural_heritage_id={state.no}
             captureState={captureState}
             setCaptureState={setCaptureState}
           />
         )
       ) : (
         <div>
-          <canvas
-          
-            ref={canvasRef}
-            id="canvas"
-            style={{
-              width: "600px",
-              // maxWidth: "100vw",
-              height: "768px",
-              transform: "scaleX(-1)",
-            }}
-          ></canvas>
+          <canvas ref={canvasRef} id="canvas"></canvas>
           <div>
             <button color="primary" onClick={toggleFacingMode}>
               카메라 전환하기
             </button>
             <button onClick={handelCapture}>캡쳐하기</button>
+            <button style={{ marginBottom: "10px" }} onClick={backMap}>
+              닫기
+            </button>
           </div>
         </div>
-      ) }
-      
+      )}
     </div>
   );
 }

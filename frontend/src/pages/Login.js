@@ -3,29 +3,37 @@ import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
+import useStore from "../stores/store";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { useCookies } from 'react-cookie';
+
 
 const Login = () => {
   const navigate = useNavigate();
+  const setUser = useStore(state => state.setUser);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [id, setId] = useState("");
-  const [nickname, setNickname] = useState("");
+
 
   const getUserInfo = async () => {
     try {
       const response = await axios.get("/v1/user/retrieve");
+      // console.log('응답~~~~', response)
+      if(response.status === 401) {
+        useStore.getState().updateToken();
+        getUserInfo()
+      }
       const userInfo = response.data.data_body;
-      console.log("userinfo", userInfo);
-      setId(userInfo.id);
-      setNickname(userInfo.nickname);
+      // console.log("userinfo", userInfo);
+
+      setUser({ id: userInfo.id, nickname: userInfo.nickname, email: userInfo.email, grade: userInfo.grade });
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
   };
+
 
   const handleLogin = async () => {
     if (email === "") {
@@ -42,34 +50,26 @@ const Login = () => {
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
           getUserInfo();
-
           goMain();
-
-          // localStorage.setItem('accessToken', response.data.accessToken);
-          // localStorage.setItem("refreshToken", response.data.refreshToken);
         }
       } catch (error) {
-        const status = error;
-        console.log("status: ", status);
-
-        //   if(status.result_code === 'NOT_EXISTS') {
-        //     alert(status.result_message)
-        // }
+        const status = error.response;
+        if(status.statusText === 'Internal Server Error') {
+          alert('아이디를 다시 확인해 주세요')
+        }else if(status.statusText === 'Unauthorized'){
+          alert('비밀번호를 다시 확인해 주세요')
+        }
       }
     }
   };
+
+
 
   const goSignUp = () => {
     navigate("/signup");
   };
   const goMain = () => {
     navigate("/maps");
-  };
-  const goCamera = () => {
-    navigate("/camera");
-  };
-  const goArPage = () => {
-    navigate("/arpage");
   };
 
   return (
