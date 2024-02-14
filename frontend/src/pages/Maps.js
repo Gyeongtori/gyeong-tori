@@ -145,27 +145,22 @@ export default function Maps() {
     }
   };
 
-  // KAKAO MAP TEST
-
-  // const { kakao } = window
-  // const container = document.getElementById('map')
-  // const options = {
-  //   center: new kakao.map.Lating(33.45701, 126.570667),
-  //   level: 3
-  // }
-
-  // let geocoder = new kakao.maps.services.Geocoder();
-
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
-    console.log(event.lat, event.lng, "이벤트 값!!!");
+    // console.log(event.lat, event.lng, '이벤트 값!!!')
+    console.log(event);
+    console.log("event.lat :", event.lat, "event.lng : ", event.lng);
 
+    const address = await getAddress(event.lat, event.lng);
+    console.log("res: ", address);
+    console.log(event, "event 값이예요");
     navigate("/camera", {
       state: {
-        no: `${event.no}`,
+        cultural_heritage_id: `${event.no}`,
         lat: `${event.lat}`,
         lng: `${event.lng}`,
-        address: `${event}`,
+        address: `${address}`,
+        
       },
     });
   };

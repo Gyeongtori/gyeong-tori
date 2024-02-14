@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -18,8 +18,6 @@ export default function Capture(props) {
       console.error("백으로 돌아갈 수 없어", error);
     }
   };
-
-  const [api, setApi] = useState();
 
   const postAPI = async () => {
     try {
