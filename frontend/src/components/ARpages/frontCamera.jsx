@@ -8,8 +8,7 @@ import Capture from "./capturePage";
 export default function FrontCamera(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
-  console.log(state," <- 스테이트 값이에여")
-console.log(state.cultural_heritage_id)
+  console.log(state," <- frontCamera의 스테이트 값이에여")
 
 
 
@@ -30,10 +29,9 @@ console.log(state.cultural_heritage_id)
     navigate("/maps");
   };
 
-  function toggleFacingMode(e) {
+  const toggleFacingMode = (e) => {
     navigate('/camera',{
       state: {
-        no: `${e.no}`,
         lat: `${e.lat}`,
         lng: `${e.lng}`,
         address: `${e.address}`,
@@ -235,19 +233,14 @@ console.log(state.cultural_heritage_id)
           <canvas
             ref={canvasRef}
             id="canvas"
-            style={{
-              width: "600px",
-              height: "768px",
-              transform: "scaleX(-1)",
-            }}
           ></canvas>
           <div>
           <button 
             color="primary" 
-            onClick={toggleFacingMode}>
+            onClick={()=>toggleFacingMode(state)}>
               카메라 전환하기
             </button>
-            <button onClick={handelCapture}>캡쳐하기</button>
+            <button onClick={handelCapture(state)}>캡쳐하기</button>
             <button style={{ marginBottom: "10px" }} onClick={backMap}>
               닫기
             </button>

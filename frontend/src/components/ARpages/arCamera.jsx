@@ -7,10 +7,8 @@ import Capture from "./capturePage";
 
 export default function FrontCamera(props) {
   const { state } = useLocation();
-  console.log(state)
   const navigate = useNavigate();
   console.log(state, " <- 스테이트 값이에여");
-  console.log(state.cultural_heritage_id);
 
   const rendererRef = useRef(null);
   const videoSceneRef = useRef(new THREE.Scene()); // 비디오 씬
@@ -28,10 +26,9 @@ export default function FrontCamera(props) {
     navigate("/maps");
   };
 
-  function toggleFacingMode(state) {
+  const toggleFacingMode = (state) => {
     navigate('/frontcamera',{
       state: {
-        no: `${state.no}`,
         lat: `${state.lat}`,
         lng: `${state.lng}`,
         address: `${state.address}`,
@@ -237,14 +234,12 @@ export default function FrontCamera(props) {
             style={{
               width: "600px",
               height: "768px",
-              transform: "scaleX(-1)",
             }}
           ></canvas>
           <div>
             <button 
             color="primary" 
-            onClick={toggleFacingMode}
-            state={state}
+            onClick={()=>toggleFacingMode(state)}
             >
               카메라 전환하기
             </button>

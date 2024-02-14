@@ -6,7 +6,7 @@ export default function Capture(props) {
   console.log(props.url, props.state);
   const url = props.url;
   const state = props.state;
-  const cultural_heritage_id = parseInt(state.no);
+  const cultural_heritage_id = props.cultural_heritage_id;
   const address = state.address;
 
   const navigate = useNavigate();
