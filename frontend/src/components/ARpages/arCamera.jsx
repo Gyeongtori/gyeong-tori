@@ -23,7 +23,7 @@ export default function Camera(props) {
   );
 
   const videoTextureRef = useRef(null);
-
+  const videoMeshRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
@@ -33,6 +33,7 @@ export default function Camera(props) {
   const backMap = () => {
     navigate("/maps");
   };
+
   const stopVideo = () => {
     const { current: videoStream } = videoStreamRef;
     if (videoStream) {
@@ -57,6 +58,8 @@ export default function Camera(props) {
 
   function toggleFacingMode() {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+    stopVideo(); // 이전 비디오 멈추기
+    startVideo();
   }
 
   useEffect(() => {
@@ -140,16 +143,15 @@ export default function Camera(props) {
 
     let video;
 
-    const startVideo = async() => {
+    const startVideo = () => {
       try {
         const constraints = {
           video: { facingMode },
           audio: false,
         };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        console.log("화면이 나오고 있는 카메라입니다.",facingMode)
+
         navigator.mediaDevices
-          .getUserMedia(stream)
+          .getUserMedia(constraints)
           .then((stream) => {
             video = document.createElement("video");
             video.srcObject = stream;
@@ -188,8 +190,6 @@ export default function Camera(props) {
       }
     };
 
-    
-
     startVideo();
 
     const resizeCanvas = () => {
@@ -216,7 +216,6 @@ export default function Camera(props) {
     } else if (facingMode === "user") {
       canvas.style.transform = "scaleX(-1)";
     }
-    stopVideo();
   }, [facingMode]);
   return (
     <div>
