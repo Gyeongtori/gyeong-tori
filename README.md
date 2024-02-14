@@ -19,12 +19,47 @@
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/kangseungwon0529"><img src="https://github.com/RIN-1011/RIN-1011/assets/60701386/21c10723-2297-4b8b-a555-4039ce297281" width="200px;" alt="강승원"/><br /><sub><b>강승원</b></sub></a></td>
-      <td align="center"><a href="https://github.com/KimDahui42"><img src="https://github.com/RIN-1011/RIN-1011/assets/60701386/08dd9fec-2023-4ea2-b166-b7337265f389" width="200px;" alt="김다희"/><br /><sub><b>김다희</b></sub></a></td>
-      <td align="center"><a href="https://github.com/onyueo"><img src="https://github.com/RIN-1011/RIN-1011/assets/60701386/0412b68c-6fdc-449a-8232-b72e76fe56de" width="200px;" alt="김온유"/><br /><sub><b>김온유</b></sub></a></td>
-      <td align="center"><a href="https://github.com/RIN-1011"><img src="https://github.com/RIN-1011/RIN-1011/assets/60701386/b3d76fee-80bc-43d7-8427-2472cb9ab084" width="200px;" alt="문혜린"/><br /><sub><b>문혜린</b></sub></a></td>
-      <td align="center"><a href="https://github.com/thayoon"><img src="https://github.com/RIN-1011/RIN-1011/assets/60701386/0ce182c1-1019-4cf0-9ac6-cb3b4aa981b4" width="200px;" alt="탁하윤"/><br /><sub><b>탁하윤</b></sub></a></td>
-     <tr/>
+      <td align="center">
+        <a href="https://github.com/kangseungwon0529">  
+            <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
+              <img src="asset/ksw.jpg" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+            </div>
+            <span>강승원</span>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/onyueo">  
+            <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
+              <img src="asset/koy.png" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+            </div>
+            <span>김온유</span>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/RIN-1011">  
+            <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
+              <img src="asset/mhr.png" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+            </div>
+            <span>문혜린</span>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/thayoon">  
+            <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
+              <img src="asset/thy.jpeg" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+            </div>
+            <span>탁하윤</span>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/KimDahui42">  
+            <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
+              <img src="asset/kdh.jpg" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+            </div>
+            <span>김다희</span>
+        </a>
+      </td>
+    </tr>
   </tbody>
 </table>
 <br/>
