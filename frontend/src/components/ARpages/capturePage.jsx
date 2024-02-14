@@ -8,7 +8,7 @@ export default function Capture(props) {
   console.log(props.url, props.state);
   const url = props.url;
   const state = props.state;
-  const cultural_heritage_id = state.no;
+  const cultural_heritage_id = parseInt(state.no);
   const address = state.address;
 
   const navigate = useNavigate();
@@ -22,7 +22,10 @@ export default function Capture(props) {
         cultural_heritage_id: cultural_heritage_id,
         address: address,
       };
-      const res = await axios.post(`/v1/card/add`, postData);
+      const res = await axios.post(`/v1/card/add`, {
+        cultural_heritage_id: cultural_heritage_id,
+        address: address,
+      });
       console.log(res);
       console.log("정상적으로 실행되었습니다.");
     } catch (e) {
