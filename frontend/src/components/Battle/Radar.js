@@ -7,6 +7,7 @@ import io from "socket.io-client";
 const socket = io.connect("/", {
   cors: { origin: "*" },
   transports: ["websocket"],
+  secure: true,
 });
 
 const OuterCircle = styled.div`
