@@ -12,6 +12,7 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const setUser = useStore(state => state.setUser);
+  const setLogin = useStore(state => state.setLogin)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,6 +51,9 @@ const Login = () => {
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
           getUserInfo();
+          setLogin(true)
+          
+          // 메인으로 가기
           goMain();
         }
       } catch (error) {

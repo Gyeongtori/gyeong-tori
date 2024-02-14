@@ -87,7 +87,7 @@ const InfoTop = (props) => {
         </InfoHeader>
 
         <InfoHeaderRight>
-          <Toggle setIsOn={setIsOn} />
+          {/* <Toggle setIsOn={setIsOn} /> */}
         </InfoHeaderRight>
       </Info>
 
