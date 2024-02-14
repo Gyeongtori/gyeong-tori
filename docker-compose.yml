@@ -1,52 +1,118 @@
 version: '3.8'
 
 services:
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt:rw
+      - ./certbot/www:/var/www/certbot:rw
+    #    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - nginx
+  #    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
   nginx:
     container_name: nginx
     image: kimdahui/toritest-nginx:${TAG}
-#    image: kimdahui/toritest-nginx:0.0.1-SNAPSHOT
+    #    image: kimdahui/toritest-nginx:0.0.1-SNAPSHOT
     build:
       context: nginx
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - jenkins-network
     volumes:
-      - /policy:/usr/share/nginx/html
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - back
-#      - front
+  #    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   front:
     container_name: front
     image: kimdahui/toritest-front
-#    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
+    #    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
     build:
       context: frontend
       dockerfile: Dockerfile
     restart: always
-    command : npm start
+    command: npm start
     ports:
       - "3000:3000"
     networks:
       - jenkins-network
 
+
+  front-tiki:
+    container_name: front-tiki
+    image: kimdahui/toritest-front-tiki
+    #    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    restart: always
+    command: npm start
+    ports:
+      - "4000:4000"
+    networks:
+      - jenkins-network
+    environment:
+      - "PORT=4000"
+      - "PUBLIC_URL=./thayoon"
+
   back:
     container_name: back
     image: kimdahui/toritest-back:${TAG}
-#    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+    #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
     build:
       context: backend
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     ports:
       - "8080:8080"
+      - "8085:8085"
     networks:
       - jenkins-network
     environment:
       - "SPRING_PROFILES_ACTIVE=prod"
+  # blue:
+  #     container_name: blue
+  #     image: kimdahui/toritest-back:${TAG}
+  # #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+  #     build:
+  #       context: backend
+  #       dockerfile: Dockerfile
+  #     restart: unless-stopped
+  #     ports:
+  #       - "8080:8080"
+  #     networks:
+  #       - jenkins-network
+  #     environment:
+  #       - "SPRING_PROFILES_ACTIVE=prod,blue"
+  #     depends_on:
+  #       - redis
+
+  # green:
+  #     container_name: green
+  #     image: kimdahui/toritest-back:${TAG}
+  # #    image: kimdahui/toritest-back:0.0.1-SNAPSHOT
+  #     build:
+  #       context: backend
+  #       dockerfile: Dockerfile
+  #     restart: unless-stopped
+  #     ports:
+  #       - "8080:8080"
+  #     networks:
+  #       - jenkins-network
+  #     environment:
+  #       - "SPRING_PROFILES_ACTIVE=prod,blue"
+  #     depends_on:
+  #       - redis
 
   redis:
     container_name: redis
@@ -59,7 +125,7 @@ services:
       - ~/redis/data:/data
     user: root
     command: redis-server --requirepass ${REDIS_PASSWORD}
-#    command: redis-server --requirepass REDISPASSWORD
+    #    command: redis-server --requirepass REDISPASSWORD
     ports:
       - "6379:6379"
 
