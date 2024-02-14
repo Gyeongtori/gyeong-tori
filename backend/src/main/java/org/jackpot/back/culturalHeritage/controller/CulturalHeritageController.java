@@ -55,7 +55,7 @@ public class CulturalHeritageController {
      * 문화재 거리 기반 조회 (반경 500m 이내)
      * @return List<CulturalHeritage>
      */
-    @GetMapping("/distance")
+    @PostMapping("/distance")
     public ResponseEntity getCulturalHeritageDistanceList(@RequestBody GetCulturalHeritageDistanceListRequest getCulturalHeritageDistanceListRequest) {
         return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getCulturalHeritageDistanceList(getCulturalHeritageDistanceListRequest)));
     }

@@ -47,7 +47,7 @@ public class CardController {
      * @param cardIndividualReadRequest
      * @return CardIndividualReadResponse
      */
-    @GetMapping("/read")
+    @PostMapping("/read")
     public ResponseEntity cardIndividualRead(@RequestBody CardIndividualReadRequest cardIndividualReadRequest) {
         return ResponseEntity.ok().body(MessageUtils.success(cardService.cardIndividualRead(cardIndividualReadRequest)));
     }
