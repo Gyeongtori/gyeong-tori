@@ -12,6 +12,7 @@ import useStore from "../stores/store";
 import { Sample1 } from "../components/Styles/MapStyles";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GiHandBag } from "react-icons/gi";
+import { RiBoxingLine } from "react-icons/ri";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -30,8 +31,8 @@ export default function Maps() {
   // 경주 기준점
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
 
-  // 전대 기준점
-  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
+  // 싸피 기준점
+  const [center, setCenter] = useState({ lat: 35.205231, lng: 126.8117628 });
   const [head, setHead] = useState();
 
   const [showSemiCircle, setShowSemiCircle] = useState(false);
@@ -57,7 +58,9 @@ export default function Maps() {
     navigate("/cards");
   };
 
-  const [disApi, setDisApi] = useState();
+  const goBattle = () => {
+    navigate("/battle");
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -68,27 +71,6 @@ export default function Maps() {
 
           // console.log(latNow, lngNow, "현재위치 받아왔어요");
           setCenter({ lat: latNow, lng: lngNow });
-
-          // 내주변 문화재 탐색
-          const getDisAPI = async () => {
-            try {
-              // res에는 결과 값이 담겨옴
-              const res = await axios.get("v1/culturalheritage/distance", {
-                lat: latNow,
-                lng: lngNow,
-              });
-              console.log(res, "내 주변 문화재");
-              if (res.status === 401) {
-                useStore.getState().updateToken();
-                getAPI();
-              }
-              setApi(res.data.data_body);
-            } catch (e) {
-              console.log(e.response);
-            }
-          };
-
-          getDisAPI();
 
           const headNow = position.coords.heading;
           if (headNow !== null) {
@@ -112,6 +94,29 @@ export default function Maps() {
       alert("GPS를 지원하지 않습니다");
     }
   }, []);
+
+  const [disApi, setDisApi] = useState();
+
+  useEffect(() => {
+    // 내근처 문화재만 탐색
+    getDisAPI();
+  }, [center]);
+
+  const getDisAPI = async () => {
+    try {
+      const res = await axios.post("v1/culturalheritage/distance", {
+        lat: `${center.lat}`,
+        lng: `${center.lng}`,
+      });
+      console.log(res.data.data_body, "내 주변 문화재");
+      let distanceAPI = res.data.data_body;
+
+      setDisApi(res.data.data_body);
+      console.log(disApi);
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
 
   // const [address, setAddress] = useState(null)
 
@@ -210,8 +215,8 @@ export default function Maps() {
     strokeColor: "#FF7575",
     strokeOpacity: 0,
     strokeWeight: 0,
-    fillColor: "#C779D0",
-    fillOpacity: 0.3,
+    fillColor: "#F2A55D",
+    fillOpacity: 0.5,
     radius: 80,
   };
 
@@ -219,7 +224,7 @@ export default function Maps() {
     strokeColor: "#FFFFFF",
     strokeOpacity: 1,
     strokeWeight: 2,
-    fillColor: "#C779D0",
+    fillColor: "#F2A55D",
     fillOpacity: 0.35,
     radius: 10,
   };
@@ -268,6 +273,7 @@ export default function Maps() {
                       }}
                       icon={{
                         url: `${Pin}`,
+                        // url: place.image_source,
                         scaledSize: new google.maps.Size(50, 50),
                         origin: new google.maps.Point(0, 0),
                         anchor: new google.maps.Point(25, 50),
@@ -281,7 +287,6 @@ export default function Maps() {
           {/* 메인기능 버튼 */}
           <Body>
             <InfoTop center={center}></InfoTop>
-            {/* <div>{user.nickname} {user.email}</div> */}
             {/* <div>{head && head }방향정보~</div>S */}
           </Body>
 
@@ -293,7 +298,7 @@ export default function Maps() {
               <SemiCircle show={showSemiCircle}>
                 <div>
                   <SemiCircleButton>
-                    <GiHandBag onClick={goCard} size={35} />
+                    <RiBoxingLine onClick={goBattle} size={35} />
                   </SemiCircleButton>
                 </div>
                 <div>
