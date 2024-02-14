@@ -2,12 +2,14 @@ package org.jackpot.back.security.model.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.security.exception.JwtErrorCode;
 import org.jackpot.back.security.exception.JwtException;
 import org.jackpot.back.security.model.dto.response.GeneratedToken;
 import org.jackpot.back.security.model.entity.Token;
 import org.jackpot.back.security.repository.RefreshTokenRepository;
 import org.jackpot.back.security.utils.JwtUtil;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import static org.jackpot.back.security.exception.JwtErrorCode.NOT_EXISTS_TOKEN;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenService {
 
     private final RefreshTokenRepository repository;
@@ -63,12 +66,14 @@ public class TokenService {
             Token token = repository.findById(userId).orElseThrow(() -> new JwtException(NOT_EXISTS_TOKEN));
 //          3. 정상적으로 조회된다면 해당 user의 refresh token(value)를 가져올 수 잇다.
 //          4. Redis에서 조회한 refresh token과 클라이어트가 보낸 refresh Token을 비교한다.
+            log.debug(token.toString());
             if (refreshToken.equals(token.getRefreshToken())){
 //              5. 두 토큰 값이 매칭되면 정상 유저로 간주하고, access token과 refresh token을 모두 재발급한다.
                 GeneratedToken newToken = generatedToken(userId);
 //              6. Redis에 저장된 user email의 매핑 값을(새 refresh token)으로 갱신한다.
                 removeToken(userId);
                 repository.save(new Token(userId, newToken.getAccessToken(), newToken.getRefreshToken()));
+
                 return newToken;
             }else {
                 //사용자가 아닌 다른 사람에 의해 토큰이 변경됨
