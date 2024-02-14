@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import io from "socket.io-client";
-
 // 1. io.connect와 동일하게 설정
 // 2. 백엔드 서버에 대한 URL 전달
-const socket = io.connect(`${process.env.REACT_APP_SOCKET_SERVER_ADDRESS}`, {
+const socket = io.connect("/", {
   cors: { origin: "*" },
   transports: ["websocket"],
+  secure: true,
 });
 
 const OuterCircle = styled.div`
@@ -63,26 +63,29 @@ const GreenScanner = styled.div`
   z-index: -1;
 `;
 const Radar = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [username, setUsername] = useState({});
+
   useEffect(() => {
-    socket.on("get_location", (data) => {
-      console.log(data);
-    });
+    setUsername(user);
+
     socket.emit("send_location", {
       lng: "127.00004",
       lat: "67.55553",
-      nickname: "nick",
-      user_id: 6,
+      nickname: user.nickname,
+      user_id: user.id,
+    });
+    socket.on("get_location", (data) => {
+      console.log(data);
     });
   }, [socket]); // socket이 변경될 때마다(이벤트 발생) useEffect가 실행되도록 종속성 목록에 포함
-
-  const [username, setUsername] = useState("");
 
   const sendMessage = () => {
     socket.emit("send_location", {
       lng: "127.00004",
       lat: "67.55553",
-      nickname: "nick",
-      user_id: 6,
+      nickname: username.nickname,
+      user_id: username.id,
     });
   };
   const sendQuestion = async () => {

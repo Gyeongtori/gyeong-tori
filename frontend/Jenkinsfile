@@ -13,10 +13,17 @@ pipeline {
         stage("Checkout") {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'develop-fe']],
+                        branches: [[name: 'feat/S10P12C107-253-websocket']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
                         userRemoteConfigs: [[credentialsId: 'Github-access-token', url: 'https://github.com/KimDahui42/jackpot-settings']]
                 )
+            }
+        }
+        stage('Copy backend .env File') {
+            steps {
+                sh "ls backend/secure-settings"
+                // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
+                sh 'cp backend/secure-settings/back/.env .env'
             }
         }
         stage("Copy Env") {
@@ -109,7 +116,7 @@ pipeline {
             script {
                 def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
                 def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                mattermostSend (color: 'good',
+                mattermostSend (color: currentBuild.currentResult == 'SUCCESS' ? 'good' : 'danger',
                         message: "빌드 ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
                         endpoint: 'https://meeting.ssafy.com/hooks/q4qjarpscbf9pme4f46yiojzfe',
                         channel: 'C107-Jenkins'

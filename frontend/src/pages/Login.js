@@ -7,8 +7,6 @@ import useStore from "../stores/store";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Cookies from 'js-cookie';
-
 
 
 const Login = () => {
@@ -22,6 +20,11 @@ const Login = () => {
   const getUserInfo = async () => {
     try {
       const response = await axios.get("/v1/user/retrieve");
+      // console.log('응답~~~~', response)
+      if(response.status === 401) {
+        useStore.getState().updateToken();
+        getUserInfo()
+      }
       const userInfo = response.data.data_body;
       // console.log("userinfo", userInfo);
 
@@ -30,6 +33,7 @@ const Login = () => {
       console.error("Error fetching user info:", error);
     }
   };
+
 
   const handleLogin = async () => {
     if (email === "") {
