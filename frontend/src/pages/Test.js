@@ -1,317 +1,279 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { GoogleMap, Circle, useJsApiLoader, MarkerF, MarkerClustererF } from "@react-google-maps/api";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import InfoTop from "../components/Mains/InfoTop";
-import { Sample1 } from "../components/Styles/MapStyles"
 
-import * as THREE from 'three';
+import ButtonFull from "../components/Styles/ButtonFull";
+import ButtonBlank from "../components/Styles/ButtonBlank";
+import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
 
-const google = window.google = window.google ? window.google : {}
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-
-
-
-export default function Maps () {
-  const [map, setMap] = useState(null);
-  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
-
-  const videoRef = React.useRef(null);
-  const [playing, setPlaying] = React.useState(false);
-
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyAfcce2IjhzDkYHn7rZBilMDHw4f1c4IwU"
+const Signup = () => {
+  const [userInput, setUserInput] = useState({
+    email: "",
+    password: "",
+    name: "",
+    profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   });
+  const [checkPw, setCheckPw] = useState("");
+  const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
+  
+  // const [postImg, setPostImg] = useState([]);
+  // const [previewImg, setPreviewImg] = useState([]);
+    
+  // function uploadFile(e) {
+  //     let fileArr = e.target.files;
+  //     setPostImg(Array.from(fileArr));
+  //     // console.log(fileArr);
+
+  //     let fileURLs = [];
+
+  //     let fileRead = new FileReader();
+  //     // console.log(fileRead);
+
+  //     fileRead.onload = function(){
+  //         setPreviewImg(fileRead.result);
+  //     };
+      
+  //     fileRead.readAsDataURL(file[0]);
+  // };
 
 
-  const onUnmount = useCallback(function callback() {
-    setMap(null);
-  }, []);
+  const [uploadedImage, setUploadedImage] = useState(null);
 
-  useEffect(() => {
-    if (navigator.geolocation) { 
-      navigator.geolocation.watchPosition(function(position) {
-        const latNow = position.coords.latitude;
-        const lngNow = position.coords.longitude;
-        console.log(latNow, lngNow);
-        setCenter({lat: latNow, lng: lngNow});
-      }, function(error) {
-        console.error(error);
-      }, {
-        // 정확도는 높지만 배터리 소모량up
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: Infinity
-      });
+  const onChangeImage = e => {
+    const file = e.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setUploadedImage(imageUrl);
+
+
+
+
+
+  const emailCheck = (email) => {
+    let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    return regExp.test(email);
+  };
+
+  const goSignIn = () => {
+    navigate("/");
+  };
+
+  const goSignUp = async () => {
+    if (
+      userInput.email === "" ||
+      userInput.email === undefined ||
+      userInput.password === "" ||
+      userInput.password === undefined ||
+      userInput.name === "" ||
+      userInput.name === undefined ||
+      checkPw === "" ||
+      checkPw === undefined ||
+      checkPw !== userInput.password
+    ) {
+      alert("다시 입력해주세요.");
     } else {
-      alert('GPS를 지원하지 않습니다');
-    }
-  }, []);
-
-  const getLocation = (event) => {
-    // console.log('버튼 클릭')
-    // console.log(event)
-    console.log('count')
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const latNow = position.coords.latitude
-        const lngNow = position.coords.longitude
-        console.log(latNow, lngNow)
-        setCenter({lat: latNow, lng: lngNow});
-      }, function(error) {
-        console.error(error);
-      }, {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: Infinity
-      });
-    } else {
-      alert('GPS를 지원하지 않습니다');
-    }
-  }
-
-  const places = [
-    ['1', 35.202018, 126.811782],
-    ['2', 35.201121, 126.807993],
-    ['3', 35.203164, 126.813467]
-  ]
-
-  // const places = [
-  //   [ key = '1',
-  //     lat = 35.202018, 
-  //     lng = 126.811782],
-  //   [ key = '2',
-  //     lat = 35.201121,
-  //     lng = 126.807993],
-  //   [ key = '3',
-  //     lat = 35.203164, 126.813467]
-  // ]
-
-
-  // 카메라 전환
-
-  // React.useEffect(() => {
-  //   getWebcam((stream => {
-  //     // setPlaying(false);
-  //     videoRef.current.srcObject = stream;
-  //   }));
-  // }, []);
-
-
-  // const getWebcam = (callback) => {
-  //   try {
-  //     const constraints = {
-  //       'video': true,
-  //       'audio': false
-  //     }
-  //     navigator.mediaDevices.getUserMedia(constraints)
-  //       .then((mediaStream) => {
-  //         const video = document.querySelector("video");
-  //         video.srcObject = mediaStream;
-  //         video.onloadedmetadata = () => {
-  //           video.play();
-  //         };
-  //       });
-  //   } catch (err) {
-  //     console.log(err);
-  //     return undefined;
-  //   }
-  // }
-
-
-  // const startOrStop = () => {
-  //   if (playing) {
-  //     const s = videoRef.current.srcObject;
-  //     s.getTracks().forEach((track) => {
-  //       track.stop();
-  //     });
-  //   } else {
-  //     getWebcam((stream => {
-  //       setPlaying(true);
-  //       videoRef.current.srcObject = stream;
-  //     }));
-  //   }
-  //   setPlaying(!playing);
-  // }
-
-
-  // const cameraStyles = {
-  //   Video: { width: "100%", height: "100%", background: 'rgba(245, 240, 215, 0.5)' },
-  //   None: { display: 'none' },
-  // }
-
-  class Cs03 {
-    constructor() {
-        // 씬, 카메라, 렌더러 초기화
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
-
-        // 비디오와 비디오 스트림 변수 초기화
-        this.video = document.createElement('video');
-        this.videoStream = null; // 초기에는 비디오 스트림을 null로 설정
-
-        // 카메라 초기 위치 설정
-        this.camera.position.z = 7;
-
-        // 비디오 텍스처 및 재질, 지오메트리 생성 및 메시에 적용
-        this.videoTexture = new THREE.VideoTexture(this.video);
-        const videoMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture });
-        const videoGeometry = new THREE.PlaneGeometry(16, 9);
-        this.videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-        this.scene.add(this.videoMesh);
-
-        // 애니메이션 함수 정의
-        const animate = () => {
-            // 비디오 데이터가 충분히 확보되면 텍스처 업데이트
-            if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-                this.videoTexture.needsUpdate = true;
-            }
-
-            // 렌더링 및 다음 프레임 요청
-            this.renderer.render(this.scene, this.camera);
-            requestAnimationFrame(animate);
-        };
-
-        // 애니메이션 시작
-        animate();
-    }
-
-    // 웹캠 시작 함수
-    startVideo() {
-        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-            this.video.srcObject = stream;
-            this.video.play();
-
-            // 이전 웹캠 스트림 중지
-            this.stopVideo();
-
-            // 비디오 스트림 저장
-            this.videoStream = stream;
-        }).catch((error) => {
-            console.error('Error accessing webcam:', error);
-        });
-    }
-
-    // 웹캠 정지 함수
-    stopVideo() {
-        // 이전 웹캠 스트림 중지
-        if (this.videoStream) {
-            const tracks = this.videoStream.getTracks();
-            tracks.forEach(track => track.stop());
+      //   console.log(userInput);
+      try {
+        const res = await axios.post("/v1/user/regist", userInput);
+        const status = res.data.data_header.result_code;
+        if (status === "204 NO_CONTENT") {
+          alert("회원가입이 정상 등록 됐습니다. 로그인 해주세요.");
+          navigate("/");
         }
-    }
-
-    // 프론트/백 카메라 전환 함수
-    switchCamera() {
-        // 카메라 전환 로직 추가
-        console.log('Switching camera...');
+      } catch (e) {
+        console.log('e: ', e);
+        const status = e.response.status;
+        const alertMSG = e.response.data.data_header.result_message;
+        // console.log('alertMSG: ', alertMSG);
+        // console.log('status: ', status);
+        if (status === 500) {
+          alert("서버오류!");
+        } else if (status === 400) {
+          alert(alertMSG);
+        }
       }
-  }
-
-  // Three.js 및 XR 활성화 코드
-  const cs03Instance = new Cs03();
-
-  // 웹캠 시작 버튼 클릭 이벤트
-  document.getElementById('btn-front').addEventListener('click', () => {
-      cs03Instance.startVideo();
-  });
-
-  // 후면 카메라 버튼 클릭 이벤트
-  document.getElementById('btn-back').addEventListener('click', () => {
-      cs03Instance.stopVideo();
-      cs03Instance.switchCamera();
-  });
-
-  // 창 크기 변경 이벤트 리스너
-  window.addEventListener('resize', () => {
-      cs03Instance.camera.aspect = window.innerWidth / window.innerHeight;
-      cs03Instance.camera.updateProjectionMatrix();
-      cs03Instance.renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-
-
-
-  const circleRangeOptions = {
-    strokeColor: '#FF7575',
-    strokeOpacity: 0,
-    strokeWeight: 0,
-    fillColor: '#C779D0',
-    fillOpacity: 0.35,
-    radius: 100,
-    center,
+    }
   };
-
-  const markerCircleOptions = {
-    strokeColor: '#FFFFFF',
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    fillColor: '#C779D0',
-    fillOpacity: 0.5,
-    radius: 10,
-    center,
-  };
-
-  if ( !isLoaded ) return <div>Loading...</div>
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      <div style={{ position: 'relative' }}>
-        <GoogleMap 
-          zoom={17} 
-          center={center} 
-          mapContainerClassName="map-container"
-          onUnmount={onUnmount}
-          options={{
-            styles: Sample1,
-            // 기본 ui 요소 지우기
-            disableDefaultUI: true, 
-            minZoom: 16, 
-            maxZoom: 18,
-          }}
-          mapContainerStyle={{ width: '100%', height: '100vh' }}
-        > 
+    <SignupBlock>
 
-        {/* 중심 레이더 옵션 */}
-          <Circle center={center} options={circleRangeOptions} />
-          <Circle center={center} options={markerCircleOptions} />
-
-        {/* 문화재 마커 */}
-          < MarkerClustererF options={{}}>
-            {(clusterer) => (
-              <>
-                {places.map((place) => (
-                  <MarkerF 
-                    key={place[0]}
-                    position={{lat: place[1], lng: place[2]}}
-                    // onClick={startOrStop()}
-                    />
-                    
-                    ))}
-              </>
-            )}
-          </MarkerClustererF>
-
-        {/* 메인기능 버튼 */}
-          <Body>
-            {/* <video autoPlay style={cameraStyles.Video} /> */}
-            <button onClick={getLocation}>버튼</button>
-            <InfoTop ></InfoTop>
-          </Body>
-
-        </GoogleMap>
+      <div style={{'margin-bottom': '0.5rem'}}>
+        <HiOutlineArrowNarrowLeft size='25' style={{marginBottom: '2rem'}}
+        onClick={() => { navigate(-1); }}/>
+        <TitleText>회원가입</TitleText >
+        <TitleInfo>경토리에 회원가입 하시면</TitleInfo>
+        <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
       </div>
-    </div>
-  )
-}
 
-const Body = styled.div`
-  width: 100%;
-  position: absolute;
-  z-index: 10;
+{/* 
+      <WriteInput accept=".png, .jpeg, .jpg" type="file"        
+          onChange={handleFileUpload}
+      />
+      <img alt={previewImg} src={previewImg} /> */}
+
+
+        {uploadedImage ? (
+            <MyProfileImg src={uploadedImage} alt="프로필 없을때" />
+          ) : (
+            <MyProfileImg src="./images/profile.png" alt="프로필사진" />
+          )}
+          <input type="file" onChange={onChangeImage} />
+
+      <InputText>이메일</InputText>
+      <ButtonBlank
+        color="#CAD6C0"
+        activecolor="#9DAF89"
+        borderwidth="2"
+    
+        // placeholder='ssafy@gmail.com'
+        onChange={(e) => {
+          let email = e.target.value;
+          setUserInput({
+            email: email,
+            password: userInput.password,
+            name: userInput.name,
+          })
+          if (!emailCheck(email)) {
+            setEmailError("이메일 형식으로 입력해주세요."); 
+          } else {
+            setEmailError("");
+          };
+        }}
+      ></ButtonBlank>
+      {emailError && <ErrorMSG>{emailError}</ErrorMSG>}
+
+      <InputText>닉네임</InputText>
+      <ButtonBlank
+        color="#CAD6C0"
+        activecolor="#9DAF89"
+        borderwidth="2"
+        // placeholder="오뉴오뉴"
+        onChange={(e) => {
+          let name = e.target.value;
+          setUserInput({
+            email: userInput.email,
+            password: userInput.password,
+            name: name,
+          });
+        }}
+      ></ButtonBlank>
+
+      <InputText>비밀번호</InputText>
+      <ButtonBlank
+        color="#CAD6C0"
+        activecolor="#9DAF89"
+        borderwidth="2"
+        // placeholder="*********"
+        type="password"
+        onChange={(e) => {
+          let password = e.target.value;
+          setUserInput({
+            email: userInput.email,
+            password: password,
+            name: userInput.name,
+          });
+        }}
+      ></ButtonBlank>
+
+      <InputText>비밀번호 확인</InputText>
+      <ButtonBlank
+        color="#CAD6C0"
+        activecolor="#9DAF89"
+        borderwidth="2"
+        // placeholder="*********"
+        type="password"
+        onChange={(e) => {
+          let pw = e.target.value;
+          setCheckPw(pw);
+        }}
+      ></ButtonBlank>
+      {userInput.password !== checkPw ? (
+        <ErrorMSG>비밀번호를 다시 확인해주세요.</ErrorMSG>
+      ) : userInput.password !== "" ? (
+        <ErrorMSG>Check!</ErrorMSG>
+      ) : null}
+
+      <SignupBtn>
+        <ButtonFull color="#8CAB6E" activecolor="#819171" onClick={goSignUp}>
+          회원가입
+        </ButtonFull>
+        <InfoText>
+          이미 계정이 있으신가요? <span onClick={goSignIn} style={{ color: "#758467" }} >로그인</span>
+        </InfoText>
+      </SignupBtn>
+    </SignupBlock>
+  );
+}};
+
+export default Signup;
+
+const SignupBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+`;
+
+const TitleText = styled.div`
+  margin: 0.5rem 0rem 0.5rem 0.5rem;
+  font-weight: bold;
+  font-size: 1.5rem; 
+  text-align: left;
+
+`;
+
+const TitleInfo = styled.div`
+  margin-left: 0.5rem;
+  font-size: 0.8rem; 
+
+`;
+
+const InputText = styled.div`
+  margin-left: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  text-align: left;
+`;
+
+const SignupBtn = styled.div`
+  margin-top: 2rem;
+  `;
+
+const InfoText = styled.div`
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+`;
+
+const ErrorMSG = styled.div`
+  color: red;
+  font-size: 0.7rem;
+  margin: 0.3rem 0 0 1rem;
+`;
+
+
+// ----------------------
+// const WriteInput = styled.input`
+//   display: none;
+// `;
+
+// label{
+//   display: inline-block;
+//   width: 90px;
+//   height: 90px;
+//   background: url('src/assets/icon-add-photo.svg') no-repeat;
+//   background-position: center;
+//   border: 1px solid ${gray4};
+//   border-radius: 10px;
+//   cursor: pointer;
+// }
+
+//-------------------------------------------
+
+const MyProfileImg = styled.img`
+  width: 50px;
+  height: 50px;
 `;
