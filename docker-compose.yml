@@ -36,15 +36,17 @@ services:
   front:
     container_name: front
     image: kimdahui/toritest-front
-#    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
+    #    image: kimdahui/toritest-front:0.0.1-SNAPSHOT
     build:
       context: frontend
       dockerfile: Dockerfile
-    restart: unless-stopped
+    restart: always
+    command: npm start
     ports:
       - "3000:3000"
     networks:
       - jenkins-network
+
 
   front-tiki:
     container_name: front-tiki
