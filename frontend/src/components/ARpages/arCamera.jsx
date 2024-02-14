@@ -23,7 +23,7 @@ export default function Camera(props) {
   );
 
   const videoTextureRef = useRef(null);
-  const videoMeshRef = useRef(null);
+
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
@@ -33,7 +33,6 @@ export default function Camera(props) {
   const backMap = () => {
     navigate("/maps");
   };
-
   const stopVideo = () => {
     const { current: videoStream } = videoStreamRef;
     if (videoStream) {
@@ -143,17 +142,19 @@ export default function Camera(props) {
 
     const startVideo = async() => {
       try {
-        let constraints = {
+        const constraints = {
           video: { facingMode },
           audio: false,
         };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        console.log("화면이 나오고 있는 카메라입니다.",facingMode)
         navigator.mediaDevices
-          .getUserMedia(constraints)
+          .getUserMedia(stream)
           .then((stream) => {
             video = document.createElement("video");
             video.srcObject = stream;
             video.play();
-    
+
             const videoTexture = new THREE.VideoTexture(video);
             videoTextureRef.current = videoTexture;
             const videoMaterial = new THREE.MeshBasicMaterial({
@@ -161,65 +162,32 @@ export default function Camera(props) {
               depthTest: true, // 깊이 테스트 사용
               transparent: true, // 깊이 정렬 및 투명도 설정
             });
-    
+
             const videoGeometry = new THREE.PlaneGeometry(16, 12);
             const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
             videoMesh.renderOrder = 0; // 비디오 메시를 먼저 렌더링
-    
+
             // 비디오 씬에 비디오 메시를 추가합니다.
             videoSceneRef.current.add(videoMesh);
-    
+
             camera.position.z = 7.5;
             videoStreamRef.current = stream;
-    
+
             // 모델 로드 함수 호출
             loadGltfModel(modelSceneRef.current);
-    
+
             // 애니메이션 시작
             animate();
           })
-          .catch(async (error) => {
-            console.error("Error accessing webcam with facingMode:", error);
-            // facingMode 변경 후 다시 시도
+          .catch((error) => {
+            console.error("Error accessing webcam:", error);
             constraints.video.facingMode = "environment";
-            try {
-              const stream = await navigator.mediaDevices.getUserMedia(constraints);
-              
-              video = document.createElement("video");
-              video.srcObject = stream;
-              video.play();
-    
-              const videoTexture = new THREE.VideoTexture(video);
-              videoTextureRef.current = videoTexture;
-              const videoMaterial = new THREE.MeshBasicMaterial({
-                map: videoTexture,
-                depthTest: true, // 깊이 테스트 사용
-                transparent: true, // 깊이 정렬 및 투명도 설정
-              });
-    
-              const videoGeometry = new THREE.PlaneGeometry(16, 12);
-              const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-              videoMesh.renderOrder = 0; // 비디오 메시를 먼저 렌더링
-    
-              // 비디오 씬에 비디오 메시를 추가합니다.
-              videoSceneRef.current.add(videoMesh);
-    
-              camera.position.z = 7.5;
-              videoStreamRef.current = stream;
-    
-              // 모델 로드 함수 호출
-              loadGltfModel(modelSceneRef.current);
-    
-              // 애니메이션 시작
-              animate();
-            } catch (error) {
-              console.error("Error accessing webcam with default camera:", error);
-            }
           });
       } catch (error) {
         console.error("Error accessing webcam:", error);
       }
     };
+
     
 
     startVideo();
