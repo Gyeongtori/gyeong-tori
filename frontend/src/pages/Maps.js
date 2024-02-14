@@ -112,13 +112,9 @@ export default function Maps() {
       let distanceAPI = res.data.data_body
       
       if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)){
-        setDisApi(res.data.data_body);
+        setDisApi(distanceAPI);
       }
       
-      console.log(disApi, '내주변 문화재 넣은 값')
-
-      setDisApi(res.data.data_body);
-      console.log(disApi);
     } catch (e) {
       console.log(e.response);
     }
@@ -245,8 +241,8 @@ export default function Maps() {
           <MarkerClustererF options={{}}>
             {(clusterer) => (
               <>
-                {api &&
-                  api.map((place) => (
+                {disApi &&
+                  disApi.map((place) => (
                     <MarkerF
                       key={place.no}
                       position={{
