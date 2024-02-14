@@ -5,8 +5,26 @@ import { FiType } from "react-icons/fi";
 import { FiLock } from "react-icons/fi";
 import { FiLogOut } from "react-icons/fi";
 import { FiChevronRight } from "react-icons/fi";
+import useStore from "../../stores/store";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
+  const setLogin = useStore(state => state.setLogin);
+  const navigate = useNavigate();
+  const goLogout = async () => {
+      try {
+          await axios.get("v1/auth/logout") ;
+          // console.log('res: ', res);
+          localStorage.removeItem('user')
+          setLogin(false)
+          navigate('/')
+
+        } catch (e) {
+          console.log(e.response);
+        }
+    }
+
     return (
         <div>
            <SettingBlock>
@@ -26,7 +44,7 @@ const Settings = () => {
            <SettingBlock>
             <FiLogOut />
             <SettingBlockContents>
-                <SettingBlockText>로그아웃</SettingBlockText>
+                <SettingBlockText onClick={goLogout}>로그아웃</SettingBlockText>
             </SettingBlockContents>
            </SettingBlock>
         </div>

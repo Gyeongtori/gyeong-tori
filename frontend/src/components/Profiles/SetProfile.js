@@ -41,20 +41,22 @@ const ProfileBlock = styled.div`
 `;
 
 const NameBlock = styled.div`
-  
+
 `;
 
 const NameContent = styled.div`
-  font-size: 2rem;
+  font-size: 100%;
   font-weight: bold;
+  margin-bottom: 0.2rem;
 `;
 
 const RankContent = styled.div`
   background-color: #9DAF89;
   color: white;
+  width: 2.5rem;
   padding: 0.2rem;
   font-size: 0.8rem;
-
+  text-align: center;
 `;
 
 const SaveContent = styled.div`
