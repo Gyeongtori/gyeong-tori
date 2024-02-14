@@ -104,8 +104,7 @@ export default function Maps() {
   // const [address, setAddress] = useState(null)
   const getAddress = async (getlat, getlng) => {
     try {
-
-      console.log("getlat : ",getlat, "getlng:", getlng)
+      console.log("getlat : ", getlat, "getlng:", getlng);
       // res에는 결과 값이 담겨옴
       const res = await axios.get(
         `https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`
@@ -115,7 +114,7 @@ export default function Maps() {
 
       // 이렇게 저장하면 오류남...
       // setAddress(res.data.response.result[0])
-      console.log("결과 값 :" ,res.data.response.result[0].text)
+      console.log("결과 값 :", res.data.response.result[0].text);
 
       // 임시 해결로 바로 데이터 전송함
       return res.data.response.result[0].text;
@@ -127,18 +126,19 @@ export default function Maps() {
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
     // console.log(event.lat, event.lng, '이벤트 값!!!')
-    console.log(event)
-    console.log("event.lat :",event.lat, "event.lng : " , event.lng)
-    
+    console.log(event);
+    console.log("event.lat :", event.lat, "event.lng : ", event.lng);
+
     const address = await getAddress(event.lat, event.lng);
     console.log("res: ", address);
     console.log(event, "event 값이예요");
     navigate("/camera", {
       state: {
-        no: `${event.no}`,
+        cultural_heritage_id: `${event.no}`,
         lat: `${event.lat}`,
         lng: `${event.lng}`,
         address: `${address}`,
+        
       },
     });
   };

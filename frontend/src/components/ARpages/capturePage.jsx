@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import Maps from "../../pages/Maps";
-import html2canvas from "html2canvas";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -20,18 +18,14 @@ export default function Capture(props) {
       console.error("백으로 돌아갈 수 없어", error);
     }
   };
-  
 
-
-  const [api, setApi] = useState();
-  
   const postAPI = async () => {
     try {
       const postData = {
         cultural_heritage_id: cultural_heritage_id,
         address: address,
       };
-      const res = await axios.post(`/v1/card/add`, postData);
+      await axios.post(`/v1/card/add`, postData);
       // console.log(res);
       // console.log("정상적으로 실행되었습니다.");
     } catch (e) {
