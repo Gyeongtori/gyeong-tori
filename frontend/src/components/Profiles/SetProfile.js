@@ -14,7 +14,7 @@ const SetProfile = () => {
       <ProfileBlock>
         <NameBlock>
           <NameContent>{user.nickname}</NameContent>
-          <RankContent>6두품</RankContent>
+          <RankContent>{user.grade}두품</RankContent>
         </NameBlock>
         <SaveContent>
           <div>프로필 수정 </div>
