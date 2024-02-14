@@ -13,4 +13,12 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    createProxyMiddleware("/socket.io", {
+      target: `${process.env.REACT_APP_SOCKET_SERVER_ADDRESS}`,
+      changeOrigin: true,
+      ws: true,
+      logger: console,
+    })
+  );
 };
