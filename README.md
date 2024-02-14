@@ -83,3 +83,27 @@
 ## 🏷️ APIs
 * Google Maps API
 <br/>
+
+## 👨‍💻 Tech stack
+* **Mobile Operating Systems**<br/>
+  <img src="https://img.shields.io/badge/anroid-34A853?style=flat-square&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/ios-000000?style=flat-square&logo=Spring boot&logoColor=white"/>
+
+* **Languages and Frameworks**<br/>
+  <img src="https://img.shields.io/badge/typescript-3178C6?style=flat-square&logo=typescript&logoColor=white"/> <img src="https://img.shields.io/badge/React Native-61DAFB?style=flat-square&logo=React&logoColor=black"/> <img src="https://img.shields.io/badge/Spring boot-6DB33F?style=flat-square&logo=Spring boot&logoColor=white"/>
+
+* **Database and Caching**<br/>
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/redis-DC382D?style=flat-square&logo=redis&logoColor=white"/>
+
+* **Development and Deployment Tools**<br/>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/> <img src="https://img.shields.io/badge/Jenkins-D24939?style=flat-square&logo=jenkins&logoColor=white"/> <img src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/Github-181717?style=flat-square&logo=github&logoColor=white"/>
+
+* **Cloud Storage**<br/><img src="https://img.shields.io/badge/firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black"/>
+
+* **Web Server and Infrastructure**<br/>
+  <img src="https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white"/> <img src="https://img.shields.io/badge/AWS-232F3E?style=flat-square&logo=amazon aws&logoColor=white"/>
+
+* **Design and Project Management**<br/>
+  <img src="https://img.shields.io/badge/Notion-000000?style=flat-square&logo=notion&logoColor=white"/> <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat-square&logo=figma&logoColor=white"/> <img src="https://img.shields.io/badge/Miro-050038?style=flat-square&logo=miro&logoColor=white"/>
+
+* **Environments**<br/>
+  <img src="https://img.shields.io/badge/IntelliJ-000000?style=flat-square&logo=intellij idea&logoColor=white"/> <img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=flat-square&logo=visual studio code&logoColor=white"/>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   GoogleMap,
   Circle,
@@ -8,13 +8,16 @@ import {
 } from "@react-google-maps/api";
 import styled from "styled-components";
 import InfoTop from "../components/Mains/InfoTop";
+import useStore from "../stores/store";
 import { Sample1 } from "../components/Styles/MapStyles";
 import { IoSettingsOutline } from "react-icons/io5";
 import { GiHandBag } from "react-icons/gi";
+import { RiBoxingLine } from "react-icons/ri";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import mapBtn from "../assets/mapBtn.png";
+import Pin from "../assets/pinPoint.png";
 const google = (window.google = window.google ? window.google : {});
 
 // 경주 { lat: 35.831490, lng: 129.210748 }
@@ -23,14 +26,13 @@ const google = (window.google = window.google ? window.google : {});
 
 export default function Maps() {
   const [map, setMap] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // 경주 기준점
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
 
-  // 전대 기준점
-  const [center, setCenter] = useState({ lat: 35.175595, lng: 126.907032 });
-
-  const [mapCenter, setMapCenter] = useState();
+  // 싸피 기준점
+  const [center, setCenter] = useState({ lat: 35.205231, lng: 126.8117628 });
   const [head, setHead] = useState();
 
   const [showSemiCircle, setShowSemiCircle] = useState(false);
@@ -39,24 +41,13 @@ export default function Maps() {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
     // googleMapsApiKey: "AIzaSyBZrBxO1en2t7fU6-47ooo_DxPyeTF4Xi8",
-    language: "KR",
+    language: "ko",
   });
 
   const onUnmount = useCallback(function callback() {
     setMap(null);
-  }, []);
-
-  const options = {
-    zoom: 16,
-    // mapTypeId: 'satellite' // 위성 뷰로 지정
-  };
-
-  const onLoad = useCallback((map) => {
-    map.setCenter(center);
-    map.setOptions(options);
-    map.setHeading(90);
   }, []);
 
   const goProfile = () => {
@@ -67,6 +58,10 @@ export default function Maps() {
     navigate("/cards");
   };
 
+  const goBattle = () => {
+    navigate("/battle");
+  };
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -74,15 +69,15 @@ export default function Maps() {
           const latNow = position.coords.latitude;
           const lngNow = position.coords.longitude;
 
-          console.log(latNow, lngNow, "현재위치 받아왔어요");
+          // console.log(latNow, lngNow, "현재위치 받아왔어요");
           setCenter({ lat: latNow, lng: lngNow });
 
           const headNow = position.coords.heading;
           if (headNow !== null) {
             setHead(headNow);
-            console.log(headNow, "현재 방향을 받아왔어요");
+            // console.log(headNow, "현재 방향을 받아왔어요");
           } else {
-            console.log("방향 정보를 받아오지 못했습니다");
+            // console.log("방향 정보를 받아오지 못했습니다");
           }
         },
         function (error) {
@@ -100,65 +95,61 @@ export default function Maps() {
     }
   }, []);
 
-  const getLocation = useCallback(() => {
-    if (center.lat && center.lng) {
-      const newLocation = {
-        lat: center.lat,
-        lng: center.lng,
-      };
-      setMapCenter(newLocation);
-      if (map) {
-        map.panTo(newLocation);
-        map.setZoom(18);
-      }
+  const [disApi, setDisApi] = useState();
+
+  useEffect(() => {
+    // 내근처 문화재만 탐색
+    getDisAPI();
+  }, [center]);
+
+  const getDisAPI = async () => {
+    try {
+      const res = await axios.post("v1/culturalheritage/distance", {
+        lat: `${center.lat}`,
+        lng: `${center.lng}`,
+      });
+      let distanceAPI = res.data.data_body;
+
+      setDisApi(res.data.data_body);
+    } catch (e) {
+      console.log(e.response);
     }
-  }, [center.lat, center.lng, map]);
+  };
+
+  // const [address, setAddress] = useState(null)
+
+  const getAddress = async (getlat, getlng) => {
+    try {
+      // res에는 결과 값이 담겨옴
+      const res = await axios.get(
+        `/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`
+      );
+      if (res.status === 401) {
+        useStore.getState().updateToken();
+        getAddress();
+      }
+
+
+      // 임시 해결로 바로 데이터 전송함
+      return res.data.response.result[0].text;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // 마크 클릭 이벤트
-  const goGetCard = (event) => {
-    console.log(event);
+  const goGetCard = async (event) => {
+
+    const address = await getAddress(event.lat, event.lng);
     navigate("/camera", {
       state: {
-        cultural_heritage_id: `${event.cultural_heritage_id}`,
+        cultural_heritage_id: `${event.no}`,
         lat: `${event.lat}`,
         lng: `${event.lng}`,
-        address: `${event.address}`,
+        address: `${address}`,
       },
     });
   };
-
-  const places = [
-    {
-      cultural_heritage_id: "1",
-      lat: 35.205244,
-      lng: 126.810495,
-      address: " 광주광역시 광산구 오선동 549-1번지",
-    },
-    {
-      cultural_heritage_id: "2",
-      lat: 35.20508,
-      lng: 126.810211,
-      address: " 광주광역시 광산구 오선동 549-1번지",
-    },
-    {
-      cultural_heritage_id: "3",
-      lat: 35.205309,
-      lng: 126.807715,
-      address: " 광주광역시 광산구 오선동 271번지",
-    },
-    {
-      cultural_heritage_id: "4",
-      lat: 35.197128,
-      lng: 126.803582,
-      address: " 광주광역시 광산구 장덕동 971-3",
-    },
-    {
-      cultural_heritage_id: "5",
-      lat: 35.199092,
-      lng: 126.814761,
-      address: " 광주광역시 광산구 수완동 풍영로 313",
-    },
-  ];
 
   // 문화재 요청
   const [api, setApi] = useState();
@@ -170,11 +161,15 @@ export default function Maps() {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get("v1/culturalheritage/list", {
+      const res = await axios.get("/v1/culturalheritage/list", {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
-      setApi(res ? [...res.data.data_body, ...places] : [...places]);
+      if (res.status === 401) {
+        useStore.getState().updateToken();
+        getAPI();
+      }
+      setApi(res.data.data_body);
     } catch (e) {
       console.log(e.response);
     }
@@ -187,20 +182,18 @@ export default function Maps() {
     strokeColor: "#FF7575",
     strokeOpacity: 0,
     strokeWeight: 0,
-    fillColor: "#C779D0",
-    fillOpacity: 0.35,
+    fillColor: "#F2A55D",
+    fillOpacity: 0.5,
     radius: 80,
-    center,
   };
 
   const markerCircleOptions = {
     strokeColor: "#FFFFFF",
     strokeOpacity: 1,
     strokeWeight: 2,
-    fillColor: "#C779D0",
-    fillOpacity: 0.5,
+    fillColor: "#F2A55D",
+    fillOpacity: 0.35,
     radius: 10,
-    center,
   };
 
   if (!isLoaded) return <div>Loading...</div>;
@@ -209,7 +202,7 @@ export default function Maps() {
     <div style={{ width: "100%", height: "100%" }}>
       <div style={{ position: "relative" }}>
         <GoogleMap
-          zoom={17}
+          zoom={7}
           center={center}
           mapContainerClassName="map-container"
           onUnmount={onUnmount}
@@ -223,7 +216,11 @@ export default function Maps() {
           mapContainerStyle={{ width: "100%", height: "100vh" }}
         >
           {/* 중심 레이더 옵션 */}
-          <Circle center={center} options={circleRangeOptions} />
+          <Circle
+            center={center}
+            options={circleRangeOptions}
+            style={{ zindex: 10 }}
+          />
           <Circle center={center} options={markerCircleOptions} />
 
           {/* 문화재 마커 */}
@@ -241,14 +238,13 @@ export default function Maps() {
                       onClick={() => {
                         goGetCard(place);
                       }}
-
-                      // icon={{
-                      //   href: require("../public/markerSample1.png"),
-                      //   url: "https://img.freepik.com/premium-vector/funny-pussy-kitty-cat-character-in-kawaii-cartoon-style_835197-15967.jpg",
-                      //   scaledSize: new google.maps.Size(50, 50),
-                      //   origin: new google.maps.Point(0, 0),
-                      //   anchor: new google.maps.Point(25, 50),
-                      // }}
+                      icon={{
+                        url: `${Pin}`,
+                        // url: place.image_source,
+                        scaledSize: new google.maps.Size(50, 50),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(25, 50),
+                      }}
                     />
                   ))}
               </>
@@ -262,14 +258,14 @@ export default function Maps() {
           </Body>
 
           <Body>
-            <Testt>
+            <Testt id="test1">
               <ToggleButton
                 onClick={() => setShowSemiCircle(!showSemiCircle)}
               />
               <SemiCircle show={showSemiCircle}>
                 <div>
                   <SemiCircleButton>
-                    <GiHandBag onClick={goCard} size={35} />
+                    <RiBoxingLine onClick={goBattle} size={35} />
                   </SemiCircleButton>
                 </div>
                 <div>
@@ -307,11 +303,9 @@ const ToggleButton = styled.button`
   height: 70px;
   border-radius: 50%;
 
-  /* background-image: url('https://w7.pngwing.com/pngs/952/332/png-transparent-ball-pocket-monster-poke-safari-poke-ball-set-icon.png'); */
-  /* background-image: ; */
   background-image: url(${mapBtn});
-  background-size: cover; // 이미지를 버튼 크기에 맞게 조절
-  background-repeat: no-repeat; // 이미지를 반복하지 않음
+  background-size: cover;
+  background-repeat: no-repeat;
   border: none;
 `;
 
@@ -321,7 +315,7 @@ const SemiCircle = styled.div`
   transform: translateX(-50%)
     ${(props) => (props.show ? "translateY(0)" : "translateY(100%)")};
   width: 500px;
-  height: 350px;
+  height: ${(props) => (props.show ? "350px" : "0")};
   background: rgb(114, 161, 111, 0.5);
   border-radius: 100% 100% 0 0;
   display: flex;
@@ -349,9 +343,9 @@ const SemiCircleButton = styled.button`
   width: 80px;
   height: 80px;
   border: 1px solid #72a16f;
-  background-color: #f0f4ef; // 배경색 설정
-  border-radius: 50%; // 원 모양 만들기
-  border: 2px solid #72a16f; // 기본 테두리 제거
+  background-color: #f0f4ef;
+  border-radius: 50%;
+  border: 2px solid #72a16f;
 `;
 
 const Testt = styled.div`

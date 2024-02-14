@@ -9,13 +9,13 @@ const Header = ({ children, content, ...rest }) => {
 
   // 이전 페이지 이동
   const goPerv = () => {
-    navigate(-1);
+    navigate('/maps');
   };
 
   return (
     <Head>
       <Back>
-        <FaChevronLeft onClick={goPerv} />
+        <FaChevronLeft size={25} onClick={goPerv} />
       </Back>
       <Title>
         { children }
@@ -31,25 +31,26 @@ const Title = styled.div`
   font-size: 15px;
   color: black;
   /* font-weight: bold; */
-  
 
 `;
 
 const Head = styled.div`
 
-  position: sticky;
+  /* position: sticky; */
+  position: fixed;
   top: 1rem;
   left: 0;
   right: 0;
-  background-color: white;
+  /* background-color: white; */
   color: white;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 
 `;
 
 const Back = styled.div`
-  margin-left: 5px;
+  margin-left: 2rem;
+  margin-top: 2rem;
   svg {
     color: rgba(128, 128, 128, 0.623);
     &:hover {

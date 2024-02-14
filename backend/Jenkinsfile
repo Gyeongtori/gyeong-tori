@@ -2,7 +2,8 @@ def component = [
         front: false,
         back: true,
         nginx: true,
-        redis: true
+        redis: false,
+        certbot: false
 ]
 pipeline {
     agent any
@@ -19,15 +20,21 @@ pipeline {
                 )
             }
         }
-        stage('Move .env File') {
+        stage('Move ..env File') {
             steps {
                 sh "ls backend/secure-settings"
+<<<<<<< HEAD
+                // Git Submodule 내부의 ..env 파일을 현재 작업 디렉토리로 이동
+                sh 'cp backend/secure-settings/back/..env ..env'
+=======
                 // Git Submodule 내부의 .env 파일을 현재 작업 디렉토리로 이동
                 sh 'cp backend/secure-settings/back/.env .env'
+>>>>>>> e14cd3649e254efd36899951ba74348ccc1a4706
             }
         }
         stage('Setup Environment') {
             steps {
+
                 dir("${env.WORKSPACE}/backend"){
                     script {
                         sh "ls . -al"
@@ -35,10 +42,14 @@ pipeline {
                         def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                         version = version_value.split(/:/)[1].trim()
                         env.TAG = version
-                        //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
+                        //이 명령은 현재 작업 디렉토리에 ..env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
                         //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                        sh "echo TAG=$version >> .env"
-                        sh "cat .env"
+<<<<<<< HEAD
+                        sh "echo TAG=$version >> ..env"
+                        sh "cat ..env"
+=======
+                        sh "export TAG=$version"
+>>>>>>> e14cd3649e254efd36899951ba74348ccc1a4706
                     }
                 }
             }
@@ -53,6 +64,9 @@ pipeline {
                 script {
                     sh "ls -al"
                     component.each { entry ->
+//                        if (entry.value && entry.key=="back") {
+//                            sh "docker compose -p test-server build ${entry.key.toLowerCase()}"
+//                        }else if(entry.value){
                         if (entry.value) {
                             sh "docker compose -p test-server build ${entry.key.toLowerCase()}"
                         }
@@ -75,7 +89,7 @@ pipeline {
             steps {
                 script {
                     component.each{ entry ->
-                        if(entry.value&&entry.key!="redis"){
+                        if(entry.value&&entry.key!="redis"&&entry.key!="certbot"){
                             def var = entry.key
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
                                 sh "docker push ${DOCKER_USER_ID}/toritest-${var.toLowerCase()}:${env.TAG}"
@@ -88,7 +102,7 @@ pipeline {
         stage('Prune old images'){
             steps{
                 script{
-                    sh "docker image prune --filter until=1h"
+                    sh "yes | docker system prune --filter until=1h"
                 }
             }
         }
@@ -128,7 +142,11 @@ pipeline {
             script {
                 def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
                 def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+<<<<<<< HEAD
                 mattermostSend (color: 'good',
+=======
+                mattermostSend (color: currentBuild.currentResult=='SUCCESS'?'good':'danger',
+>>>>>>> e14cd3649e254efd36899951ba74348ccc1a4706
                         message: "빌드 ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
                         endpoint: 'https://meeting.ssafy.com/hooks/q4qjarpscbf9pme4f46yiojzfe',
                         channel: 'C107-Jenkins'
