@@ -108,8 +108,14 @@ export default function Maps() {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
-      console.log(res.data.data_body, "내 주변 문화재");
-      let distanceAPI = res.data.data_body;
+      console.log(res.data.data_body, '내 주변 문화재')
+      let distanceAPI = res.data.data_body
+      
+      if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)){
+        setDisApi(res.data.data_body);
+      }
+      
+      console.log(disApi, '내주변 문화재 넣은 값')
 
       setDisApi(res.data.data_body);
       console.log(disApi);
@@ -159,30 +165,9 @@ export default function Maps() {
     }
   };
 
-  // KAKAO MAP TEST
 
-  // const { kakao } = window
-  // const container = document.getElementById('map')
-  // const options = {
-  //   center: new kakao.map.Lating(33.45701, 126.570667),
-  //   level: 3
-  // }
 
-  // let geocoder = new kakao.maps.services.Geocoder();
 
-  //   // 마크 클릭 이벤트
-  // const goGetCard = async (event) => {
-  //   console.log(event.lat, event.lng, '이벤트 값!!!')
-
-  //   navigate("/camera", {
-  //   state: {
-  //    'no': `${event.no}`,
-  //        'lat': `${event.lat}`,
-  //        'lng': `${event.lng}`,
-  //        'address': `${event}`,
-  //      },
-  //    });
-  // }
 
   // 문화재 요청
   const [api, setApi] = useState();

@@ -19,37 +19,35 @@ const Signup = () => {
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
   
-  // const [postImg, setPostImg] = useState([]);
-  // const [previewImg, setPreviewImg] = useState([]);
-    
-  // function uploadFile(e) {
-  //     let fileArr = e.target.files;
-  //     setPostImg(Array.from(fileArr));
-  //     // console.log(fileArr);
+  const fileInput = useRef(null)
 
-  //     let fileURLs = [];
-
-  //     let fileRead = new FileReader();
-  //     // console.log(fileRead);
-
-  //     fileRead.onload = function(){
-  //         setPreviewImg(fileRead.result);
-  //     };
-      
-  //     fileRead.readAsDataURL(file[0]);
-  // };
-
-
-  const [uploadedImage, setUploadedImage] = useState(null);
-
-  const onChangeImage = e => {
-    const file = e.target.files[0];
-    const imageUrl = URL.createObjectURL(file);
-    setUploadedImage(imageUrl);
-
-
-
-
+  const onChange = (e) => {
+    if(e.target.files[0]){
+        setUserInput({profile_img :e.target.files[0],
+          email: userInput.email,
+          password: userInput.password,
+          name: userInput.name,})
+          }else{ //업로드 취소할 시
+            setUserInput({profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+            email: userInput.email,
+            password: userInput.password,
+            name: userInput.name,
+          })
+              return
+          }
+    //화면에 프로필 사진 표시
+          const reader = new FileReader();
+          reader.onload = () => {
+              if(reader.readyState === 2){
+                setUserInput({profile_img:reader.result,
+                  email: userInput.email,
+                  password: userInput.password,
+                  name: userInput.name,
+                })
+              }
+          }
+          reader.readAsDataURL(e.target.files[0])
+      }
 
   const emailCheck = (email) => {
     let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -85,12 +83,12 @@ const Signup = () => {
       } catch (e) {
         console.log('e: ', e);
         const status = e.response.status;
-        const alertMSG = e.response.data.data_header.result_message;
         // console.log('alertMSG: ', alertMSG);
         // console.log('status: ', status);
         if (status === 500) {
           alert("서버오류!");
         } else if (status === 400) {
+          const alertMSG = e.response.data.data_header.result_message;
           alert(alertMSG);
         }
       }
@@ -108,19 +106,21 @@ const Signup = () => {
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
       </div>
 
-{/* 
-      <WriteInput accept=".png, .jpeg, .jpg" type="file"        
-          onChange={handleFileUpload}
-      />
-      <img alt={previewImg} src={previewImg} /> */}
-
-
-        {uploadedImage ? (
-            <MyProfileImg src={uploadedImage} alt="프로필 없을때" />
-          ) : (
-            <MyProfileImg src="./images/profile.png" alt="프로필사진" />
-          )}
-          <input type="file" onChange={onChangeImage} />
+      <ProfileIMG>
+        <Avatar
+          src={userInput.profile_img}
+          style={{margin:'20px'}}
+          size={200}
+          />
+        <input
+          type='file'
+          // style={{display:'none'}}
+          accept='image/jpg,impge/png,image/jpeg'
+          name='profile_img'
+          onChange={onChange}
+          ref={fileInput}/>
+      </ProfileIMG>
+     
 
       <InputText>이메일</InputText>
       <ButtonBlank
@@ -135,6 +135,7 @@ const Signup = () => {
             email: email,
             password: userInput.password,
             name: userInput.name,
+            profile_img: userInput.profile_img
           })
           if (!emailCheck(email)) {
             setEmailError("이메일 형식으로 입력해주세요."); 
@@ -157,6 +158,7 @@ const Signup = () => {
             email: userInput.email,
             password: userInput.password,
             name: name,
+            profile_img: userInput.profile_img
           });
         }}
       ></ButtonBlank>
@@ -174,6 +176,7 @@ const Signup = () => {
             email: userInput.email,
             password: password,
             name: userInput.name,
+            profile_img: userInput.profile_img
           });
         }}
       ></ButtonBlank>
@@ -206,7 +209,7 @@ const Signup = () => {
       </SignupBtn>
     </SignupBlock>
   );
-}};
+};
 
 export default Signup;
 
@@ -254,26 +257,13 @@ const ErrorMSG = styled.div`
   margin: 0.3rem 0 0 1rem;
 `;
 
+const Avatar = styled.img`
+  width: 80px;
+  height: 80px;
+`;
 
-// ----------------------
-// const WriteInput = styled.input`
-//   display: none;
-// `;
-
-// label{
-//   display: inline-block;
-//   width: 90px;
-//   height: 90px;
-//   background: url('src/assets/icon-add-photo.svg') no-repeat;
-//   background-position: center;
-//   border: 1px solid ${gray4};
-//   border-radius: 10px;
-//   cursor: pointer;
-// }
-
-//-------------------------------------------
-
-const MyProfileImg = styled.img`
-  width: 50px;
-  height: 50px;
+const ProfileIMG = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
