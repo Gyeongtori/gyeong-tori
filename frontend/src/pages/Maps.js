@@ -75,7 +75,7 @@ export default function Maps() {
           const headNow = position.coords.heading;
           if (headNow !== null) {
             setHead(headNow);
-            console.log(headNow, "현재 방향을 받아왔어요");
+            // console.log(headNow, "현재 방향을 받아왔어요");
           } else {
             // console.log("방향 정보를 받아오지 못했습니다");
           }
@@ -138,6 +138,7 @@ export default function Maps() {
 
   const getAddress = async (getlat, getlng) => {
     try {
+      console.log("getlat : ", getlat, "getlng:", getlng);
       // res에는 결과 값이 담겨옴
       const res = await axios.get(
         `/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&point=${getlng},${getlat}&type=both&zipcode=true&simple=false&key=${process.env.REACT_APP_SIDO_KEY}`
@@ -151,6 +152,7 @@ export default function Maps() {
 
       // 이렇게 저장하면 오류남...
       // setAddress(res.data.response.result[0])
+      console.log("결과 값 :", res.data.response.result[0].text);
 
       // 임시 해결로 바로 데이터 전송함
       return res.data.response.result[0].text;
@@ -194,7 +196,7 @@ export default function Maps() {
   const getAPI = async () => {
     try {
       // res에는 결과 값이 담겨옴
-      const res = await axios.get("v1/culturalheritage/list", {
+      const res = await axios.get("/v1/culturalheritage/list", {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
@@ -235,7 +237,7 @@ export default function Maps() {
     <div style={{ width: "100%", height: "100%" }}>
       <div style={{ position: "relative" }}>
         <GoogleMap
-          zoom={17}
+          zoom={7}
           center={center}
           mapContainerClassName="map-container"
           onUnmount={onUnmount}

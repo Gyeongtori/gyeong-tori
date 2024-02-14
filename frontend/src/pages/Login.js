@@ -48,7 +48,7 @@ const Login = () => {
         });
         const status = response.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
-          console.log("로그인 성공!");
+          // console.log("로그인 성공!");
           getUserInfo();
           goMain();
         }

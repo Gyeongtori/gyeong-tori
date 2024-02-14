@@ -5,11 +5,10 @@ import * as THREE from "three";
 import html2canvas from "html2canvas";
 import Capture from "./capturePage";
 
-export default function FrontCamera(props) {
+export default function Camera(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
-  console.log(state, " <- 스테이트 값이에여");
-  console.log(state.cultural_heritage_id);
+  console.log(state, "state값이예요");
 
   const rendererRef = useRef(null);
   const videoSceneRef = useRef(new THREE.Scene()); // 비디오 씬
@@ -24,27 +23,16 @@ export default function FrontCamera(props) {
   );
 
   const videoTextureRef = useRef(null);
+  const videoMeshRef = useRef(null);
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
-  const facingMode = "user";
+  const [facingMode, setFacingMode] = useState("environment");
   const [captureState, setCaptureState] = useState(false);
 
   const backMap = () => {
     navigate("/maps");
   };
-
-  function toggleFacingMode(e) {
-    navigate("/camera", {
-      state: {
-        no: `${e.no}`,
-        lat: `${e.lat}`,
-        lng: `${e.lng}`,
-        address: `${e.address}`,
-        cultural_heritage_id: `${e.cultural_heritage_id}`,
-      },
-    });
-  }
 
   const stopVideo = () => {
     const { current: videoStream } = videoStreamRef;
@@ -67,6 +55,12 @@ export default function FrontCamera(props) {
         console.error("Error capturing canvas:", error);
       });
   };
+
+  function toggleFacingMode() {
+    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+    stopVideo(); // 이전 비디오 멈추기
+    startVideo();
+  }
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -106,7 +100,7 @@ export default function FrontCamera(props) {
         "metarial/1234.gltf",
         (gltf) => {
           const model = gltf.scene;
-          model.position.set(-3, -9, -5);
+          model.position.set(-3, -7, -5);
 
           // 모델이 로드된 후에 재질에 조명을 추가합니다.
           model.traverse((child) => {
@@ -189,6 +183,7 @@ export default function FrontCamera(props) {
           })
           .catch((error) => {
             console.error("Error accessing webcam:", error);
+            constraints.video.facingMode = "environment";
           });
       } catch (error) {
         console.error("Error accessing webcam:", error);
@@ -200,13 +195,6 @@ export default function FrontCamera(props) {
     const resizeCanvas = () => {
       const canvas = rendererRef.current.domElement;
       canvas.width = window.innerWidth * devicePixelRatio;
-      if (window.innerWidth <= 600) {
-        canvas.height = 300 * devicePixelRatio;
-      } else if (window.innerWidth <= 1024) {
-        canvas.height = 400 * devicePixelRatio;
-      } else {
-        canvas.height = 600 * devicePixelRatio;
-      }
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -219,7 +207,7 @@ export default function FrontCamera(props) {
       window.removeEventListener("resize", resizeCanvas);
       stopVideo();
     };
-  });
+  }, [facingMode]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -228,7 +216,7 @@ export default function FrontCamera(props) {
     } else if (facingMode === "user") {
       canvas.style.transform = "scaleX(-1)";
     }
-  });
+  }, [facingMode]);
   return (
     <div>
       {captureState === true ? (
@@ -237,23 +225,14 @@ export default function FrontCamera(props) {
             url={capturedImageDataURL}
             state={state}
             address={state.address}
-            no={state.no}
-            cultural_heritage_id={state.cultural_heritage_id}
+            cultural_heritage_id={state.no}
             captureState={captureState}
             setCaptureState={setCaptureState}
           />
         )
       ) : (
         <div>
-          <canvas
-            ref={canvasRef}
-            id="canvas"
-            style={{
-              width: "600px",
-              height: "768px",
-              transform: "scaleX(-1)",
-            }}
-          ></canvas>
+          <canvas ref={canvasRef} id="canvas"></canvas>
           <div>
             <button color="primary" onClick={toggleFacingMode}>
               카메라 전환하기
@@ -268,3 +247,4 @@ export default function FrontCamera(props) {
     </div>
   );
 }
+//변경전이예요

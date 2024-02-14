@@ -12,20 +12,24 @@ export default function Capture(props) {
   const address = state.address;
 
   const navigate = useNavigate();
-  const backMap = () => {
-    navigate("/maps");
+  const backMap = async () => {
+    try {
+      await navigate("/maps");
+      window.location.reload();
+    } catch (error) {
+      console.error("백으로 돌아갈 수 없어", error);
+    }
   };
+
   const [api, setApi] = useState();
+
   const postAPI = async () => {
     try {
       const postData = {
         cultural_heritage_id: cultural_heritage_id,
         address: address,
       };
-      const res = await axios.post(`/v1/card/add`, {
-        cultural_heritage_id: cultural_heritage_id,
-        address: address,
-      });
+      const res = await axios.post(`/v1/card/add`, postData);
       console.log(res);
       console.log("정상적으로 실행되었습니다.");
     } catch (e) {
@@ -33,7 +37,7 @@ export default function Capture(props) {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     // 캡쳐된 이미지 데이터 URL을 이용하여 다운로드
     if (url) {
       const downloadLink = document.createElement("a");
@@ -44,17 +48,17 @@ export default function Capture(props) {
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
-      alert("사진이 저장되었습니다.");
-      postAPI();
+      await postAPI();
       backMap();
+      alert("사진이 저장되었습니다.");
     } else {
       console.error("No captured image data to download.");
     }
   };
-  const handleCloseModal = () => {
+  const handleCloseModal = async () => {
     // 모달 상태를 닫음
     props.setCaptureState(false);
-    postAPI();
+    await postAPI();
     backMap();
   };
 
