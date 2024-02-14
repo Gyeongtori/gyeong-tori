@@ -42,7 +42,6 @@ let Rank = styled.div`
 const Header = () => {
   const locationNow = useLocation();
   let navigate = useNavigate();
-  let name = "김싸피";
   // 이전 페이지 이동
   let goPerv = () => {
     navigate(-1);
@@ -53,9 +52,6 @@ const Header = () => {
       <Back>
         <FaChevronLeft onClick={goPerv} />
       </Back>
-      <Title>
-        <strong>{name}</strong>님이 모은 카드
-      </Title>
       <Rank>랭킹</Rank>
     </Head>
   );
