@@ -34,7 +34,9 @@ public interface HoldingCardRepository extends JpaRepository<HoldingCard, Long> 
     Integer getCardCount(@Param("userId") Long userId);
 
     @Query("SELECT new org.jackpot.back.card.model.dto.response.HoldingCardBaseDto(h.card.number, COUNT(h)) " +
-            "FROM HoldingCard h JOIN h.user u " +
+            "FROM HoldingCard h "+
+            "JOIN User u ON h.user.id = u.id "+
+            "WHERE u.id = :userId "+
             "GROUP BY u.id, h.card.number")
-    List<HoldingCardBaseDto> findAllByUserId(Long userId);
+    List<HoldingCardBaseDto> findAllByUserId(@Param("userId") Long userId);
 }
