@@ -6,10 +6,7 @@ import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import lombok.extern.slf4j.Slf4j;
-import org.jackpot.back.socket.model.entity.Action;
-import org.jackpot.back.socket.model.entity.BattleQuestion;
-import org.jackpot.back.socket.model.entity.Location;
-import org.jackpot.back.socket.model.entity.Message;
+import org.jackpot.back.socket.model.entity.*;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -30,6 +27,16 @@ public class SocketModule {
         server.addEventListener("send_message", Message.class, onMessageReceived());
         server.addEventListener("send_question", BattleQuestion.class, onQuestionReceived());
         server.addEventListener("send_action", Action.class, onBattleActionReceived());
+        server.addEventListener("send_exit", BaseAction.class, onExitReceived());
+    }
+
+    private DataListener<BaseAction> onExitReceived() {
+        return (senderClient, data, ackSender) -> {
+            log.info("======== exit =========");
+            log.info(data.toString());
+            data.setSocketId(senderClient.getSessionId().toString());
+            senderClient.getNamespace().getBroadcastOperations().sendEvent("get_exit",data);
+        };
     }
 
     private DataListener<Location> onLocationReceived() {
