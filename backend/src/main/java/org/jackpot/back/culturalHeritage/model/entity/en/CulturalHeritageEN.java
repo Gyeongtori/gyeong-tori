@@ -24,7 +24,7 @@ public class CulturalHeritageEN {
     @NotNull
     private String asno; //관리번호
 
-    @Column(name = "name_en", length = 30)
+    @Column(name = "name_en", length = 100)
     @NotNull
     private String nameEn; //문화재명(영문)
 

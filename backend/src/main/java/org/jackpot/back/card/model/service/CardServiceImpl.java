@@ -108,6 +108,7 @@ public class CardServiceImpl implements CardService{
         try {
             if(addCardToCollectionRequest.getLanguage()== Language.EN) {
                     //문화재 찾기
+                    log.debug(addCardToCollectionRequest.toString());
                     Optional<CulturalHeritageEN> findCulturalHeritageEN = culturalHeritageENRepository.findById(Integer.valueOf(addCardToCollectionRequest.getCulturalHeritageId()));
                     //해당 문화재 등급 카드 찾기
                     Optional<CardEN> findCard = cardENRepository.findByCulturalHeritageAndRating(findCulturalHeritageEN.get(), randomRating);

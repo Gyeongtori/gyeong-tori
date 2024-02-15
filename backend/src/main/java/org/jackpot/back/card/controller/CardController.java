@@ -40,6 +40,7 @@ public class CardController {
      */
     @PostMapping("/add")
     public ResponseEntity addCardToCollection(@AuthenticationPrincipal User user, @RequestBody AddCardToCollectionRequest addCardToCollectionRequest) {
+        log.debug(addCardToCollectionRequest.toString());
         addCardToCollectionRequest.setUserEmail(user.getEmail());
         addCardToCollectionRequest.setLanguage(user.getLanguage());
         cardService.addCardToCollection(addCardToCollectionRequest);
