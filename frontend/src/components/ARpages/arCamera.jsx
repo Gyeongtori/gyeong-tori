@@ -44,23 +44,42 @@ export default function Camera(props) {
     }
   };
 
-  const handelCapture = (e) => {
+  const handelCapture = () => {
     const canvas = canvasRef.current;
-    html2canvas(canvas)
-      .then((canvas) => {
-        const imageDataURL = canvas.toDataURL();
-        setCapturedImageDataURL(imageDataURL);
-        stopVideo();
-        setCaptureState(true);
-      })
-      .catch((error) => {
-        console.error("Error capturing canvas:", error);
-      });
+    const rendererCanvas = rendererRef.current.domElement; // WebGLRenderer의 캔버스
+  
+    // WebGLRenderer로 렌더링된 이미지를 가져오기
+    const glImageDataURL = rendererCanvas.toDataURL();
+  
+    // 캡쳐를 위한 새로운 캔버스 생성
+    const captureCanvas = document.createElement('canvas');
+    captureCanvas.width = window.innerWidth;
+    captureCanvas.height = window.innerHeight;
+    const ctx = captureCanvas.getContext('2d');
+  
+    // WebGLRenderer로 렌더링된 이미지를 캡쳐 캔버스에 그리기
+    const glImage = new Image();
+    glImage.onload = () => {
+      ctx.drawImage(glImage, 0, 0);
+      
+      // 2D 캔버스에 그려진 내용을 html2canvas를 통해 캡쳐
+      html2canvas(canvas)
+        .then((htmlCanvas) => {
+          // 2D 캔버스와 WebGLRenderer 캔버스 이미지 데이터 URL 가져오기
+          const imageDataURL = htmlCanvas.toDataURL();
+          const glDataURL = captureCanvas.toDataURL();
+  
+          // 이미지 데이터 URL 설정 및 비디오 정지
+          setCapturedImageDataURL(imageDataURL, glDataURL);
+          stopVideo();
+          setCaptureState(true);
+        })
+        .catch((error) => {
+          console.error("Error capturing canvas:", error);
+        });
+    };
+    glImage.src = glImageDataURL;
   };
-
-  // function toggleFacingMode() {
-  //   setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
-  // }
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -204,17 +223,19 @@ export default function Camera(props) {
   const handleTouch = (event) => {
     event.preventDefault();
 
-    const touchX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-    const touchY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+    if (event.target === canvasRef.current) {
+      const touchX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+      const touchY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2(touchX, touchY);
-    raycaster.setFromCamera(mouse, cameraRef.current);
-    const intersects = raycaster.intersectObjects([sceneRef.current], true);
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(touchX, touchY);
+      raycaster.setFromCamera(mouse, cameraRef.current);
+      const intersects = raycaster.intersectObjects([sceneRef.current], true);
 
-    if (intersects.length > 0) {
-      const position = intersects[0].point;
-      mountCharacter(position);
+      if (intersects.length > 0) {
+        const position = intersects[0].point;
+        mountCharacter(position);
+      }
     }
   };
 
@@ -272,7 +293,7 @@ export default function Camera(props) {
   }
 
   return (
-    <div  onTouchStart={handleTouch}>
+    <div onTouchStart={handleTouch}>
       {captureState === true ? (
         captureState && (
           <Capture
@@ -292,7 +313,7 @@ export default function Camera(props) {
               id="canvas"
               style={{ width: "100%", height: "100%" }}
             >
-              <div>나 여기 있어요</div>
+             
             </canvas>
           </BodyMake>
           <div>
