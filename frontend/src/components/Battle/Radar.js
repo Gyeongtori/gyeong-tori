@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import io from "socket.io-client";
@@ -62,16 +62,15 @@ const RandomButton = styled.button`
   left: ${(props) => props.$left}%;
 `;
 const Radar = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  // const [username, setUsername] = useState({});
-  const [myGeo, setMyGeo] = useState({});
-  const [socket, setSocket] = useState(null);
-  const [mySocket, setMySocket] = useState(null);
-  const [userList, setUserList] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user")); // user 정보
+  const [myGeo, setMyGeo] = useState({}); // 현재 사용자 위치 정보
+  const [socket, setSocket] = useState(null); // 소켓 연결 정보
+  const mySocket = useRef(null); // 현재 사용자 소켓 정보
+  const [userList, setUserList] = useState([]); // 현재 사용자 주변 사용자 리스트
+  const [battleState, setBattleState] = useState(false); // 현재 배틀 상태 정보
 
+  // 소켓 연결
   useEffect(() => {
-    // setUsername(user);
-
     // socket connection
     setSocket(
       io.connect("/", {
@@ -80,6 +79,8 @@ const Radar = () => {
       })
     );
   }, []); // 처음 렌더링 될 때만 실행
+
+  // 현재 사용자 위치 정보
   useEffect(() => {
     // geolocation
     // watchPosition(): https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
@@ -105,17 +106,23 @@ const Radar = () => {
       navigator.geolocation.clearWatch(watch);
     };
   }, []);
+
+  // 소켓 이벤트, socket 값이 변경될 때 마다 실행
   useEffect(() => {
     if (socket) {
+      // 사용자 정보 브로드 캐스트
       socket.emit("send_location", {
         lng: myGeo.lng,
         lat: myGeo.lat,
         nickname: user.nickname,
         user_id: user.id,
       });
+
+      // 다른 사용자 정보 리스닝 이벤트
       socket.on("get_location", (data) => {
-        if (mySocket === null && data.user_id === user.id) {
-          setMySocket(data);
+        if (mySocket.current === null && data.user_id === user.id) {
+          // setMySocket(data);
+          mySocket.current = data;
         }
         if (data.user_id !== user.id) {
           setUserList((prev) => {
@@ -127,9 +134,33 @@ const Radar = () => {
           });
         }
       });
+
+      // 배틀 신청 수락 여부 리스닝 이벤트
       socket.on("get_message", (data) => {
         console.log(data);
+        // let msg = window.confirm(data.message);
+        let msg = getConfirm(data.message);
+        console.log(msg);
+        if (msg) {
+          setBattleState(true);
+          // 배틀 신청 수락 emit
+          socket.emit("send_message", {
+            socket_id: data.opponent_socket_id,
+            opponent_socket_id: data.socket_id,
+            message: `${user.nickname}님이 배틀을 수락하였습니다.`,
+          });
+        } else {
+          setBattleState(false);
+          // 배틀 신청 거절 emit
+          socket.emit("send_message", {
+            socket_id: mySocket.current?.socket_id,
+            opponent_socket_id: data.opponent_socket_id,
+            message: `${user.nickname}님이 배틀을 거절하였습니다.`,
+          });
+        }
       });
+
+      // 소켓 연결 없는 사용자 리스트 제거
       socket.on("get_exit", (data) => {
         console.log(data);
         setUserList((prev) =>
@@ -137,48 +168,57 @@ const Radar = () => {
         );
       });
     }
-    console.log(mySocket);
+    // console.log(mySocket);
+
+    // 컴포넌트 언마운트시 소켓 연결 해제
+    // component unmount ? socket disconnection, remove user from list
     return () => {
-      // component unmount ? socket disconnection, remove user from list
       if (socket) {
-        // remove user from list
+        // remove user from list 브로드 캐스트
         socket.emit("send_exit", {
           nickname: user.nickname,
           user_id: user.id,
-          socket_id: mySocket.socket_id,
+          socket_id: mySocket.current?.socket_id,
         });
+        // 소켓 연결 해제
         socket.disconnect();
+        // 사용자 소켓 정보 초기화
+        mySocket.current = null;
       }
     };
   }, [socket]); // socket이 변경될 때마다(이벤트 발생) useEffect가 실행되도록 종속성 목록에 포함
 
+  // 사용자 배틀 신청 emit
   const sendMessageToUser = (opponent) => {
     socket.emit("send_message", {
-      socket_id: mySocket.socket_id,
-      opponent_socket_id: opponent.socket_id,
+      socket_id: mySocket.current?.socket_id, // 송신자
+      opponent_socket_id: opponent.socket_id, // 수신자
       message: `${user.nickname}님이 배틀을 신청하였습니다.`,
     });
     console.log(opponent.user_id, "배틀 신청");
   };
-  const sendMessage = () => {
-    socket.emit("send_location", {
-      lng: myGeo.lng,
-      lat: myGeo.lat,
-      nickname: user.nickname,
-      user_id: user.id,
-    });
+
+  // 사용자 배틀 수락 여부 팝업
+  const getConfirm = (msg) => {
+    let res = window.confirm(msg);
+    return res;
   };
+
+  // const sendMessage = () => {
+  //   socket.emit("send_location", {
+  //     lng: myGeo.lng,
+  //     lat: myGeo.lat,
+  //     nickname: user.nickname,
+  //     user_id: user.id,
+  //   });
+  // };
   const sendQuestion = async () => {
     const res = await axios.post("/v1/question/list", {
       card_list: [11, 12, 13, 14],
     });
     console.log(res);
   };
-  const getUsers = () => {
-    socket.on("get_location", (data) => {
-      console.log(data);
-    });
-  };
+
   return (
     <>
       {userList.map((user) => (
@@ -191,12 +231,10 @@ const Radar = () => {
           {user.nickname}
         </RandomButton>
       ))}
-      <button style={{ zIndex: 1000 }} onClick={getUsers}>
-        사용자 불러오기
-      </button>
-      <button style={{ zIndex: 1000 }} onClick={sendMessage}>
+
+      {/* <button style={{ zIndex: 1000 }} onClick={sendMessage}>
         위치
-      </button>
+      </button> */}
       <button style={{ zIndex: 1000 }} onClick={sendQuestion}>
         문제 제시
       </button>
