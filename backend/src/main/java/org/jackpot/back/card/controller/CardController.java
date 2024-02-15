@@ -6,6 +6,7 @@ import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
 import org.jackpot.back.card.model.dto.request.CardIndividualReadRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.service.CardService;
+import org.jackpot.back.global.model.Language;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.jackpot.back.user.model.entity.User;
 import org.springframework.http.ResponseEntity;
@@ -58,8 +59,8 @@ public class CardController {
      * @return List<ReadCardResponse>
      */
     @GetMapping("/list")
-    public ResponseEntity getCardList(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail())));
+    public ResponseEntity getCardList(@AuthenticationPrincipal User user, @RequestParam Language language) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail(),language)));
     }
 
     /**

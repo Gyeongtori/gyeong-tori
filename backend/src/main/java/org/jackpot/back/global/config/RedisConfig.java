@@ -1,9 +1,11 @@
 package org.jackpot.back.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.jackpot.back.card.model.repository.CardRedisRepository;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritageRedis;
-import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRedisRepository;
+import org.jackpot.back.card.model.repository.en.CardRedisENRepository;
+import org.jackpot.back.card.model.repository.kr.CardRedisRepository;
+import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritageRedis;
+import org.jackpot.back.culturalHeritage.model.repository.en.CulturalHeritageENRedisRepository;
+import org.jackpot.back.culturalHeritage.model.repository.kr.CulturalHeritageKRRedisRepository;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +24,12 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableCaching
 @RequiredArgsConstructor
 @EnableRedisRepositories(basePackages = {"org.jackpot.back.security.repository","org.jackpot.back.battle.repository"},
-                            basePackageClasses = {CulturalHeritageRedisRepository.class, CardRedisRepository.class})
+                            basePackageClasses = {
+                                    CulturalHeritageKRRedisRepository.class,
+                                    CardRedisRepository.class,
+                                    CulturalHeritageENRedisRepository.class,
+                                    CardRedisENRepository.class
+                            })
 
 public class RedisConfig {
 

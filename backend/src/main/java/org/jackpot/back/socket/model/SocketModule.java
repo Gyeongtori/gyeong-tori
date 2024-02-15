@@ -58,7 +58,7 @@ public class SocketModule {
             if (client != null) {
                 // 클라이언트가 존재하면, 해당 클라이언트에게 이벤트를 전송합니다.
                 log.info("send get_message event to user {}",socketId);
-                client.sendEvent("get_message1", data);
+                client.sendEvent("get_message", data);
             } else {
                 // 클라이언트를 찾을 수 없는 경우, 에러 처리나 로깅을 수행할 수 있습니다.
                 log.info("Client with socket ID {} not found",socketId);

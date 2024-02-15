@@ -3,7 +3,7 @@ package org.jackpot.back.question.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.jackpot.back.card.model.entity.Card;
+import org.jackpot.back.card.model.entity.kr.Card;
 import org.jackpot.back.question.model.dto.QuestionDto;
 
 @Entity
@@ -13,7 +13,7 @@ import org.jackpot.back.question.model.dto.QuestionDto;
 @SuperBuilder
 @Getter
 @ToString
-public class Question {
+public class QuestionKR {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "problem_id")

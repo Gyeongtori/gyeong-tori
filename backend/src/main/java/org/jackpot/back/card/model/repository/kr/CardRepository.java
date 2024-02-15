@@ -1,9 +1,8 @@
-package org.jackpot.back.card.model.repository;
+package org.jackpot.back.card.model.repository.kr;
 
-import org.jackpot.back.card.model.dto.response.ReadCardResponse;
-import org.jackpot.back.card.model.entity.Card;
+import org.jackpot.back.card.model.entity.kr.Card;
 import org.jackpot.back.card.model.entity.enums.CardField;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
+import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
