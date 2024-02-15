@@ -13,6 +13,11 @@ const useStore = create(set => ({
     localStorage.setItem('user', JSON.stringify(user));
   },
 
+  // 한/영 언어설정
+  language: 'Language',
+  setLanguage: (language) => set({ language }),
+
+  // 카드 수집
   cardCount: 0,
   listCount: 0,
   setCardCount: (count) => set({ cardCount: count }),

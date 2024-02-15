@@ -15,15 +15,19 @@ const Login = () => {
   const navigate = useNavigate();
   const setUser = useStore(state => state.setUser);
 
+  const [language, setLanguage] = useState('Language');
+  // console.log('language: ', language);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const user = JSON.parse(localStorage.getItem('user'));
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
     if(user){
       localStorage.removeItem('user')
     }
   }, [])
+
   
   const getUserInfo = async () => {
     try {
@@ -73,44 +77,44 @@ const Login = () => {
     }
   };
 
-
+  
 
   const goSignUp = () => {
-    navigate("/signup");
+    navigate("/signup" ,  {state: { language }});
   };
   const goMain = () => {
-    navigate("/maps");
+    navigate("/maps",  {state: { language }});
   };
 
   return (
     <BodyBlock>
       {/* <div>???</div> */}
-      <LanguageDropDown/>
+      <LanguageDropDown language={language} setLanguage={setLanguage} />
       <LoginBlock>
-        <LoginTitle>로그인</LoginTitle>
+        <LoginTitle>{language==='English' ? "Log in": "로그인"}</LoginTitle>
         <ButtonBlank
           color="#E4E7EC"
           activecolor="#BCBCBD"
-          placeholder="이메일"
+          placeholder={language==='English' ? "Email": "이메일"}
           onChange={(e) => setEmail(e.target.value)}
         ></ButtonBlank>
         <ButtonBlank
           color="#E4E7EC"
           activecolor="#BCBCBD"
-          placeholder="비밀번호"
+          placeholder={language==='English' ? "Password": "비밀번호"}
           type="password"
           onChange={(e) => setPassword(e.target.value)}
         ></ButtonBlank>
         <ButtonFull onClick={handleLogin} color="#758467" activecolor="#9DAF89">
-          로그인하기
+        {language==='English' ? "Log in": "로그인 하기"}
         </ButtonFull>
         <ButtonFull onClick={goMain} color="#9DAF89" activecolor="#758467">
-          게스트로 입장하기
+        {language==='English' ? "Enter Guest": "게스트로 입장하기"}
         </ButtonFull>
         <p>
-          아직 회원이 아니신가요?{" "}
+        {language==='English' ? "Not registered ": "아직 회원이 아니신가요? "}
           <span onClick={goSignUp} style={{ color: "#758467" }}>
-            회원가입
+          {language==='English' ? "Create an Account.": "회원가입."}
           </span>
         </p>
       </LoginBlock>

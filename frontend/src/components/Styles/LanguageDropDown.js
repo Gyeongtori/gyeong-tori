@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { MdOutlineLanguage } from "react-icons/md";
 import styled from 'styled-components';
 
-const LanguageDropDown = () => {
+const LanguageDropDown = ({ language, setLanguage }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [ariticleType, setArticleType] = useState('전체');
     const articleTypeList = ['한국어', 'English'];
 
     const articleBtnExpandHandler = () => {
@@ -12,39 +11,42 @@ const LanguageDropDown = () => {
     };
 
     const articleTypeHandler = (data) => {
-        setArticleType(data);
+        setLanguage(data);
     };
     
     return (
-        <div>
+        <LanguageBlock>
             {!isExpanded && (
             <LanguageBtn onClick={articleBtnExpandHandler}>
               <MdOutlineLanguage />
-              <LanguageTitle>{ariticleType}</LanguageTitle>
+              <LanguageTitle>{language}</LanguageTitle>
             </LanguageBtn>
           )}
 
           {isExpanded && (
             <LanguageBtnList onClick={articleBtnExpandHandler}>
               {articleTypeList.map((type, idx) => (
-                <LanguageBtnList key={type} onClick={() => articleTypeHandler(type)}>
+                <LanguageBtn key={type} onClick={() => articleTypeHandler(type)}>
                   <MdOutlineLanguage />
                   {type}
-                </LanguageBtnList>
-              ))}
+                </LanguageBtn>
+              ))} 
             </LanguageBtnList>
           )}
 
-        </div>
+        </LanguageBlock>
     );
 };
 
 export default LanguageDropDown;
 
+const LanguageBlock = styled.div`
+  margin: 2rem 1rem;
+`;
 
 const LanguageBtn = styled.div`
   width: 100px;
-  height: 50px;
+  height: 35px;
   background-color: #758467;
   color: white;
   border-radius: 10px;
@@ -59,5 +61,9 @@ const LanguageTitle = styled.div`
 `;
 
 const LanguageBtnList = styled.div`
-
+    width: 100px;
+  height: 50px;
+  background-color: #758467;
+  color: white;
+  border-radius: 10px;
 `

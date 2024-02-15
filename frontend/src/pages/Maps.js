@@ -16,6 +16,8 @@ import { RiBoxingLine } from "react-icons/ri";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+
 import mapBtn from "../assets/mapBtn.png";
 import Pin from "../assets/pinPoint.png";
 const google = (window.google = window.google ? window.google : {});
@@ -27,6 +29,12 @@ const google = (window.google = window.google ? window.google : {});
 export default function Maps() {
   // const [map, setMap] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const location = useLocation();
+  const language = location.state ? location.state.language : '한국어';
+  // console.log('지도 language: ', language);
+
+
 
   // 경주 기준점
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
@@ -42,7 +50,7 @@ export default function Maps() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
-    language: "ko",
+    language: language==='English' ? "en": "ko"
   });
 
   // const onUnmount = useCallback(function callback() {
