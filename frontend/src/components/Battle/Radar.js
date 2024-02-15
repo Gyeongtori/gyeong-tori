@@ -95,14 +95,6 @@ const Radar = () => {
         console.error("Error Code = " + error.code + " - " + error.message);
       },
       {
-        // 위치정보를 가장 높은 정확도로 수신하고 싶음을 나타내는 불리언 값입니다.
-        // true를 지정했으면, 지원하는 경우 장치가 더 정확한 위치를 제공합니다.
-        // false를 지정한 경우 기기가 더 빠르게 반응하고 전력 소모도 줄일 수 있는 대신 정확도가 떨어집니다.
-        enableHighAccuracy: false,
-        // 기기가 위치를 반환할 때 소모할 수 있는 최대 시간(밀리초)을 나타내는 양의 long 값입니다.
-        timeout: 5000,
-        // 캐시에 저장한 위치정보를 대신 반환할 수 있는 최대 시간을 나타내는 양의 long 값입니다.
-        // 0을 지정한 경우 장치가 위치정보 캐시를 사용할 수 없으며 반드시 실시간으로 위치를 알아내려 시도해야 한다는 뜻입니다.
         maximumAge: 0,
       }
     );
@@ -116,8 +108,8 @@ const Radar = () => {
   useEffect(() => {
     if (socket) {
       socket.emit("send_location", {
-        lng: "127.00004",
-        lat: "67.55553",
+        lng: myGeo.lng,
+        lat: myGeo.lat,
         nickname: user.nickname,
         user_id: user.id,
       });
@@ -138,42 +130,47 @@ const Radar = () => {
       socket.on("get_message", (data) => {
         console.log(data);
       });
+      socket.on("get_exit", (data) => {
+        console.log(data);
+        setUserList((prev) =>
+          prev.filter((user) => user.user_id !== data.user_id)
+        );
+      });
     }
-
+    console.log(mySocket);
     return () => {
       // component unmount ? socket disconnection, remove user from list
       if (socket) {
-        socket.disconnect();
         // remove user from list
+        socket.emit("send_exit", {
+          nickname: user.nickname,
+          user_id: user.id,
+          socket_id: mySocket.socket_id,
+        });
+        socket.disconnect();
       }
     };
   }, [socket]); // socket이 변경될 때마다(이벤트 발생) useEffect가 실행되도록 종속성 목록에 포함
 
   const sendMessageToUser = (opponent) => {
     socket.emit("send_message", {
-      // to: userId,
-      nickname: user.nickname,
-      user_id: user.id,
       socket_id: mySocket.socket_id,
-      // 상대방에게 가야한다면 opponent로
-      // nickname: opponent.nickname,
-      // user_id: opponent.id,
-      // socket_id: opponent.socket_id,
+      opponent_socket_id: opponent.socket_id,
       message: `${user.nickname}님이 배틀을 신청하였습니다.`,
     });
     console.log(opponent.user_id, "배틀 신청");
   };
   const sendMessage = () => {
     socket.emit("send_location", {
-      lng: "127.00004",
-      lat: "67.55553",
+      lng: myGeo.lng,
+      lat: myGeo.lat,
       nickname: user.nickname,
       user_id: user.id,
     });
   };
   const sendQuestion = async () => {
     const res = await axios.post("/v1/question/list", {
-      card_list: [51, 52, 53, 54],
+      card_list: [11, 12, 13, 14],
     });
     console.log(res);
   };
