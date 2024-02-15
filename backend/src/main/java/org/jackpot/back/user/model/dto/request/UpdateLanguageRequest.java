@@ -1,4 +1,4 @@
-package org.jackpot.back.user.model.dto.response;
+package org.jackpot.back.user.model.dto.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -13,11 +13,6 @@ import org.jackpot.back.global.model.Language;
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class UserInfoResponse {
-    public Long id;
-    public String email;
-    public String password;
-    public String nickname;
-    public Integer grade;
+public class UpdateLanguageRequest {
     public Language language;
 }

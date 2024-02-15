@@ -25,7 +25,7 @@ public interface CardENRepository extends JpaRepository<CardEN,Long> {
             "AND (:division is null OR ch.division = :division) " +
             "AND (:field is null OR c.field = :field)" +
             "ORDER BY ch.nameEn ASC")
-    List<Card> searchCardSortNameASC(@Param("nameEn") String nameEn, @Param("division") String division, @Param("field") CardField field);
+    List<CardEN> searchCardSortNameASC(@Param("nameEn") String nameEn, @Param("division") String division, @Param("field") CardField field);
 
     //문화재 이름, 종목, 카드 속성으로 조회 (문화재 이름 내림차순 정렬)
     @Query("SELECT c FROM CardEN c " +
@@ -34,7 +34,7 @@ public interface CardENRepository extends JpaRepository<CardEN,Long> {
             "AND (:division is null OR ch.division = :division) " +
             "AND (:field is null OR c.field = :field)" +
             "ORDER BY ch.nameEn DESC")
-    List<Card> searchCardSortNameDESC(@Param("nameEn") String nameEn, @Param("division") String division, @Param("field") CardField field);
+    List<CardEN> searchCardSortNameDESC(@Param("nameEn") String nameEn, @Param("division") String division, @Param("field") CardField field);
 
     @Query("SELECT DISTINCT c FROM CardEN c " +
             "LEFT JOIN HoldingCardEN ch ON c.number = ch.card.number " +
@@ -46,5 +46,5 @@ public interface CardENRepository extends JpaRepository<CardEN,Long> {
             "    AND (:field IS NULL OR c.field = :field) " +
             "  )\n" +
             "ORDER BY ch.date DESC")
-    List<Card> searchCardSortDate(@Param("userId") Long userId, @Param("nameEn") String nameEn, @Param("division") String division, @Param("field") CardField field);
+    List<CardEN> searchCardSortDate(@Param("userId") Long userId, @Param("nameEn") String nameEn, @Param("division") String division, @Param("field") CardField field);
 }

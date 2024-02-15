@@ -3,6 +3,7 @@ package org.jackpot.back.user.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.jackpot.back.global.model.Language;
 import org.jackpot.back.global.utils.MaskUtils;
 import org.jackpot.back.user.model.dto.response.UserInfoResponse;
 import org.jackpot.back.user.model.entity.enums.AuthProvider;
@@ -64,6 +65,11 @@ public class User implements UserDetails {
     @NotNull
     private UserStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(5) not null default 'KR'")
+    @NotNull
+    private Language language;
+
 
     public UserInfoResponse toPublicInfo(){
         return UserInfoResponse.builder()
@@ -72,6 +78,7 @@ public class User implements UserDetails {
                 .grade(grade)
                 .nickname(nickname)
                 .password(MaskUtils.passwordMask(password))
+                .language(language)
                 .build();
     }
 

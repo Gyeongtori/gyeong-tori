@@ -22,5 +22,5 @@ public interface CardService {
     //카드 검색
     List<ReadCardResponse> searchCard(SearchCardRequest searchCardRequest);
     //카드 랭킹
-    List<GetCardRankResponse> getCardRank();
+    List<GetCardRankResponse> getCardRank(Language language);
 }
