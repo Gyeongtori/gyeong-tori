@@ -171,6 +171,7 @@ public class CardServiceImpl implements CardService{
                     break;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CardException(TRANSACTION_FAIL);
         }
     }
