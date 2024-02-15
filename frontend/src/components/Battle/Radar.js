@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import io from "socket.io-client";
+import Battle from "../../assets/Battle.png";
+
 
 const OuterCircle = styled.div`
   width: 240px;
@@ -42,7 +44,7 @@ const GreenScanner = styled.div`
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: conic-gradient(#00ff0055, #00ff00);
+  background: conic-gradient(#758467, #9CAF88);
   position: absolute;
   top: 20px;
   left: 20px;
@@ -56,11 +58,14 @@ const GreenScanner = styled.div`
   z-index: -1;
 `;
 
-const RandomButton = styled.button`
+const RandomButton = styled.div`
+  background-image: url(${Battle});
+  // 버튼 커스텀 하기
   position: absolute;
   top: ${(props) => props.$top}%;
   left: ${(props) => props.$left}%;
 `;
+
 const Radar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   // const [username, setUsername] = useState({});

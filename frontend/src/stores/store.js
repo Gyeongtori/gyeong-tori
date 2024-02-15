@@ -13,6 +13,11 @@ const useStore = create(set => ({
     localStorage.setItem('user', JSON.stringify(user));
   },
 
+  cardCount: 0,
+  listCount: 0,
+  setCardCount: (count) => set({ cardCount: count }),
+  setListCount: (count) => set({ listCount: count }),
+
   // 토큰 업데이트
   updateToken: async () => {
     try {

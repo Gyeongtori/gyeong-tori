@@ -61,7 +61,6 @@ const SettingBlock = styled.div`
 `;
 
 const SettingBlockText = styled.div`
-  
 `;
 
 const SettingBlockContents = styled.div`

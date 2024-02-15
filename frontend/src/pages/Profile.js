@@ -22,6 +22,7 @@ const Profile = () => {
 export default Profile
 
 const Mobile = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
   max-width: 400px;
   width: 100%;
   height: 100vh;
