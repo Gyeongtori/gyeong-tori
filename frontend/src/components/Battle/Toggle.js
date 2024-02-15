@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
 import { GiHandBag } from "react-icons/gi";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import mapBtn from "../../assets/mapBtn.png";
 
@@ -76,7 +76,7 @@ const SemiCircle = styled.div`
     ${(props) => (props.show ? "translateY(0)" : "translateY(100%)")};
   width: 500px;
   height: ${(props) => (props.show ? "350px" : "0")};
-  background: #9CAF8888;
+  background: #9caf8888;
   border-radius: 100% 100% 0 0;
   display: flex;
   flex-direction: column;

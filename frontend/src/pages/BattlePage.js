@@ -1,28 +1,22 @@
 import styled from "styled-components";
 import Radar from "../components/Battle/Radar";
 import Toggle from "../components/Battle/Toggle";
-
-const RadarDiv = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-const MainPage = styled.div`
+import { useState } from "react";
+const Frame = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100vh;
-  background-color: #DFE7DA;
+  background: #dfe7da;
 `;
-
 const BattlePage = () => {
   return (
-    <MainPage>
-      <RadarDiv>
+    <>
+      <Frame>
         <Radar />
-      </RadarDiv>
-      <Toggle/>
-    </MainPage>
+        <Toggle />
+      </Frame>
+    </>
   );
 };
 export default BattlePage;
