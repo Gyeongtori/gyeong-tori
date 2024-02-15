@@ -2,13 +2,6 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import io from "socket.io-client";
-// 1. io.connect와 동일하게 설정
-// 2. 백엔드 서버에 대한 URL 전달
-const socket = io.connect("/", {
-  cors: { origin: "*" },
-  transports: ["websocket"],
-  secure: true,
-});
 
 const OuterCircle = styled.div`
   width: 240px;
@@ -62,35 +55,122 @@ const GreenScanner = styled.div`
   }
   z-index: -1;
 `;
+
+const RandomButton = styled.button`
+  position: absolute;
+  top: ${(props) => props.$top}%;
+  left: ${(props) => props.$left}%;
+`;
 const Radar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const [username, setUsername] = useState({});
+  // const [username, setUsername] = useState({});
+  const [myGeo, setMyGeo] = useState({});
+  const [socket, setSocket] = useState(null);
+  const [mySocket, setMySocket] = useState(null);
+  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
-    setUsername(user);
+    // setUsername(user);
 
-    socket.emit("send_location", {
-      lng: "127.00004",
-      lat: "67.55553",
-      nickname: user.nickname,
-      user_id: user.id,
-    });
-    socket.on("get_location", (data) => {
-      console.log(data);
-    });
+    // socket connection
+    setSocket(
+      io.connect("/", {
+        cors: { origin: "*" },
+        transports: ["websocket"],
+      })
+    );
+  }, []); // 처음 렌더링 될 때만 실행
+  useEffect(() => {
+    // geolocation
+    // watchPosition(): https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
+    // options: https://developer.mozilla.org/ko/docs/Web/API/Geolocation/getCurrentPosition
+    const watch = navigator.geolocation.watchPosition(
+      (position) => {
+        setMyGeo({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("Error Code = " + error.code + " - " + error.message);
+      },
+      {
+        maximumAge: 0,
+      }
+    );
+
+    console.log(myGeo);
+    return () => {
+      // stop watchPosition
+      navigator.geolocation.clearWatch(watch);
+    };
+  }, []);
+  useEffect(() => {
+    if (socket) {
+      socket.emit("send_location", {
+        lng: myGeo.lng,
+        lat: myGeo.lat,
+        nickname: user.nickname,
+        user_id: user.id,
+      });
+      socket.on("get_location", (data) => {
+        if (mySocket === null && data.user_id === user.id) {
+          setMySocket(data);
+        }
+        if (data.user_id !== user.id) {
+          setUserList((prev) => {
+            if (!prev.find((user) => user.user_id === data.user_id)) {
+              return [...prev, data];
+            } else {
+              return prev;
+            }
+          });
+        }
+      });
+      socket.on("get_message", (data) => {
+        console.log(data);
+      });
+      socket.on("get_exit", (data) => {
+        console.log(data);
+        setUserList((prev) =>
+          prev.filter((user) => user.user_id !== data.user_id)
+        );
+      });
+    }
+    console.log(mySocket);
+    return () => {
+      // component unmount ? socket disconnection, remove user from list
+      if (socket) {
+        // remove user from list
+        socket.emit("send_exit", {
+          nickname: user.nickname,
+          user_id: user.id,
+          socket_id: mySocket.socket_id,
+        });
+        socket.disconnect();
+      }
+    };
   }, [socket]); // socket이 변경될 때마다(이벤트 발생) useEffect가 실행되도록 종속성 목록에 포함
 
+  const sendMessageToUser = (opponent) => {
+    socket.emit("send_message", {
+      socket_id: mySocket.socket_id,
+      opponent_socket_id: opponent.socket_id,
+      message: `${user.nickname}님이 배틀을 신청하였습니다.`,
+    });
+    console.log(opponent.user_id, "배틀 신청");
+  };
   const sendMessage = () => {
     socket.emit("send_location", {
-      lng: "127.00004",
-      lat: "67.55553",
-      nickname: username.nickname,
-      user_id: username.id,
+      lng: myGeo.lng,
+      lat: myGeo.lat,
+      nickname: user.nickname,
+      user_id: user.id,
     });
   };
   const sendQuestion = async () => {
     const res = await axios.post("/v1/question/list", {
-      card_list: [51, 52, 53, 54],
+      card_list: [11, 12, 13, 14],
     });
     console.log(res);
   };
@@ -101,6 +181,16 @@ const Radar = () => {
   };
   return (
     <>
+      {userList.map((user) => (
+        <RandomButton
+          key={user.user_id}
+          $top={Math.random() * 100} // top 위치를 랜덤하게 결정합니다.
+          $left={Math.random() * 100} // left 위치를 랜덤하게 결정합니다.
+          onClick={() => sendMessageToUser(user)}
+        >
+          {user.nickname}
+        </RandomButton>
+      ))}
       <button style={{ zIndex: 1000 }} onClick={getUsers}>
         사용자 불러오기
       </button>
