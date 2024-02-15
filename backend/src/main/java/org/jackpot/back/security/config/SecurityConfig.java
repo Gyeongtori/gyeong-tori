@@ -29,9 +29,10 @@ public class SecurityConfig {
             "/v1/email/**",
             "/v1/user/regist",
             "/v1/auth/refresh",
-            "/v1/culturalheritage/**",
-            "/v1/card/**",
             "/v1/dummy/**",
+            //접근 가능 api
+            "/v1/culturalheritage/**",
+            "/v1/card/redis_save",
             //swagger 접근 위한 whitelist
             "/favicon.ico",
             "/error",

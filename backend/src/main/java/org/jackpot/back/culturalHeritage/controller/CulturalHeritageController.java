@@ -48,7 +48,7 @@ public class CulturalHeritageController {
      * @return List<CulturalHeritage>
      */
     @GetMapping("/list")
-    public ResponseEntity getCulturalHeritageList(@RequestParam Language language) {
+    public ResponseEntity getCulturalHeritageList(@RequestParam(required = false, defaultValue="KR") Language language) {
         return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getCulturalHeritageList(language)));
     }
 
