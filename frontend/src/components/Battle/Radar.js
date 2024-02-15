@@ -59,12 +59,29 @@ const GreenScanner = styled.div`
 `;
 
 const RandomButton = styled.div`
-  background-image: url(${Battle});
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   // 버튼 커스텀 하기
   position: absolute;
   top: ${(props) => props.$top}%;
   left: ${(props) => props.$left}%;
 `;
+
+const BattleUserName = styled.div`
+  font-family: 'omyu_pretty';
+  font-size: large;
+`;
+
+const BattleUserIMG = styled.div`
+  background-image: url(${Battle});
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 5rem;
+  height: 5rem;
+`;
+
 
 const Radar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -186,16 +203,21 @@ const Radar = () => {
   };
   return (
     <>
-      {userList.map((user) => (
-        <RandomButton
-          key={user.user_id}
-          $top={Math.random() * 100} // top 위치를 랜덤하게 결정합니다.
-          $left={Math.random() * 100} // left 위치를 랜덤하게 결정합니다.
-          onClick={() => sendMessageToUser(user)}
-        >
-          {user.nickname}
-        </RandomButton>
-      ))}
+      <>
+        {userList.map((user) => (
+          <>
+            <RandomButton
+              key={user.user_id}
+              $top={Math.random() * 100} // top 위치를 랜덤하게 결정합니다.
+              $left={Math.random() * 100} // left 위치를 랜덤하게 결정합니다.
+              onClick={() => sendMessageToUser(user)}
+            >
+              <BattleUserIMG></BattleUserIMG>
+              <BattleUserName>{user.nickname}</BattleUserName>
+            </RandomButton>
+          </>
+        ))}
+      </>
       <button style={{ zIndex: 1000 }} onClick={getUsers}>
         사용자 불러오기
       </button>
