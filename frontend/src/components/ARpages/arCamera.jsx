@@ -18,7 +18,8 @@ export default function Camera(props) {
   const modelSceneRef = useRef(new THREE.Scene());
   const cameraRef = useRef(
     new THREE.PerspectiveCamera(
-      100,
+      100
+      ,
       window.innerWidth / window.innerHeight,
       1,
       10000
@@ -181,7 +182,6 @@ export default function Camera(props) {
             videoStreamRef.current = stream;
 
             loadGltfModel(modelSceneRef.current);
-
             animate();
           })
           .catch((error) => {
@@ -193,7 +193,7 @@ export default function Camera(props) {
       }
     };
 
-    startVideo();
+    // startVideo();
 
     const resizeCanvas = () => {
       const canvas = rendererRef.current.domElement;
@@ -212,6 +212,7 @@ export default function Camera(props) {
       startVideo();
     };
   }, [facingMode]);
+  
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -235,33 +236,36 @@ export default function Camera(props) {
   const [phoneOrientation, setPhoneOrientation] = useState({ alpha: 0, beta: 0, gamma: 0 });
 
   function handleOrientation(event) {
+    console.log("Orientation event received:", event);
     setPhoneOrientation({
       alpha: event.alpha,
       beta: event.beta,
       gamma: event.gamma
     });
   }
+  
+
 
   function calculatePositionFromOrientation(orientation) {
-    const phonePosition = new THREE.Vector3(
-      orientation.alpha / 180 * Math.PI,
-      orientation.beta / 180 * Math.PI,
-      orientation.gamma / 180 * Math.PI
-    );
+    // orientation 값을 라디안으로 변환하여 사용
+    const alphaRad = orientation.alpha * Math.PI / 180;
+    const betaRad = orientation.beta * Math.PI / 180;
+    const gammaRad = orientation.gamma * Math.PI / 180;
 
-    return phonePosition;
+    // 각도를 벡터로 변환하여 반환
+    return new THREE.Vector3(alphaRad, betaRad, gammaRad);
   }
 
   function moveModelToPhonePosition() {
     if (!gltfModelRef.current) return; // .current를 사용하여 현재 참조하는 요소를 가져옴
 
-  const phonePosition = calculatePositionFromOrientation(phoneOrientation);
-  gltfModelRef.current.position.copy(phonePosition);
+    const phonePosition = calculatePositionFromOrientation(phoneOrientation);
+    gltfModelRef.current.position.copy(phonePosition);
   }
 
 
   return (
-    <backG>
+    <div>
 
       {captureState === true ? (
         captureState && (
@@ -280,9 +284,9 @@ export default function Camera(props) {
           <canvas ref={canvasRef} id="canvas" style={{ width: "100%", height: "100%"}} ></canvas>
           </BodyMake>
           <div>
-            <button color="primary" onClick={toggleFacingMode}>
+            {/* <button color="primary" onClick={toggleFacingMode}>
               카메라 전환하기
-            </button>
+            </button> */}
             <button onClick={handelCapture}>캡쳐하기</button>
             <button style={{ marginBottom: "10px" }} onClick={backMap}>
               닫기
@@ -290,16 +294,11 @@ export default function Camera(props) {
           </div>
         </div>
       )}
-    </backG>
+    </div>
   );
 }
 const BodyMake = styled.div`
   width: 100%;
   height: 90vh;
-  overflow: auto;
-`;
-const backG = styled.div`
-  width: 100%;
-  height: 90%;
   overflow: auto;
 `;
