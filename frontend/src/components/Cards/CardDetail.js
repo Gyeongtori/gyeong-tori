@@ -28,8 +28,11 @@ const Section = styled.div`
   flex: 1;
 `;
 const Title = styled.div`
+  font-family: 'omyu_pretty';
+  font-size: 2.5rem;
+
   text-align: center;
-  font-size: 1.875rem;
+  /* font-size: 1.875rem; */
   font-weight: bold;
 `;
 const Grade = styled.div`
@@ -43,14 +46,17 @@ const Grade = styled.div`
 const CardImg = styled.div`
   width: 270px;
   height: 350px;
+  border-radius: 5px;
   background-size: cover;
   background-image: url(${(props) => props.$cardImg});
 `;
 const Tags = styled.div`
+  font-family: 'omyu_pretty';
   position: absolute;
   display: flex;
+  align-items: center;
   justify-content: flex-start;
-  padding: 5px;
+  padding: 5px 8px;
   margin-right: 80%;
   /* width: fit-content; */
   border-radius: 20px 6px 6px 20px;
@@ -71,6 +77,11 @@ const Tags = styled.div`
       : null};
 `;
 const Des = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
+  font-size: 1rem;
+  line-height: 30px;
+  letter-spacing: 1.7px;
+
   display: flex;
   justify-content: center;
   margin: 5px auto;
@@ -91,12 +102,14 @@ const Des = styled.div`
   }
 `;
 const Dates = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
+
   display: flex;
   justify-content: flex-end;
   margin: 0 31.5px;
   div {
     align-items: center;
-    padding: 5px;
+    padding: 8px;
     border-radius: 20px;
     background-color: white;
     color: black;
@@ -113,7 +126,7 @@ const MoveBtn = styled.button`
   margin: 0;
   padding: 0.5rem 1rem;
 
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'NanumSquareNeo-Variable';
   font-size: 1rem;
   font-weight: 400;
   text-align: center;
@@ -253,7 +266,7 @@ const CardDetail = (props) => {
                 <div>
                   {ARRAY.map((index) =>
                     getGrade >= index ? (
-                      <GiAcorn key={index} style={{ color: "brown" }} />
+                      <GiAcorn key={index} style={{ color: "#BB9981" }} />
                     ) : (
                       <GiAcorn key={index} style={{ color: "gray" }} />
                     )
@@ -268,7 +281,7 @@ const CardDetail = (props) => {
                       style={{ backgroundSize: "contain" }}
                       $cardImg="https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg"
                     ></CardImg>
-                    <div style={{ marginTop: "5px" }}>
+                    <div style={{ marginTop: "5px" , fontFamily: 'NanumSquareNeo-Variable'}}>
                       <FaMapMarkerAlt />
                       카드를 수집해주세요.
                     </div>

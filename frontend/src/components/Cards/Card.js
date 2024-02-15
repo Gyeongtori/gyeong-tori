@@ -11,6 +11,8 @@ import CardDetail from "./CardDetail";
 import Header from "./Header";
 import Search from "./Search";
 import axios from "axios";
+import useStore from "../../stores/store";
+
 
 let Sorts = styled.div`
   display: flex;
@@ -21,6 +23,7 @@ let Sorts = styled.div`
   align-items: center;
 `;
 let Title = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
   text-align: center;
   display: flex;
   align-items: center;
@@ -59,6 +62,8 @@ let TopBtn = styled.button`
 `;
 
 const CheckBox = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
+  /* font-size: 1.5rem; */
   input[id="collection"] {
     display: none;
   }
@@ -140,6 +145,10 @@ const Card = () => {
       setLoad(true);
     } catch (e) {
       console.log(e.response);
+      if(e.response.status === 500 ){
+        useStore.getState().updateToken();
+        getCards()
+      }
     }
   };
   return (
@@ -155,7 +164,7 @@ const Card = () => {
           <Header />
           {/* search 활성화 시 검색 페이지로 이동 */}
           <div
-            style={{ display: "flex" }}
+            style={{ display: "flex" , fontFamily: 'NanumSquareNeo-Variable'}}
             onClick={() => {
               navigate("/search");
             }}
