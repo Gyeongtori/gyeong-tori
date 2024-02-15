@@ -93,6 +93,7 @@ export default function Camera(props) {
         (gltf) => {
           const model = gltf.scene;
           model.position.set(0, 0, 7);
+          model.scale.set(0.5,0.5,0.5);
           gltfModelRef.current = model;
           console.log("나 어딘가 있어요")
           model.traverse((child) => {
@@ -135,11 +136,6 @@ export default function Camera(props) {
       if (controls.current) {
         controls.current.update();
       }
-      // 카메라의 시선을 glTF 모델의 위치로 조정
-      if (gltfModelRef.current) {
-        const targetPosition = gltfModelRef.current.position;
-        controls.current.target.copy(targetPosition);
-      }
     };
 
     let video;
@@ -172,7 +168,7 @@ export default function Camera(props) {
             const videoGeometry = new THREE.PlaneGeometry(9, 20);
             const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
             videoMesh.renderOrder = 0;
-            videoMesh.position.z = -7.5; // 비디오를 카메라 앞으로 이동
+            videoMesh.position.z = -5; // 비디오를 카메라 앞으로 이동
             camera.add(videoMesh); // 비디오를 카메라의 자식 요소로 추가
 
             scene.add(camera); // 카메라를 scene에 추가
@@ -208,9 +204,8 @@ export default function Camera(props) {
       startVideo();
     };
   }, []);
-
   const handleTouch = (event) => {
-    event.preventDefault(); // 여기서 preventDefault 호출
+    event.preventDefault();
 
     const touchX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
     const touchY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
@@ -228,6 +223,7 @@ export default function Camera(props) {
 
   const mountCharacter = (position) => {
     if (gltfModelRef.current) {
+      position.z = 7;
       gltfModelRef.current.position.copy(position);
     }
   };
@@ -242,33 +238,44 @@ export default function Camera(props) {
   }, [facingMode]);
 
   useEffect(() => {
-    const handleOrientation = (event) => {
-      const { alpha, beta, gamma } = event;
-      // 디바이스의 움직임을 기반으로 캐릭터의 위치를 계산합니다.
-      const position = calculatePositionFromOrientation({ alpha, beta, gamma });
-      mountCharacter(position);
-    };
-
-    // 디바이스의 움직임 이벤트를 감지하고 핸들링합니다.
     window.addEventListener("deviceorientation", handleOrientation);
 
-    // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거합니다.
     return () => {
       window.removeEventListener("deviceorientation", handleOrientation);
     };
   }, []);
 
-  const calculatePositionFromOrientation = (orientation) => {
-    const { alpha, beta, gamma } = orientation;
-    const alphaRad = (alpha * Math.PI) / 180;
-    const betaRad = (beta * Math.PI) / 180;
-    const gammaRad = (gamma * Math.PI) / 180;
+  const [phoneOrientation, setPhoneOrientation] = useState({
+    alpha: 0,
+    beta: 0,
+    gamma: 0,
+  });
+
+  function handleOrientation(event) {
+    setPhoneOrientation({
+      alpha: event.alpha,
+      beta: event.beta,
+      gamma: event.gamma,
+    });
+  }
+
+  function calculatePositionFromOrientation(orientation) {
+    const alphaRad = (orientation.alpha * Math.PI) / 180;
+    const betaRad = (orientation.beta * Math.PI) / 180;
+    const gammaRad = (orientation.gamma * Math.PI) / 180;
 
     return new THREE.Vector3(alphaRad, betaRad, gammaRad);
-  };
+  }
+
+  function moveModelToPhonePosition() {
+    if (!gltfModelRef.current) return;
+
+    const phonePosition = calculatePositionFromOrientation(phoneOrientation);
+    gltfModelRef.current.position.copy(phonePosition);
+  }
 
   return (
-    <div onTouchStart={handleTouch}>
+    <div  onTouchStart={handleTouch}>
       {captureState === true ? (
         captureState && (
           <Capture
