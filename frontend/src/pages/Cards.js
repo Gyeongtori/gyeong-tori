@@ -3,6 +3,7 @@ import Header from "../components/Cards/Header";
 import Search from "../components/Cards/Search";
 import Card from "../components/Cards/Card";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Frame = styled.div`
   display: flex;
@@ -11,6 +12,16 @@ const Frame = styled.div`
 
 const Cards = () => {
   // let navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(user===null){
+      alert("로그인이 필요한 페이지 입니다")
+      navigate("/maps")
+    }
+  })
   return (
     <>
       <Frame>

@@ -20,6 +20,8 @@ const Signup = () => {
     profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   });
   
+
+
   const [attachment, setAttachment] = useState();
  
   const onFileChange = (event) => {
@@ -52,9 +54,9 @@ const Signup = () => {
     const storage = getStorage();
     const fileRef = ref(storage, uuidv4());
     const response = await uploadString(fileRef, attachment, 'data_url');
-    console.log(response);
+    console.log(response, '응답받은 onSubmit data');
     const url = await getDownloadURL(response.ref);
-  setUserInput((prev) => ({ ...prev, profile_img: url }));
+    setUserInput((prev) => ({ ...prev, profile_img: url }));
   };
 
  
@@ -116,8 +118,15 @@ const Signup = () => {
       alert("다시 입력해주세요.");
     } else {
       //   console.log(userInput);
+      if (attachment) {
+        const storage = getStorage();
+        const fileRef = ref(storage, uuidv4());
+        const response = await uploadString(fileRef, attachment, 'data_url');
+        const url = await getDownloadURL(response.ref);
+        setUserInput((prev) => ({ ...prev, profile_img: url }));
+      }
       try {
-        const res = await axios.post("/v1/user/regist", userInput);
+        const res = await axios.post("v1/user/regist", userInput);
         const status = res.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
           alert("회원가입이 정상 등록 됐습니다. 로그인 해주세요.");
@@ -142,7 +151,7 @@ const Signup = () => {
   return (
     <SignupBlock>
 
-      <div style={{'margin-bottom': '0.5rem'}}>
+      <div style={{'marginBottom': '0.5rem'}}>
         <HiOutlineArrowNarrowLeft size='25' style={{marginBottom: '2rem'}}
         onClick={() => { navigate(-1); }}/>
         <TitleText>회원가입</TitleText >
@@ -157,7 +166,7 @@ const Signup = () => {
           // style={{display:'none'}}
           accept='image/jpg,impge/png,image/jpeg'
           name='profile_img'
-          onChange={onFileChange}
+          onChange={onChange}
           ref={fileInput}/>
           {attachment ? (
             <Avatar src={attachment} width="50px" height="50px" alt="" />

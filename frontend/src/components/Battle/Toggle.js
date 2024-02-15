@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
@@ -12,7 +12,7 @@ const Toggle = () => {
   const [showSemiCircle, setShowSemiCircle] = useState(false);
 
   const navigate = useNavigate();
-
+  
   const goProfile = () => {
     navigate("/profile");
   };
@@ -28,7 +28,9 @@ const Toggle = () => {
   return (
     <div>
       <ToggleBlock>
-        <ToggleButton onClick={() => setShowSemiCircle(!showSemiCircle)} />
+        <ToggleButton
+          onClick={() => setShowSemiCircle(!showSemiCircle)}
+        />
         <SemiCircle show={showSemiCircle}>
           <div>
             <SemiCircleButton>
@@ -44,7 +46,7 @@ const Toggle = () => {
             </SemiCircleButton>
           </div>
         </SemiCircle>
-      </ToggleBlock>
+      </ToggleBlock> 
     </div>
   );
 };

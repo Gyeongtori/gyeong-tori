@@ -13,10 +13,15 @@ const useStore = create(set => ({
     localStorage.setItem('user', JSON.stringify(user));
   },
 
-  // 로그인 여부 확인
-  isLogedin: false,
-  setLogin: (value) => set({ isLogedin: value }),
+  // 한/영 언어설정
+  language: 'Language',
+  setLanguage: (language) => set({ language }),
 
+  // 카드 수집
+  cardCount: 0,
+  listCount: 0,
+  setCardCount: (count) => set({ cardCount: count }),
+  setListCount: (count) => set({ listCount: count }),
 
   // 토큰 업데이트
   updateToken: async () => {
@@ -27,6 +32,7 @@ const useStore = create(set => ({
       }
     } catch (error) {
       console.log('Error refreshing token:', error);
+      return error
     }
   }
   
