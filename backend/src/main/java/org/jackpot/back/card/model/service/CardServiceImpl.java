@@ -211,150 +211,96 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public List<ReadCardResponse> getCardList(String userEmail, Language language) {
+    public List<ReadCardResponse> getCardList(String userEmail,Language language) {
         try {
             //사용자 정보 조회
             Optional<User> findUser = userRepository.findByEmail(userEmail);
+
             List<ReadCardResponse> response = new ArrayList<>();
 
-            if(language==Language.EN){
-                //Redis에 저장된 카드 전체 조회
-                List<CardRedisEN> cardRedisList = (List<CardRedisEN>) cardRedisENRepository.findAll();
-                //카드 리스트 순회
-                for(CardRedisEN cardRedis : cardRedisList){
-                    if(response.isEmpty()){
-                        //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                        Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageKRRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
-                        ReadCardResponse readCardResponse = ReadCardResponse.builder()
-                                .no(culturalHeritageRedis.get().getNo())
-                                .have(false)
-                                .culturalHeritageName(culturalHeritageRedis.get().getNameKr())
-                                .division(culturalHeritageRedis.get().getDivision())
-                                .sido(culturalHeritageRedis.get().getSidoName())
-                                .gugun(culturalHeritageRedis.get().getGugunName())
-                                .image(culturalHeritageRedis.get().getImageSource())
-                                .field(String.valueOf(cardRedis.getField()))
-                                .description(culturalHeritageRedis.get().getContent())
-                                .build();
+            //Redis에 저장된 카드 전체 조회
+            List<CardRedis> cardRedisList = (List<CardRedis>) cardRedisRepository.findAll();
+            //카드 리스트 순회
+            for(CardRedis cardRedis : cardRedisList){
+                if(response.isEmpty()){
+                    ReadCardResponse readCardResponse = new ReadCardResponse();
+                    //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
+                    Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageKRRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
+                    readCardResponse.setNo(culturalHeritageRedis.get().getNo());
+                    readCardResponse.setHave(false);
+                    readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                    readCardResponse.setDivision(culturalHeritageRedis.get().getDivision());
+                    readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                    readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                    readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
+                    readCardResponse.setField(String.valueOf(cardRedis.getField()));
+                    readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
 
-                        //카드 정보 삽입
-                        List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
-                        CardGradeDto cardGradeDto = CardGradeDto.builder()
-                                .cardNumber(cardRedis.getNumber())
-                                .grade(cardRedis.getRating())
-                                .image(cardRedis.getImage())
-                                .build();
+                    //카드 정보 삽입
+                    List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
+                    CardGradeDto cardGradeDto = new CardGradeDto();
+                    cardGradeDto.setCardNumber(cardRedis.getNumber());
+                    cardGradeDto.setGrade(cardRedis.getRating());
+                    cardGradeDto.setImage(cardRedis.getImage());
 
-                        //보유 카드 조회
-                        List<HoldingCardEN> holdingCardList = holdingCardENRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                        List<LocalDate> holdingCards = holdingCardENRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                        cardGradeDto.setHoldingCards(holdingCards);
-                        //보유하고 있는 경우
-                        if(!holdingCardList.isEmpty()){
-                            readCardResponse.setHave(true);
-                            readCardResponse.setAddress(holdingCardList.get(0).getAddress());
-                        }
-                        cardGradeDtoList.add(cardGradeDto);
-                        readCardResponse=readCardResponse.toBuilder()
-                                .gradeCards(cardGradeDtoList)
-                                .build();
-                        response.add(readCardResponse);
+                    //보유 카드 조회
+                    List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
+                    List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
+                    cardGradeDto.setHoldingCards(holdingCards);
+                    //보유하고 있는 경우
+                    if(!holdingCardList.isEmpty()){
+                        readCardResponse.setHave(true);
+                        readCardResponse.setAddress(holdingCardList.get(0).getAddress());
                     }
-                    else {
-                        Optional<ReadCardResponse> findCardRes = response.stream()
-                                .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCulturalHeritageRedis().getNo()))
-                                .findFirst();
 
-                        //문화재 정보 존재할 경우
-                        if(findCardRes.isPresent()) {
-                            List<CardGradeDto> findCardGradeDto = findCardRes.get().getGradeCards();
-                            //카드 정보 삽입
-                            CardGradeDto cardGradeDto = CardGradeDto.builder()
-                                    .cardNumber(cardRedis.getNumber())
-                                    .grade(cardRedis.getRating())
-                                    .image(cardRedis.getImage())
-                                    .build();
-                            List<LocalDate> holdingCards = holdingCardENRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                            //보유하고 있는 경우
-                            if(!holdingCards.isEmpty()){
-                                findCardRes.get().setHave(true);
-                            }
-                            cardGradeDto.setHoldingCards(holdingCards);
-
-                            //리스트에 추가
-                            findCardGradeDto.add(cardGradeDto);
-                            findCardRes.get().setGradeCards(findCardGradeDto);
-                        }
-                        else{
-                            //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                            Optional<CulturalHeritageRedisEN> culturalHeritageRedis = culturalHeritageENRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
-                            ReadCardResponse readCardResponse = ReadCardResponse.builder()
-                                    .no(culturalHeritageRedis.get().getNo())
-                                    .have(false)
-                                    .culturalHeritageName(culturalHeritageRedis.get().getNameEn())
-                                    .division(culturalHeritageRedis.get().getDivision())
-                                    .sido(culturalHeritageRedis.get().getSidoName())
-                                    .gugun(culturalHeritageRedis.get().getGugunName())
-                                    .image(culturalHeritageRedis.get().getImageSource())
-                                    .field(String.valueOf(cardRedis.getField()))
-                                    .description(culturalHeritageRedis.get().getContent())
-                                    .build();
-
-                            //카드 정보 삽입
-                            List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
-                            CardGradeDto cardGradeDto = CardGradeDto.builder()
-                                    .cardNumber(cardRedis.getNumber())
-                                    .grade(cardRedis.getRating())
-                                    .image(cardRedis.getImage())
-                                    .build();
-
-                            //보유 카드 조회
-                            List<HoldingCardEN> holdingCardList = holdingCardENRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                            List<LocalDate> holdingCards = holdingCardENRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                            cardGradeDto.setHoldingCards(holdingCards);
-                            //보유하고 있는 경우
-                            if(!holdingCardList.isEmpty()){
-                                readCardResponse = readCardResponse.toBuilder()
-                                        .have(true)
-                                        .address(holdingCardList.get(0).getAddress())
-                                        .build();
-                            }
-
-                            cardGradeDtoList.add(cardGradeDto);
-                            readCardResponse=readCardResponse.toBuilder()
-                                    .gradeCards(cardGradeDtoList)
-                                    .build();
-                            response.add(readCardResponse);
-                        }
-                    }
+                    cardGradeDtoList.add(cardGradeDto);
+                    readCardResponse.setGradeCards(cardGradeDtoList);
+                    response.add(readCardResponse);
                 }
-            }else{
-                //Redis에 저장된 카드 전체 조회
-                List<CardRedis> cardRedisList = (List<CardRedis>) cardRedisRepository.findAll();
-                //카드 리스트 순회
-                for(CardRedis cardRedis : cardRedisList){
-                    if(response.isEmpty()){
+                else {
+                    Optional<ReadCardResponse> findCardRes = response.stream()
+                            .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCulturalHeritageRedis().getNo()))
+                            .findFirst();
+
+                    //문화재 정보 존재할 경우
+                    if(findCardRes.isPresent()) {
+                        List<CardGradeDto> findCardGradeDto = findCardRes.get().getGradeCards();
+                        //카드 정보 삽입
+                        CardGradeDto cardGradeDto = new CardGradeDto();
+                        cardGradeDto.setCardNumber(cardRedis.getNumber());
+                        cardGradeDto.setGrade(cardRedis.getRating());
+                        cardGradeDto.setImage(cardRedis.getImage());
+                        List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
+                        //보유하고 있는 경우
+                        if(!holdingCards.isEmpty()){
+                            findCardRes.get().setHave(true);
+                        }
+                        cardGradeDto.setHoldingCards(holdingCards);
+
+                        //리스트에 추가
+                        findCardGradeDto.add(cardGradeDto);
+                        findCardRes.get().setGradeCards(findCardGradeDto);
+                    }
+                    else{
+                        ReadCardResponse readCardResponse = new ReadCardResponse();
                         //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
                         Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageKRRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
-                        ReadCardResponse readCardResponse = ReadCardResponse.builder()
-                                .no(culturalHeritageRedis.get().getNo())
-                                .have(false)
-                                .culturalHeritageName(culturalHeritageRedis.get().getNameKr())
-                                .division(culturalHeritageRedis.get().getDivision())
-                                .sido(culturalHeritageRedis.get().getSidoName())
-                                .gugun(culturalHeritageRedis.get().getGugunName())
-                                .image(culturalHeritageRedis.get().getImageSource())
-                                .field(String.valueOf(cardRedis.getField()))
-                                .description(culturalHeritageRedis.get().getContent())
-                                .build();
+                        readCardResponse.setNo(culturalHeritageRedis.get().getNo());
+                        readCardResponse.setHave(false);
+                        readCardResponse.setCulturalHeritageName(culturalHeritageRedis.get().getNameKr());
+                        readCardResponse.setDivision(culturalHeritageRedis.get().getDivision());
+                        readCardResponse.setSido(culturalHeritageRedis.get().getSidoName());
+                        readCardResponse.setGugun(culturalHeritageRedis.get().getGugunName());
+                        readCardResponse.setImage(culturalHeritageRedis.get().getImageSource());
+                        readCardResponse.setField(String.valueOf(cardRedis.getField()));
+                        readCardResponse.setDescription(culturalHeritageRedis.get().getContent());
 
                         //카드 정보 삽입
                         List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
-                        CardGradeDto cardGradeDto = CardGradeDto.builder()
-                                .cardNumber(cardRedis.getNumber())
-                                .grade(cardRedis.getRating())
-                                .image(cardRedis.getImage())
-                                .build();
+                        CardGradeDto cardGradeDto = new CardGradeDto();
+                        cardGradeDto.setCardNumber(cardRedis.getNumber());
+                        cardGradeDto.setGrade(cardRedis.getRating());
+                        cardGradeDto.setImage(cardRedis.getImage());
 
                         //보유 카드 조회
                         List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
@@ -365,78 +311,10 @@ public class CardServiceImpl implements CardService{
                             readCardResponse.setHave(true);
                             readCardResponse.setAddress(holdingCardList.get(0).getAddress());
                         }
+
                         cardGradeDtoList.add(cardGradeDto);
-                        readCardResponse=readCardResponse.toBuilder()
-                                .gradeCards(cardGradeDtoList)
-                                .build();
+                        readCardResponse.setGradeCards(cardGradeDtoList);
                         response.add(readCardResponse);
-                    }
-                    else {
-                        Optional<ReadCardResponse> findCardRes = response.stream()
-                                .filter(readCardResponse -> readCardResponse.getNo().equals(cardRedis.getCulturalHeritageRedis().getNo()))
-                                .findFirst();
-
-                        //문화재 정보 존재할 경우
-                        if(findCardRes.isPresent()) {
-                            List<CardGradeDto> findCardGradeDto = findCardRes.get().getGradeCards();
-                            //카드 정보 삽입
-                            CardGradeDto cardGradeDto = CardGradeDto.builder()
-                                    .cardNumber(cardRedis.getNumber())
-                                    .grade(cardRedis.getRating())
-                                    .image(cardRedis.getImage())
-                                    .build();
-                            List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                            //보유하고 있는 경우
-                            if(!holdingCards.isEmpty()){
-                                findCardRes.get().setHave(true);
-                            }
-                            cardGradeDto.setHoldingCards(holdingCards);
-
-                            //리스트에 추가
-                            findCardGradeDto.add(cardGradeDto);
-                            findCardRes.get().setGradeCards(findCardGradeDto);
-                        }
-                        else{
-                            //연관 문화재 찾기 (문화재 정보 삽입, 카드 속성 삽입)
-                            Optional<CulturalHeritageRedis> culturalHeritageRedis = culturalHeritageKRRedisRepository.findById(cardRedis.getCulturalHeritageRedis().getNo());
-                            ReadCardResponse readCardResponse = ReadCardResponse.builder()
-                                    .no(culturalHeritageRedis.get().getNo())
-                                    .have(false)
-                                    .culturalHeritageName(culturalHeritageRedis.get().getNameKr())
-                                    .division(culturalHeritageRedis.get().getDivision())
-                                    .sido(culturalHeritageRedis.get().getSidoName())
-                                    .gugun(culturalHeritageRedis.get().getGugunName())
-                                    .image(culturalHeritageRedis.get().getImageSource())
-                                    .field(String.valueOf(cardRedis.getField()))
-                                    .description(culturalHeritageRedis.get().getContent())
-                                    .build();
-
-                            //카드 정보 삽입
-                            List<CardGradeDto> cardGradeDtoList = new ArrayList<>();
-                            CardGradeDto cardGradeDto = CardGradeDto.builder()
-                                    .cardNumber(cardRedis.getNumber())
-                                    .grade(cardRedis.getRating())
-                                    .image(cardRedis.getImage())
-                                    .build();
-
-                            //보유 카드 조회
-                            List<HoldingCard> holdingCardList = holdingCardRepository.findByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                            List<LocalDate> holdingCards = holdingCardRepository.findDatesByUserIdAndCardNumber(findUser.get().getId(), cardRedis.getNumber());
-                            cardGradeDto.setHoldingCards(holdingCards);
-                            //보유하고 있는 경우
-                            if(!holdingCardList.isEmpty()){
-                                readCardResponse = readCardResponse.toBuilder()
-                                        .have(true)
-                                        .address(holdingCardList.get(0).getAddress())
-                                        .build();
-                            }
-
-                            cardGradeDtoList.add(cardGradeDto);
-                            readCardResponse=readCardResponse.toBuilder()
-                                    .gradeCards(cardGradeDtoList)
-                                    .build();
-                            response.add(readCardResponse);
-                        }
                     }
                 }
             }
