@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.culturalHeritage.model.dto.request.GetCulturalHeritageDistanceListRequest;
 import org.jackpot.back.culturalHeritage.model.service.CulturalHeritageService;
 import org.jackpot.back.culturalHeritage.model.service.WebClientService;
+import org.jackpot.back.global.model.Language;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.jdom2.JDOMException;
 import org.springframework.http.ResponseEntity;
@@ -47,8 +48,8 @@ public class CulturalHeritageController {
      * @return List<CulturalHeritage>
      */
     @GetMapping("/list")
-    public ResponseEntity getCulturalHeritageList() {
-        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getCulturalHeritageList()));
+    public ResponseEntity getCulturalHeritageList(@RequestParam Language language) {
+        return ResponseEntity.ok().body(MessageUtils.success(culturalHeritageService.getCulturalHeritageList(language)));
     }
 
     /**

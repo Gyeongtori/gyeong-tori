@@ -1,15 +1,9 @@
-package org.jackpot.back.card.model.entity;
+package org.jackpot.back.card.model.entity.kr;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import org.jackpot.back.card.model.entity.enums.CardField;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritageRedis;
+import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritageRedis;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
