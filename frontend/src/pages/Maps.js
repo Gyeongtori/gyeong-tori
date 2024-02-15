@@ -28,10 +28,21 @@ const google = (window.google = window.google ? window.google : {});
 
 export default function Maps() {
   // const [map, setMap] = useState(null);
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const location = useLocation();
   const language = location.state ? location.state.language : '한국어';
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+  useEffect(() => {
+    if(user){
+
+      console.log(user.language)
+      (language==='English' ? user.language==="EN" : user.language==="KR")
+      console.log(language, '언어ㅓㅓㅓ')
+      
+    } 
+  },[])
+
   // console.log('지도 language: ', language);
 
 

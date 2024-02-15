@@ -22,13 +22,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const user = JSON.parse(localStorage.getItem('user'));
+
   useEffect(() => {
     if(user){
       localStorage.removeItem('user')
     }
   }, [])
 
-  
+
+
   const getUserInfo = async () => {
     try {
       const res = await axios.get("/v1/user/retrieve");
