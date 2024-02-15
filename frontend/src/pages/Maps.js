@@ -120,7 +120,6 @@ export default function Maps() {
     }
   };
 
-  // const [address, setAddress] = useState(null)
 
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
@@ -189,8 +188,6 @@ export default function Maps() {
     }
   };
 
-  /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
-             division, lng, lat, image_source, image_detail, narration, video_source} */
 
   const circleRangeOptions = {
     strokeColor: "#FF7575",
@@ -268,7 +265,6 @@ export default function Maps() {
           {/* 메인기능 버튼 */}
           <Body>
             <InfoTop center={center}></InfoTop>
-            {/* <div>{head && head }방향정보~</div>S */}
           </Body>
 
           <Body>

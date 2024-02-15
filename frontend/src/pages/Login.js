@@ -80,7 +80,7 @@ const Login = () => {
     <BodyBlock>
       {/* <div>???</div> */}
       <LoginBlock>
-        <h2>로그인</h2>
+        <LoginTitle>로그인</LoginTitle>
         <ButtonBlank
           color="#E4E7EC"
           activecolor="#BCBCBD"
@@ -118,6 +118,16 @@ const BodyBlock = styled.div`
   width: 100%;
   height: 100vh;
   overflow: auto;
+
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+`;
+
+const LoginTitle = styled.div`
+  margin: 0.8rem 0;
+  font-weight: 700;
+  font-size: 1.8rem; 
 `;
 
 const LoginBlock = styled.div`
