@@ -6,6 +6,7 @@ import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
 import org.jackpot.back.card.model.dto.request.CardIndividualReadRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
 import org.jackpot.back.card.model.service.CardService;
+import org.jackpot.back.global.model.Language;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.jackpot.back.user.model.entity.User;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class CardController {
     @PostMapping("/add")
     public ResponseEntity addCardToCollection(@AuthenticationPrincipal User user, @RequestBody AddCardToCollectionRequest addCardToCollectionRequest) {
         addCardToCollectionRequest.setUserEmail(user.getEmail());
+        addCardToCollectionRequest.setLanguage(user.getLanguage());
         cardService.addCardToCollection(addCardToCollectionRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
@@ -48,7 +50,8 @@ public class CardController {
      * @return CardIndividualReadResponse
      */
     @PostMapping("/read")
-    public ResponseEntity cardIndividualRead(@RequestBody CardIndividualReadRequest cardIndividualReadRequest) {
+    public ResponseEntity cardIndividualRead(@AuthenticationPrincipal User user, @RequestBody CardIndividualReadRequest cardIndividualReadRequest) {
+        cardIndividualReadRequest.setLanguage(user.getLanguage());
         return ResponseEntity.ok().body(MessageUtils.success(cardService.cardIndividualRead(cardIndividualReadRequest)));
     }
 
@@ -59,7 +62,7 @@ public class CardController {
      */
     @GetMapping("/list")
     public ResponseEntity getCardList(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail())));
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail(),user.getLanguage())));
     }
 
     /**
@@ -70,6 +73,7 @@ public class CardController {
     @PostMapping("/search")
     public ResponseEntity searchCard(@AuthenticationPrincipal User user, @RequestBody SearchCardRequest searchCardRequest) {
         searchCardRequest.setUserEmail(user.getEmail());
+        searchCardRequest.setLanguage(user.getLanguage());
         return ResponseEntity.ok().body(MessageUtils.success(cardService.searchCard(searchCardRequest)));
     }
 
@@ -78,7 +82,7 @@ public class CardController {
      * @return List<GetCardRankResponse>
      */
     @GetMapping("/rank")
-    public ResponseEntity getCardRank() {
-        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardRank()));
+    public ResponseEntity getCardRank(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardRank(user.getLanguage())));
     }
 }

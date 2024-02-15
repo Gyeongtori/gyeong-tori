@@ -1,20 +1,21 @@
-package org.jackpot.back.culturalHeritage.model.entity;
+package org.jackpot.back.culturalHeritage.model.entity.en;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.jackpot.back.culturalHeritage.model.dto.response.CulturalHeritageRedisDto;
 
 @Entity
-@Table(name="cultural_heritage")
+@Table(name="cultural_heritage_en")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @ToString
-public class CulturalHeritage {
+public class CulturalHeritageEN {
     @Id
     @Column
     private Integer no; //고유 키 값
@@ -23,9 +24,9 @@ public class CulturalHeritage {
     @NotNull
     private String asno; //관리번호
 
-    @Column(name = "name_kr", length = 30)
+    @Column(name = "name_en", length = 30)
     @NotNull
-    private String nameKr; //문화재명(국문)
+    private String nameEn; //문화재명(영문)
 
     @Column(name = "name_hanja", length = 30)
     @NotNull
@@ -68,5 +69,24 @@ public class CulturalHeritage {
 
     @Column(name = "video_source", length = 512)
     private String videoSource; //동영상
+
+    public CulturalHeritageRedisDto toDto(){
+        return CulturalHeritageRedisDto.builder()
+                .no(no)
+                .asno(asno)
+                .content(content)
+                .division(division)
+                .name(nameEn)
+                .nameHanja(nameHanja)
+                .gugunName(gugunName)
+                .imageDetail(imageDetail)
+                .imageSource(imageSource)
+                .lat(lat)
+                .lng(lng)
+                .narration(narration)
+                .sidoName(sidoName)
+                .videoSource(videoSource)
+                .build();
+    }
 
 }

@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jackpot.back.card.model.entity.enums.CardField;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
+import org.jackpot.back.culturalHeritage.model.dto.response.CulturalHeritageRedisDto;
+import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritage;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +17,7 @@ import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CardDto {
     private Long number; //카드 번호
-    private CulturalHeritage culturalHeritage; //문화재 외래키
+    private CulturalHeritageRedisDto culturalHeritage; //문화재 외래키
     private Integer rating; //등급
     private CardField field; //속성 (공,수,힐)
 }
