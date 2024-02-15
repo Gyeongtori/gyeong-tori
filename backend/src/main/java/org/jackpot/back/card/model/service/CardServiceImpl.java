@@ -108,7 +108,7 @@ public class CardServiceImpl implements CardService{
         try {
             if(addCardToCollectionRequest.getLanguage()== Language.EN) {
                     //문화재 찾기
-                    Optional<CulturalHeritageEN> findCulturalHeritageEN = culturalHeritageENRepository.findById(addCardToCollectionRequest.getCulturalHeritageId());
+                    Optional<CulturalHeritageEN> findCulturalHeritageEN = culturalHeritageENRepository.findById(Integer.valueOf(addCardToCollectionRequest.getCulturalHeritageId()));
                     //해당 문화재 등급 카드 찾기
                     Optional<CardEN> findCard = cardENRepository.findByCulturalHeritageAndRating(findCulturalHeritageEN.get(), randomRating);
                     //카드 추가
@@ -124,7 +124,7 @@ public class CardServiceImpl implements CardService{
                     cardCount = holdingCardENRepository.getCardCount(findUser.get().getId()); //총 카드 개수
                 } else {
                     //문화재 찾기
-                    Optional<CulturalHeritage> findCulturalHeritage = culturalHeritageKRRepository.findById(addCardToCollectionRequest.getCulturalHeritageId());
+                    Optional<CulturalHeritage> findCulturalHeritage = culturalHeritageKRRepository.findById(Integer.valueOf(addCardToCollectionRequest.getCulturalHeritageId()));
                     //해당 문화재 등급 카드 찾기
                     Optional<Card> findCard = cardRepository.findByCulturalHeritageAndRating(findCulturalHeritage.get(), randomRating);
                     //카드 추가
