@@ -160,10 +160,6 @@ export default function Maps() {
     }
   };
 
-
-
-
-
   // 문화재 요청
   const [api, setApi] = useState();
 
@@ -190,12 +186,12 @@ export default function Maps() {
 
 
   const circleRangeOptions = {
-    strokeColor: "#FF7575",
-    strokeOpacity: 0,
-    strokeWeight: 0,
+    strokeColor: "#FFFFFF",
+    strokeOpacity: 0.35,
+    strokeWeight: 40,
     fillColor: "#F2A55D",
     fillOpacity: 0.5,
-    radius: 80,
+    zIndex: 10,
   };
 
   const markerCircleOptions = {
@@ -227,12 +223,8 @@ export default function Maps() {
           mapContainerStyle={{ width: "100%", height: "100vh" }}
         >
           {/* 중심 레이더 옵션 */}
-          <Circle
-            center={center}
-            options={circleRangeOptions}
-            style={{ zindex: 10 }}
-          />
-          <Circle center={center} options={markerCircleOptions} />
+          <Circle center={center} options={circleRangeOptions} radius={80} />
+          {/* <Circle center={center} options={markerCircleOptions} /> */}
 
           {/* 문화재 마커 */}
           <MarkerClustererF options={{}}>
