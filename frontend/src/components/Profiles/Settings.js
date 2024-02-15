@@ -1,27 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FiGrid } from "react-icons/fi";
 import { FiType } from "react-icons/fi";
 import { FiLock } from "react-icons/fi";
 import { FiLogOut } from "react-icons/fi";
 import { FiChevronRight } from "react-icons/fi";
-import useStore from "../../stores/store";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
-  const setLogin = useStore(state => state.setLogin);
   const navigate = useNavigate();
+
   const goLogout = async () => {
       try {
           await axios.get("v1/auth/logout") ;
-          // console.log('res: ', res);
           localStorage.removeItem('user')
-          setLogin(false)
+          alert("로그아웃 되었습니다")
           navigate('/')
 
         } catch (e) {
-          console.log(e.response);
+          console.log(e.response, '로그아웃 에러');
         }
     }
 

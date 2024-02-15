@@ -67,10 +67,17 @@ const Signup = () => {
       userInput.name === "" ||
       userInput.name === undefined ||
       checkPw === "" ||
-      checkPw === undefined ||
-      checkPw !== userInput.password
+      checkPw === undefined
     ) {
       alert("다시 입력해주세요.");
+    } else if(
+      !emailCheck(userInput.email)
+    ) {
+      alert("이메일 형식으로 입력해 주세요.")
+    } else if(
+      checkPw !== userInput.password
+    ){
+      alert("비밀번호를 다시한번 확인해 주세요")
     } else {
       //   console.log(userInput);
       try {

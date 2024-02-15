@@ -91,7 +91,7 @@ export default function Maps() {
         },
         {
           // 정확도는 높지만 배터리 소모량up
-          enableHighAccuracy: false,
+          enableHighAccuracy: true,
           maximumAge: 0,
           timeout: Infinity,
         }

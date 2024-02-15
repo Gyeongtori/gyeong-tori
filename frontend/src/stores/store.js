@@ -27,6 +27,7 @@ const useStore = create(set => ({
       }
     } catch (error) {
       console.log('Error refreshing token:', error);
+      return error
     }
   }
   

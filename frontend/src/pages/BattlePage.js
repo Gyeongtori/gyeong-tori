@@ -10,8 +10,8 @@ const RadarDiv = styled.div`
 `;
 
 const MainPage = styled.div`
-width: 100%;
-height: 100vh;
+  width: 100%;
+  height: 100vh;
   background-color: #DFE7DA;
 `;
 

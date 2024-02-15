@@ -3,10 +3,12 @@ import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
+import LanguageDropDown from "../components/Styles/LanguageDropDown";
 import useStore from "../stores/store";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 
 
 const Login = () => {
@@ -16,19 +18,23 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(user){
+      localStorage.removeItem('user')
+    }
+  }, [])
+  
   const getUserInfo = async () => {
     try {
-      const response = await axios.get("/v1/user/retrieve");
-      // console.log('응답~~~~', response)
-      if(response.status === 401) {
+      const res = await axios.get("/v1/user/retrieve");
+      // console.log('응답~~~~', res)
+      if(res.status === 401) {
         useStore.getState().updateToken();
         getUserInfo()
       }
-      const userInfo = response.data.data_body;
-      // console.log("userinfo", userInfo);
-
-      setUser({ id: userInfo.id, nickname: userInfo.nickname, email: userInfo.email, grade: userInfo.grade });
+      const userInfo = res.data.data_body;
+      setUser(userInfo);
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -42,11 +48,11 @@ const Login = () => {
       alert("비밀번호를 입력해주세요.");
     } else {
       try {
-        const response = await axios.post(`/v1/auth/login`, {
+        const res = await axios.post(`/v1/auth/login`, {
           email,
           password,
         });
-        const status = response.data.data_header.result_code;
+        const status = res.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
           getUserInfo();
@@ -55,7 +61,7 @@ const Login = () => {
           goMain();
         }
       } catch (error) {
-        const status = error.response;
+        const status = error.res;
         if(status.statusText === 'Internal Server Error') {
           alert('아이디를 다시 확인해 주세요')
         }else if(status.statusText === 'Unauthorized'){
@@ -79,6 +85,7 @@ const Login = () => {
   return (
     <BodyBlock>
       {/* <div>???</div> */}
+      <LanguageDropDown/>
       <LoginBlock>
         <LoginTitle>로그인</LoginTitle>
         <ButtonBlank

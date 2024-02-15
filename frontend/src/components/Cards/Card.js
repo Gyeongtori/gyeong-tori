@@ -120,11 +120,12 @@ const Card = () => {
   useEffect(() => {
     setCardCount(card.length);
     setListCount(list.length);
-    console.log(list.length, '도감 카드 리스트 개수')
+    // console.log(list.length, '도감 카드 리스트 개수')
   }, [card, list]);
 
 
   useEffect(() => {
+    useStore.getState().updateToken()
     console.log(db); // firebase 연결 테스트
     getCards();
     return () => {
@@ -134,7 +135,7 @@ const Card = () => {
 
   const getCards = async () => {
     try {
-      const res = await axios.get("/v1/card/list");
+      const res = await axios.get("v1/card/list");
       // console.log(res.data.data_body, '전체 데이터');
       const data = await res.data.data_body;
       // console.log(data);
@@ -153,11 +154,12 @@ const Card = () => {
 
       setLoad(true);
     } catch (e) {
-      console.log(e.response.status);
-      if(e.response.status === 500 ){
-        useStore.getState().updateToken();
-        getCards()
-      }
+      console.log(e, '에러상태메시지');
+
+      // if(e.response.status === 500 ){
+      //   useStore.getState().updateToken();
+      //   getCards()
+      // }
     }
   };
   return (
