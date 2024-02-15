@@ -36,8 +36,9 @@ let Title = styled.div`
 `;
 
 let Rank = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
   font-size: 0.875rem;
-  color: black;
+  color: rgba(128, 128, 128, 0.9);
 `;
 const Header = () => {
   const locationNow = useLocation();

@@ -7,14 +7,57 @@ import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid'; // 랜덤 식별자를 생성해주는 라이브러리
 
 const Signup = () => {
+  const storage = getStorage();
+
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
     name: "",
     profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   });
+  
+  const [attachment, setAttachment] = useState();
+ 
+  const onFileChange = (event) => {
+    // 업로드 된 file
+    const files = event.target.files;
+    const theFile = files[0];
+  //   if(theFile){
+  //     setUserInput({profile_img :event.target.files[0],
+  //       email: userInput.email,
+  //       password: userInput.password,
+  //       name: userInput.name,})
+  // }
+ 
+    // FileReader 생성
+    const reader = new FileReader();
+ 
+    // file 업로드가 완료되면 실행
+    reader.onloadend = (finishedEvent) => {
+      // 업로드한 이미지 URL 저장
+      const result = finishedEvent.currentTarget.result;
+      setAttachment(result);
+    };
+    // 파일 정보를 읽기
+    reader.readAsDataURL(theFile);
+  };
+ 
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    const storage = getStorage();
+    const fileRef = ref(storage, uuidv4());
+    const response = await uploadString(fileRef, attachment, 'data_url');
+    console.log(response);
+    const url = await getDownloadURL(response.ref);
+  setUserInput((prev) => ({ ...prev, profile_img: url }));
+  };
+
+ 
   const [checkPw, setCheckPw] = useState("");
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
@@ -27,27 +70,27 @@ const Signup = () => {
           email: userInput.email,
           password: userInput.password,
           name: userInput.name,})
-          }else{ //업로드 취소할 시
-            setUserInput({profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-            email: userInput.email,
-            password: userInput.password,
-            name: userInput.name,
-          })
-              return
-          }
+    }else{ //업로드 취소할 시
+      setUserInput({profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      email: userInput.email,
+      password: userInput.password,
+      name: userInput.name,
+    })
+        return
+    }
     //화면에 프로필 사진 표시
-          const reader = new FileReader();
-          reader.onload = () => {
-              if(reader.readyState === 2){
-                setUserInput({profile_img:reader.result,
-                  email: userInput.email,
-                  password: userInput.password,
-                  name: userInput.name,
-                })
-              }
+      const reader = new FileReader();
+      reader.onload = () => {
+          if(reader.readyState === 2){
+            setUserInput({profile_img:reader.result,
+              email: userInput.email,
+              password: userInput.password,
+              name: userInput.name,
+            })
           }
-          reader.readAsDataURL(e.target.files[0])
       }
+      reader.readAsDataURL(e.target.files[0])
+    }
 
   const emailCheck = (email) => {
     let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -88,8 +131,9 @@ const Signup = () => {
         if (status === 500) {
           alert("서버오류!");
         } else if (status === 400) {
-          const alertMSG = e.response.data.data_header.result_message;
-          alert(alertMSG);
+          console.log("오류!")
+          // const alertMSG = e.response.data.data_header.result_message;
+          // alert(alertMSG);
         }
       }
     }
@@ -106,19 +150,22 @@ const Signup = () => {
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
       </div>
 
-      <ProfileIMG>
-        <Avatar
-          src={userInput.profile_img}
-          style={{margin:'20px'}}
-          size={200}
-          />
+      <ProfileIMG onSubmit={onSubmit}>
+        
         <input
           type='file'
           // style={{display:'none'}}
           accept='image/jpg,impge/png,image/jpeg'
           name='profile_img'
-          onChange={onChange}
+          onChange={onFileChange}
           ref={fileInput}/>
+          {attachment ? (
+            <Avatar src={attachment} width="50px" height="50px" alt="" />
+          ): <Avatar
+          src={userInput.profile_img}
+          style={{margin:'20px'}}
+          size={200}
+          />}
       </ProfileIMG>
      
 
@@ -262,7 +309,7 @@ const Avatar = styled.img`
   height: 80px;
 `;
 
-const ProfileIMG = styled.div`
+const ProfileIMG = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -108,23 +108,18 @@ export default function Maps() {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
-      console.log(res.data.data_body, "내 주변 문화재");
-      let distanceAPI = res.data.data_body;
-
-      if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)) {
-        setDisApi(res.data.data_body);
+      console.log(res.data.data_body, '내 주변 문화재')
+      let distanceAPI = res.data.data_body
+      
+      if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)){
+        setDisApi(distanceAPI);
       }
-
-      console.log(disApi, "내주변 문화재 넣은 값");
-
-      setDisApi(res.data.data_body);
-      console.log(disApi);
+      
     } catch (e) {
       console.log(e.response);
     }
   };
 
-  // const [address, setAddress] = useState(null)
 
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
@@ -189,8 +184,6 @@ export default function Maps() {
     }
   };
 
-  /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
-             division, lng, lat, image_source, image_detail, narration, video_source} */
 
   const circleRangeOptions = {
     strokeColor: "#FFFFFF",
@@ -264,7 +257,6 @@ export default function Maps() {
           {/* 메인기능 버튼 */}
           <Body>
             <InfoTop center={center}></InfoTop>
-            {/* <div>{head && head }방향정보~</div>S */}
           </Body>
 
           <Body>

@@ -98,7 +98,7 @@ const Signup = () => {
   return (
     <SignupBlock>
 
-      <div style={{'margin-bottom': '0.5rem'}}>
+      <div style={{'margin-bottom': '0.5rem'}} >
         <HiOutlineArrowNarrowLeft size='25' style={{marginBottom: '2rem'}}
         onClick={() => { navigate(-1); }}/>
         <TitleText>회원가입</TitleText >
@@ -213,11 +213,14 @@ const SignupBlock = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 100vh;
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 `;
 
 const TitleText = styled.div`
   margin: 0.5rem 0rem 0.5rem 0.5rem;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 1.5rem; 
   text-align: left;
 
