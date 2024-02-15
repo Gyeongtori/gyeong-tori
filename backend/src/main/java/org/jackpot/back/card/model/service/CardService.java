@@ -20,7 +20,7 @@ public interface CardService {
     //카드 개별 조회
     CardIndividualReadResponse cardIndividualRead(CardIndividualReadRequest cardIndividualReadRequest);
     //카드 전체 조회
-    List<ReadCardResponse> getCardList(String userEmail, Language language);
+    List<ReadCardResponse> getCardList(User user, Language language);
     //카드 검색
     List<ReadCardResponse> searchCard(SearchCardRequest searchCardRequest);
     //카드 랭킹

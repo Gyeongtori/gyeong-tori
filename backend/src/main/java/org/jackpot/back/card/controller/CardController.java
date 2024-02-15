@@ -70,7 +70,7 @@ public class CardController {
      */
     @GetMapping("/list")
     public ResponseEntity getCardList(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user.getEmail(),user.getLanguage())));
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getCardList(user,user.getLanguage())));
     }
 
     /**
