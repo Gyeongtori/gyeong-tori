@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from "three";
 import styled from "styled-components";
 import html2canvas from "html2canvas";
 import Capture from "./capturePage";
-import './camera.css'
+import "./camera.css";
 
 export default function Camera(props) {
   const { state } = useLocation();
@@ -14,12 +14,9 @@ export default function Camera(props) {
 
   const rendererRef = useRef(null);
   const sceneRef = useRef(new THREE.Scene());
-  const videoSceneRef = useRef(new THREE.Scene());
-  const modelSceneRef = useRef(new THREE.Scene());
   const cameraRef = useRef(
     new THREE.PerspectiveCamera(
-      100
-      ,
+      100,
       window.innerWidth / window.innerHeight,
       1,
       10000
@@ -30,10 +27,10 @@ export default function Camera(props) {
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
-  const [facingMode, setFacingMode] = useState("environment");
+  const facingMode = "environment";
   const [captureState, setCaptureState] = useState(false);
   const controls = useRef(null);
-  const gltfModelRef = useRef(null); // 모델을 참조할 변수 추가
+  const gltfModelRef = useRef(null);
 
   const backMap = () => {
     navigate("/maps");
@@ -61,14 +58,14 @@ export default function Camera(props) {
       });
   };
 
-  function toggleFacingMode() {
-    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
-  }
+  // function toggleFacingMode() {
+  //   setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+  // }
 
   useEffect(() => {
     const scene = sceneRef.current;
     const camera = cameraRef.current;
-  
+
     camera.position.set(0, 0, 10);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     const canvas = document.querySelector("#canvas");
@@ -89,17 +86,16 @@ export default function Camera(props) {
     scene.add(ambientLight);
     scene.add(directionalLight);
 
-    modelSceneRef.current.add(ambientLight);
-    modelSceneRef.current.add(directionalLight);
-
     const loadGltfModel = (scene) => {
       let loader = new GLTFLoader();
       loader.load(
         "metarial/1234.gltf",
         (gltf) => {
           const model = gltf.scene;
-          model.position.set(-3, -7, -5);
-          gltfModelRef.current = model; // 모델을 gltfModelRef에 저장
+          model.position.set(0, 0, 7);
+          model.scale.set(0.5,0.5,0.5);
+          gltfModelRef.current = model;
+          console.log("나 어딘가 있어요")
           model.traverse((child) => {
             if (child.isMesh) {
               if (child.material.map) {
@@ -116,13 +112,16 @@ export default function Camera(props) {
           });
 
           scene.add(model);
-          controls.current = new OrbitControls(cameraRef.current, rendererRef.current.domElement);
+
+          controls.current = new OrbitControls(
+            camera,
+            rendererRef.current.domElement
+          );
           controls.current.enableDamping = true;
-          controls.current.dampingFactor = 0.25; 
-          controls.current.rotateSpeed = 0.35; 
-          controls.current.screenSpacePanning = false; 
-          controls.current.maxPolarAngle = Math.PI / 2; 
-        
+          controls.current.dampingFactor = 0.25;
+          controls.current.rotateSpeed = 0.35;
+          controls.current.screenSpacePanning = false;
+          controls.current.maxPolarAngle = Math.PI / 2;
         },
         undefined,
         (error) => {
@@ -133,13 +132,7 @@ export default function Camera(props) {
 
     const animate = () => {
       requestAnimationFrame(animate);
-
-      moveModelToPhonePosition();
-      renderer.autoClear = false;
-      renderer.clear();
-      renderer.render(videoSceneRef.current, cameraRef.current);
-      renderer.clearDepth();
-      renderer.render(modelSceneRef.current, cameraRef.current);
+      renderer.render(scene, camera);
       if (controls.current) {
         controls.current.update();
       }
@@ -148,52 +141,48 @@ export default function Camera(props) {
     let video;
 
     const startVideo = () => {
-      try {
-        const constraints = {
-          video: { 
-            facingMode:facingMode,
-            frameRate:{max:60},
-           },
-          audio: false,
-        };
-
-        navigator.mediaDevices
-          .getUserMedia(constraints)
-          .then((stream) => {
-            video = document.createElement("video");
-            video.srcObject = stream;
-            video.play();
-
-            const videoTexture = new THREE.VideoTexture(video);
-            videoTextureRef.current = videoTexture;
-            const videoMaterial = new THREE.MeshBasicMaterial({
-              map: videoTexture,
-              depthTest: true,
-              transparent: true,
-            });
-
-            const videoGeometry = new THREE.PlaneGeometry(9, 20);
-            const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-            videoMesh.renderOrder = 0;
-
-            videoSceneRef.current.add(videoMesh);
-
-            camera.position.z = 7.5;
-            videoStreamRef.current = stream;
-
-            loadGltfModel(modelSceneRef.current);
-            animate();
-          })
-          .catch((error) => {
-            console.error("Error accessing webcam:", error);
-            constraints.video.facingMode = "environment";
+      const constraints = {
+        video: {
+          facingMode: facingMode,
+          frameRate: { max: 60 },
+        },
+        audio: false,
+      };
+    
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+          video = document.createElement("video");
+          video.srcObject = stream;
+          video.play();
+    
+          const videoTexture = new THREE.VideoTexture(video);
+          videoTextureRef.current = videoTexture;
+          const videoMaterial = new THREE.MeshBasicMaterial({
+            map: videoTexture,
+            depthTest: true,
+            transparent: true,
           });
-      } catch (error) {
-        console.error("Error accessing webcam:", error);
-      }
+    
+          const videoGeometry = new THREE.PlaneGeometry(9, 20);
+          const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+          videoMesh.renderOrder = 0;
+          videoMesh.position.z = -5; // 비디오를 카메라 앞으로 이동
+          camera.add(videoMesh); // 비디오를 카메라의 자식 요소로 추가
+    
+          scene.add(camera); // 카메라를 scene에 추가
+    
+          videoStreamRef.current = stream;
+    
+          loadGltfModel(scene);
+          animate();
+        })
+        .catch((error) => {
+          console.error("Error accessing webcam:", error);
+          // 오류 처리 내에서 facingMode 변경
+          // setFacingMode("environment");
+        });
     };
-
-    // startVideo();
 
     const resizeCanvas = () => {
       const canvas = rendererRef.current.domElement;
@@ -211,8 +200,30 @@ export default function Camera(props) {
       stopVideo();
       startVideo();
     };
-  }, [facingMode]);
-  
+  }, []);
+  const handleTouch = (event) => {
+    event.preventDefault();
+
+    const touchX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+    const touchY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2(touchX, touchY);
+    raycaster.setFromCamera(mouse, cameraRef.current);
+    const intersects = raycaster.intersectObjects([sceneRef.current], true);
+
+    if (intersects.length > 0) {
+      const position = intersects[0].point;
+      mountCharacter(position);
+    }
+  };
+
+  const mountCharacter = (position) => {
+    if (gltfModelRef.current) {
+      position.z = 7;
+      gltfModelRef.current.position.copy(position);
+    }
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -224,69 +235,67 @@ export default function Camera(props) {
   }, [facingMode]);
 
   useEffect(() => {
-    // 핸드폰의 가속도계와 자이로스코프를 사용하여 핸드폰의 움직임을 감지합니다.
-    window.addEventListener('deviceorientation', handleOrientation);
+    window.addEventListener("deviceorientation", handleOrientation);
 
-    // 이벤트 리스너를 제거합니다.
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation);
+      window.removeEventListener("deviceorientation", handleOrientation);
     };
   }, []);
 
-  const [phoneOrientation, setPhoneOrientation] = useState({ alpha: 0, beta: 0, gamma: 0 });
+  const [phoneOrientation, setPhoneOrientation] = useState({
+    alpha: 0,
+    beta: 0,
+    gamma: 0,
+  });
 
   function handleOrientation(event) {
-    console.log("Orientation event received:", event);
     setPhoneOrientation({
       alpha: event.alpha,
       beta: event.beta,
-      gamma: event.gamma
+      gamma: event.gamma,
     });
   }
-  
-
 
   function calculatePositionFromOrientation(orientation) {
-    // orientation 값을 라디안으로 변환하여 사용
-    const alphaRad = orientation.alpha * Math.PI / 180;
-    const betaRad = orientation.beta * Math.PI / 180;
-    const gammaRad = orientation.gamma * Math.PI / 180;
+    const alphaRad = (orientation.alpha * Math.PI) / 180;
+    const betaRad = (orientation.beta * Math.PI) / 180;
+    const gammaRad = (orientation.gamma * Math.PI) / 180;
 
-    // 각도를 벡터로 변환하여 반환
     return new THREE.Vector3(alphaRad, betaRad, gammaRad);
   }
 
   function moveModelToPhonePosition() {
-    if (!gltfModelRef.current) return; // .current를 사용하여 현재 참조하는 요소를 가져옴
+    if (!gltfModelRef.current) return;
 
     const phonePosition = calculatePositionFromOrientation(phoneOrientation);
     gltfModelRef.current.position.copy(phonePosition);
   }
 
-
   return (
-    <div>
-
+    <div  onTouchStart={handleTouch}>
       {captureState === true ? (
         captureState && (
           <Capture
-          url={capturedImageDataURL}
-          state={state}
-          address={state.address}
-          cultural_heritage_id={state.no}
-          captureState={captureState}
-          setCaptureState={setCaptureState}
+            url={capturedImageDataURL}
+            state={state}
+            address={state.address}
+            cultural_heritage_id={state.no}
+            captureState={captureState}
+            setCaptureState={setCaptureState}
           />
         )
       ) : (
         <div>
           <BodyMake>
-          <canvas ref={canvasRef} id="canvas" style={{ width: "100%", height: "100%"}} ></canvas>
+            <canvas
+              ref={canvasRef}
+              id="canvas"
+              style={{ width: "100%", height: "100%" }}
+            >
+              <div>나 여기 있어요</div>
+            </canvas>
           </BodyMake>
           <div>
-            {/* <button color="primary" onClick={toggleFacingMode}>
-              카메라 전환하기
-            </button> */}
             <button onClick={handelCapture}>캡쳐하기</button>
             <button style={{ marginBottom: "10px" }} onClick={backMap}>
               닫기
@@ -297,6 +306,7 @@ export default function Camera(props) {
     </div>
   );
 }
+
 const BodyMake = styled.div`
   width: 100%;
   height: 90vh;
