@@ -15,6 +15,7 @@ import org.jackpot.back.card.model.entity.enums.CardField;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Action extends BaseAction{
+    private String opponentSocketId;
     public String message;
     public CardField field;
     public Integer heart;
