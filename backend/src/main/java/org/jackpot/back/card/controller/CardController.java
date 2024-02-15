@@ -1,5 +1,7 @@
 package org.jackpot.back.card.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
@@ -54,6 +56,10 @@ public class CardController {
         cardIndividualReadRequest.setLanguage(user.getLanguage());
         return ResponseEntity.ok().body(MessageUtils.success(cardService.cardIndividualRead(cardIndividualReadRequest)));
     }
+     @GetMapping("/holding_list")
+     public ResponseEntity getHoldingCardList(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok().body(MessageUtils.success(cardService.getHoldingCardList(user)));
+     }
 
     /**
      * 카드 조회 (전체, 상세)

@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.jackpot.back.card.model.entity.enums.CardField;
 
 import java.util.List;
 
@@ -16,9 +15,7 @@ import java.util.List;
 @Data
 @SuperBuilder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class HoldingCardDto extends HoldingCardBaseDto{
-    private Integer culturalHeritage;
-    private String culturalHeritageName;
-    private Integer grade;
-    private CardField field;
+public class HoldingCardBaseDto {
+    private Long cardNumber;
+    private Long quantity;
 }

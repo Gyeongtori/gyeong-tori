@@ -2,14 +2,12 @@ package org.jackpot.back.card.model.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jackpot.back.card.exception.CardErrorCode;
 import org.jackpot.back.card.exception.CardException;
 import org.jackpot.back.card.model.dto.request.AddCardToCollectionRequest;
 import org.jackpot.back.card.model.dto.request.CardIndividualReadRequest;
 import org.jackpot.back.card.model.dto.request.SearchCardRequest;
-import org.jackpot.back.card.model.dto.response.CardGradeDto;
-import org.jackpot.back.card.model.dto.response.CardIndividualReadResponse;
-import org.jackpot.back.card.model.dto.response.GetCardRankResponse;
-import org.jackpot.back.card.model.dto.response.ReadCardResponse;
+import org.jackpot.back.card.model.dto.response.*;
 import org.jackpot.back.card.model.entity.en.CardEN;
 import org.jackpot.back.card.model.entity.en.CardRedisEN;
 import org.jackpot.back.card.model.entity.en.HoldingCardEN;
@@ -22,6 +20,8 @@ import org.jackpot.back.card.model.repository.en.HoldingCardENRepository;
 import org.jackpot.back.card.model.repository.kr.CardRedisRepository;
 import org.jackpot.back.card.model.repository.kr.CardRepository;
 import org.jackpot.back.card.model.repository.kr.HoldingCardRepository;
+import org.jackpot.back.culturalHeritage.exception.CulturalHeritageErrorCode;
+import org.jackpot.back.culturalHeritage.exception.CulturalHeritageException;
 import org.jackpot.back.culturalHeritage.model.entity.en.CulturalHeritageEN;
 import org.jackpot.back.culturalHeritage.model.entity.en.CulturalHeritageRedisEN;
 import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritage;
@@ -724,6 +724,56 @@ public class CardServiceImpl implements CardService{
         } catch(Exception e){
             throw new CardException(TRANSACTION_FAIL);
         }
+    }
+
+    @Override
+    public HoldingCardListDto getHoldingCardList(User user) {
+        //최종 dto에 추가될 목록
+        List<HoldingCardDto> holdingCardDtoList = new ArrayList<>();
+        List<HoldingCardBaseDto> holdingCardList = null;
+
+        if(user.getLanguage()==Language.EN){//영어
+            holdingCardList = holdingCardENRepository.findAllByUserId(user.getId());
+            for (HoldingCardBaseDto holdingCard: holdingCardList) {
+                //레디스에서 데이터 탐색
+                CardRedisEN card=cardRedisENRepository.findById(holdingCard.getCardNumber())
+                        .orElseThrow(()-> new CardException(TRANSACTION_FAIL));
+                CulturalHeritageRedisEN culturalHeritage=culturalHeritageENRedisRepository.findById(card.getCulturalHeritageRedis().getNo())
+                        .orElseThrow(()->new CulturalHeritageException(CulturalHeritageErrorCode.TRANSACTION_FAIL));
+
+                holdingCardDtoList.add(
+                        HoldingCardDto.builder()
+                                .cardNumber(holdingCard.getCardNumber())
+                                .culturalHeritage(culturalHeritage.getNo())
+                                .culturalHeritageName(culturalHeritage.getNameEn())
+                                .quantity(holdingCard.getQuantity())
+                                .grade(card.getRating())
+                                .field(card.getField())
+                                .build());
+            }
+        }else{//한국어
+            holdingCardList = holdingCardRepository.findAllByUserId(user.getId());
+            for (HoldingCardBaseDto holdingCard: holdingCardList) {
+                //레디스에서 데이터 탐색
+                CardRedis card=cardRedisRepository.findById(holdingCard.getCardNumber())
+                        .orElseThrow(()-> new CardException(TRANSACTION_FAIL));
+                CulturalHeritageRedis culturalHeritage=culturalHeritageKRRedisRepository.findById(card.getCulturalHeritageRedis().getNo())
+                        .orElseThrow(()->new CulturalHeritageException(CulturalHeritageErrorCode.TRANSACTION_FAIL));
+
+                holdingCardDtoList.add(
+                        HoldingCardDto.builder()
+                                .cardNumber(holdingCard.getCardNumber())
+                                .culturalHeritage(culturalHeritage.getNo())
+                                .culturalHeritageName(culturalHeritage.getNameKr())
+                                .quantity(holdingCard.getQuantity())
+                                .grade(card.getRating())
+                                .field(card.getField())
+                                .build());
+            }
+        }
+        return HoldingCardListDto.builder()
+                .holdingCards(holdingCardDtoList)
+                .build();
     }
 
 

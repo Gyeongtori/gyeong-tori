@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.global.utils.MessageUtils;
+import org.jackpot.back.security.exception.JwtErrorCode;
 import org.jackpot.back.security.model.dto.request.LoginRequest;
 import org.jackpot.back.security.model.dto.request.RefreshTokenRequest;
 import org.jackpot.back.security.model.dto.response.GeneratedToken;
@@ -69,6 +70,9 @@ public class AuthController {
                     .httpOnly(true)
                     // 브라우저에서 쿠키에 접근할 수 없도록 제한
                     .build();
+            response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+            return ResponseEntity.status(JwtErrorCode.INVALID_TOKEN.getHttpStatus())
+                    .body(MessageUtils.fail(JwtErrorCode.INVALID_TOKEN.getHttpStatus().name(),JwtErrorCode.INVALID_TOKEN.getMessage()));
         } else {
             refreshTokenCookie = ResponseCookie.from("refreshToken", newToken.getRefreshToken())
                     // 토큰의 유효 기간
@@ -93,9 +97,9 @@ public class AuthController {
                     // 브라우저에서 쿠키에 접근할 수 없도록 제한
                     .build();
             response.addHeader("Set-Cookie", accessTokenCookie.toString());
+            response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+            return ResponseEntity.ok(MessageUtils.success());
         }
-        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
-        return ResponseEntity.ok(MessageUtils.success());
     }
 
     /**

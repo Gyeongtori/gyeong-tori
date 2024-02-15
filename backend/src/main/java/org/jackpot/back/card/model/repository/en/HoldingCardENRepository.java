@@ -1,6 +1,7 @@
 package org.jackpot.back.card.model.repository.en;
 
 import org.jackpot.back.card.model.dto.response.GetCardRankResponse;
+import org.jackpot.back.card.model.dto.response.HoldingCardBaseDto;
 import org.jackpot.back.card.model.entity.en.HoldingCardEN;
 import org.jackpot.back.card.model.entity.kr.HoldingCard;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +33,9 @@ public interface HoldingCardENRepository extends JpaRepository<HoldingCardEN, Lo
     //보유 카드 개수 조회
     @Query("select count(hc.user.id) from HoldingCardEN hc where hc.user.id=:userId group by hc.user.id")
     Integer getCardCount(@Param("userId") Long userId);
+
+    @Query("SELECT new org.jackpot.back.card.model.dto.response.HoldingCardBaseDto(h.card.number, COUNT(h)) " +
+            "FROM HoldingCardEN h JOIN h.user u " +
+            "GROUP BY u.id, h.card.number")
+    List<HoldingCardBaseDto> findAllByUserId(Long userId);
 }
