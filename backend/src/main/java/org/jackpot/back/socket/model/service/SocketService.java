@@ -18,7 +18,11 @@ public class SocketService {
     public void sendMessage(String room, String eventName, SocketIOClient senderClient, String message) {
         for (SocketIOClient client : senderClient.getNamespace().getRoomOperations(room).getClients()) {
             if (!client.getSessionId().equals(senderClient.getSessionId())) {
-                client.sendEvent(eventName, new Message(message));
+                client.sendEvent(eventName,
+                        Message.builder()
+                                .message(message)
+                                .build()
+                );
             }
         }
     }
