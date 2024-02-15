@@ -79,8 +79,7 @@ public class TokenService {
                 //사용자가 아닌 다른 사람에 의해 토큰이 변경됨
                 removeToken(userId);
                 //todo : 두 토큰 다 블랙리스트 처리 들어가야함.-> 이후 재 로그인
-
-                throw new JwtException(JwtErrorCode.INVALID_TOKEN);
+                return null;
             }
         }
         throw new JwtException(JwtErrorCode.INVALID_TOKEN);
