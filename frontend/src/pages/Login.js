@@ -12,7 +12,6 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const setUser = useStore(state => state.setUser);
-  const setLogin = useStore(state => state.setLogin)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,7 +50,6 @@ const Login = () => {
         if (status === "204 NO_CONTENT") {
           console.log("로그인 성공!");
           getUserInfo();
-          setLogin(true)
           
           // 메인으로 가기
           goMain();
@@ -62,6 +60,8 @@ const Login = () => {
           alert('아이디를 다시 확인해 주세요')
         }else if(status.statusText === 'Unauthorized'){
           alert('비밀번호를 다시 확인해 주세요')
+        }else{
+          navigate("/")
         }
       }
     }

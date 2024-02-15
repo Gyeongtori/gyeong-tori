@@ -144,7 +144,7 @@ const Card = () => {
       // console.log(list);
       setLoad(true);
     } catch (e) {
-      console.log(e.response);
+      console.log(e.response.status);
       if(e.response.status === 500 ){
         useStore.getState().updateToken();
         getCards()

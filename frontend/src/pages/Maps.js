@@ -25,7 +25,7 @@ const google = (window.google = window.google ? window.google : {});
 // 싸피 { lat: 35.205231, lng: 126.8117628 }
 
 export default function Maps() {
-  const [map, setMap] = useState(null);
+  // const [map, setMap] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
 
   // 경주 기준점
@@ -42,13 +42,12 @@ export default function Maps() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
-    // googleMapsApiKey: "AIzaSyBZrBxO1en2t7fU6-47ooo_DxPyeTF4Xi8",
     language: "ko",
   });
 
-  const onUnmount = useCallback(function callback() {
-    setMap(null);
-  }, []);
+  // const onUnmount = useCallback(function callback() {
+  //   setMap(null);
+  // }, []);
 
   const goProfile = () => {
     navigate("/profile");
@@ -61,6 +60,13 @@ export default function Maps() {
   const goBattle = () => {
     navigate("/battle");
   };
+
+  const goRecommend = () => {
+    if (window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")) {
+      navigate('/');
+    } 
+  }
+
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -108,7 +114,7 @@ export default function Maps() {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
-      console.log(res.data.data_body, '내 주변 문화재')
+      // console.log(res.data.data_body, '내 주변 문화재')
       let distanceAPI = res.data.data_body
       
       if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)){
@@ -212,7 +218,7 @@ export default function Maps() {
           zoom={17}
           center={center}
           mapContainerClassName="map-container"
-          onUnmount={onUnmount}
+          // onUnmount={onUnmount}
           options={{
             styles: Sample1,
             // 기본 ui 요소 지우기
@@ -260,7 +266,7 @@ export default function Maps() {
           </Body>
 
           <Body>
-            <Testt id="test1">
+            {user ? <Testt id="test1">
               <ToggleButton
                 onClick={() => setShowSemiCircle(!showSemiCircle)}
               />
@@ -279,7 +285,16 @@ export default function Maps() {
                   </SemiCircleButton>
                 </div>
               </SemiCircle>
-            </Testt>
+            </Testt> 
+            : <div>
+              <Testt>
+                <ToggleButton
+                  onClick={goRecommend}
+                  />
+              </Testt>
+            </div>
+              }
+            
           </Body>
         </GoogleMap>
       </div>
