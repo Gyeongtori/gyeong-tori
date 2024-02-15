@@ -27,7 +27,7 @@ export default function Camera(props) {
   const videoStreamRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImageDataURL, setCapturedImageDataURL] = useState(null);
-  const [facingMode, setFacingMode] = useState("environment");
+  const facingMode = "environment";
   const [captureState, setCaptureState] = useState(false);
   const controls = useRef(null);
   const gltfModelRef = useRef(null);
@@ -58,9 +58,9 @@ export default function Camera(props) {
       });
   };
 
-  function toggleFacingMode() {
-    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
-  }
+  // function toggleFacingMode() {
+  //   setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+  // }
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -141,50 +141,47 @@ export default function Camera(props) {
     let video;
 
     const startVideo = () => {
-      try {
-        const constraints = {
-          video: {
-            facingMode: facingMode,
-            frameRate: { max: 60 },
-          },
-          audio: false,
-        };
-
-        navigator.mediaDevices
-          .getUserMedia(constraints)
-          .then((stream) => {
-            video = document.createElement("video");
-            video.srcObject = stream;
-            video.play();
-
-            const videoTexture = new THREE.VideoTexture(video);
-            videoTextureRef.current = videoTexture;
-            const videoMaterial = new THREE.MeshBasicMaterial({
-              map: videoTexture,
-              depthTest: true,
-              transparent: true,
-            });
-
-            const videoGeometry = new THREE.PlaneGeometry(9, 20);
-            const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-            videoMesh.renderOrder = 0;
-            videoMesh.position.z = -5; // 비디오를 카메라 앞으로 이동
-            camera.add(videoMesh); // 비디오를 카메라의 자식 요소로 추가
-
-            scene.add(camera); // 카메라를 scene에 추가
-
-            videoStreamRef.current = stream;
-
-            loadGltfModel(scene);
-            animate();
-          })
-          .catch((error) => {
-            console.error("Error accessing webcam:", error);
-            constraints.video.facingMode = "environment";
+      const constraints = {
+        video: {
+          facingMode: facingMode,
+          frameRate: { max: 60 },
+        },
+        audio: false,
+      };
+    
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+          video = document.createElement("video");
+          video.srcObject = stream;
+          video.play();
+    
+          const videoTexture = new THREE.VideoTexture(video);
+          videoTextureRef.current = videoTexture;
+          const videoMaterial = new THREE.MeshBasicMaterial({
+            map: videoTexture,
+            depthTest: true,
+            transparent: true,
           });
-      } catch (error) {
-        console.error("Error accessing webcam:", error);
-      }
+    
+          const videoGeometry = new THREE.PlaneGeometry(9, 20);
+          const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+          videoMesh.renderOrder = 0;
+          videoMesh.position.z = -5; // 비디오를 카메라 앞으로 이동
+          camera.add(videoMesh); // 비디오를 카메라의 자식 요소로 추가
+    
+          scene.add(camera); // 카메라를 scene에 추가
+    
+          videoStreamRef.current = stream;
+    
+          loadGltfModel(scene);
+          animate();
+        })
+        .catch((error) => {
+          console.error("Error accessing webcam:", error);
+          // 오류 처리 내에서 facingMode 변경
+          // setFacingMode("environment");
+        });
     };
 
     const resizeCanvas = () => {
