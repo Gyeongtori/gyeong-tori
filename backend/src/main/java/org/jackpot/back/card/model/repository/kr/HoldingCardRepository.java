@@ -17,20 +17,20 @@ public interface HoldingCardRepository extends JpaRepository<HoldingCard, Long> 
     List<HoldingCard> findByUserIdAndCardNumber(Long userId, Long cardNumber);
 
     //사용자, 카드 넘버로 보유 카드 찾기(날짜만 반환)
-    @Query("SELECT hc.date FROM HoldingCardEN hc WHERE hc.user.id = :userId AND hc.card.number = :cardNumber")
+    @Query("SELECT hc.date FROM HoldingCard hc WHERE hc.user.id = :userId AND hc.card.number = :cardNumber")
     List<LocalDate> findDatesByUserIdAndCardNumber(@Param("userId") Long userId, @Param("cardNumber") Long cardNumber);
 
     //총 보유 카드 개수 정렬
     @Query("SELECT NEW org.jackpot.back.card.model.dto.response.GetCardRankResponse(" +
             "u.profileImage, u.nickname, u.grade, COUNT(hc.card.number)) " +
             "FROM User u " +
-            "JOIN HoldingCardEN hc ON u.id = hc.user.id " +
+            "JOIN HoldingCard hc ON u.id = hc.user.id " +
             "GROUP BY u.id, u.profileImage, u.nickname, u.grade " +
             "ORDER BY COUNT(hc.card.number) DESC")
     List<GetCardRankResponse> getCardRanking();
 
     //보유 카드 개수 조회
-    @Query("select count(hc.user.id) from HoldingCardEN hc where hc.user.id=:userId group by hc.user.id")
+    @Query("select count(hc.user.id) from HoldingCard hc where hc.user.id=:userId group by hc.user.id")
     Integer getCardCount(@Param("userId") Long userId);
 
     @Query("SELECT new org.jackpot.back.card.model.dto.response.HoldingCardBaseDto(h.card.number, COUNT(h)) " +

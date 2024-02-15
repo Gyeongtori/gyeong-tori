@@ -137,11 +137,12 @@ public class CardServiceImpl implements CardService{
                                     .address(addCardToCollectionRequest.getAddress())
                                     .build()
                     );
-                    //사용자 등급 확인 및 업데이트
+                    //사용자 등급 확인 및 업데이트 
                     cardCount = holdingCardRepository.getCardCount(findUser.get().getId()); //총 카드 개수
                 }
             User user = findUser.get();
             switch (cardCount) {
+                //등급 업데이트
                 case 3:
                     user.setGrade(2);
                     userRepository.save(user);
