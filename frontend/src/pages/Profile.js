@@ -1,13 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components';
 import Header from '../components/Profiles/Header'
 import SetProfile from '../components/Profiles/SetProfile';
 import MyCard from '../components/Profiles/MyCard';
 import Settings from '../components/Profiles/Settings';
+import { useNavigate } from 'react-router-dom';
 
 
 const Profile = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  // console.log('user: ', user);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if(user===null){
+      alert("로그인이 필요한 페이지 입니다")
+      navigate("/maps")
+    }
+  })
+  
   return (
     <Mobile>
       <Header />
@@ -22,6 +33,7 @@ const Profile = () => {
 export default Profile
 
 const Mobile = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
   max-width: 400px;
   width: 100%;
   height: 100vh;

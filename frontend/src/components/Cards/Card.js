@@ -11,6 +11,8 @@ import CardDetail from "./CardDetail";
 import Header from "./Header";
 import Search from "./Search";
 import axios from "axios";
+import useStore from "../../stores/store";
+
 
 let Sorts = styled.div`
   display: flex;
@@ -21,6 +23,7 @@ let Sorts = styled.div`
   align-items: center;
 `;
 let Title = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
   text-align: center;
   display: flex;
   align-items: center;
@@ -59,6 +62,8 @@ let TopBtn = styled.button`
 `;
 
 const CheckBox = styled.div`
+  font-family: 'NanumSquareNeo-Variable';
+  /* font-size: 1.5rem; */
   input[id="collection"] {
     display: none;
   }
@@ -109,7 +114,18 @@ const Card = () => {
   const [cardId, setCardId] = useState(); // 카드 상세를 열기 위한 카드 id 값 넘기기
   let navigate = useNavigate();
 
+  const setCardCount = useStore(state => state.setCardCount);
+  const setListCount = useStore(state => state.setListCount);
+
   useEffect(() => {
+    setCardCount(card.length);
+    setListCount(list.length);
+    // console.log(list.length, '도감 카드 리스트 개수')
+  }, [card, list]);
+
+
+  useEffect(() => {
+    useStore.getState().updateToken()
     console.log(db); // firebase 연결 테스트
     getCards();
     return () => {
@@ -119,8 +135,8 @@ const Card = () => {
 
   const getCards = async () => {
     try {
-      const res = await axios.get("/v1/card/list");
-      // console.log(res);
+      const res = await axios.get("v1/card/list");
+      // console.log(res.data.data_body, '전체 데이터');
       const data = await res.data.data_body;
       // console.log(data);
       // Firebase Img 불러오기
@@ -135,11 +151,15 @@ const Card = () => {
       const listData = await data.filter((item) => item.have === true);
       setCard(data);
       setList(listData);
-      // console.log(card);
-      // console.log(list);
+
       setLoad(true);
     } catch (e) {
-      console.log(e.response);
+      console.log(e, '에러상태메시지');
+
+      // if(e.response.status === 500 ){
+      //   useStore.getState().updateToken();
+      //   getCards()
+      // }
     }
   };
   return (
@@ -155,7 +175,7 @@ const Card = () => {
           <Header />
           {/* search 활성화 시 검색 페이지로 이동 */}
           <div
-            style={{ display: "flex" }}
+            style={{ display: "flex" , fontFamily: 'NanumSquareNeo-Variable'}}
             onClick={() => {
               navigate("/search");
             }}
