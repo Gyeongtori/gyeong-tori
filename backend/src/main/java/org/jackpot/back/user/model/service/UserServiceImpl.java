@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.user.exception.UserErrorCode;
 import org.jackpot.back.user.exception.UserException;
 import org.jackpot.back.user.model.dto.request.RegistUserRequest;
+import org.jackpot.back.user.model.dto.request.UpdateLanguageRequest;
 import org.jackpot.back.user.model.dto.request.UpdateNicknameRequest;
 import org.jackpot.back.user.model.dto.request.UpdateProfileImageRequest;
 import org.jackpot.back.user.model.entity.User;
@@ -64,5 +65,17 @@ public class UserServiceImpl implements UserService{
         log.info("repository : "+userRepository.findByEmail(email).get().toString());
         return userRepository.findByEmail(email)
                 .orElseThrow(()->new UserException(NOT_EXISTS_USER));
+    }
+
+    @Override
+    public void updateLanguage(User user, UpdateLanguageRequest updateLanguageRequest) {
+        try{
+            user=user.toBuilder()
+                    .language(updateLanguageRequest.getLanguage())
+                    .build();
+            userRepository.save(user);
+        } catch (RuntimeException e){
+            throw new UserException(TRANSACTION_FAIL);
+        }
     }
 }

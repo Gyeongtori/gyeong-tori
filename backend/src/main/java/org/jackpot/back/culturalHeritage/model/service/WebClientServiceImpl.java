@@ -2,8 +2,8 @@ package org.jackpot.back.culturalHeritage.model.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
-import org.jackpot.back.culturalHeritage.model.repository.CulturalHeritageRepository;
+import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritage;
+import org.jackpot.back.culturalHeritage.model.repository.kr.CulturalHeritageKRRepository;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -18,7 +18,7 @@ import java.io.StringReader;
 @Service
 @Slf4j
 public class WebClientServiceImpl implements WebClientService{
-    private final CulturalHeritageRepository culturalHeritageRepository;
+    private final CulturalHeritageKRRepository culturalHeritageRepository;
     // webClient 기본 설정
     private WebClient webClient =WebClient.builder().baseUrl("https://www.cha.go.kr/").build();
     private int[] category = {11, 12, 13};

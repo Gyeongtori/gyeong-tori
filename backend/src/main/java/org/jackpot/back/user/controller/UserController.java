@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.global.utils.MessageUtils;
 import org.jackpot.back.user.model.dto.request.RegistUserRequest;
+import org.jackpot.back.user.model.dto.request.UpdateLanguageRequest;
 import org.jackpot.back.user.model.dto.request.UpdateNicknameRequest;
 import org.jackpot.back.user.model.dto.request.UpdateProfileImageRequest;
 import org.jackpot.back.user.model.entity.User;
@@ -33,6 +34,12 @@ public class UserController {
     @PatchMapping("/update/nickname")
     public ResponseEntity updateNickname(@AuthenticationPrincipal User user, @RequestBody UpdateNicknameRequest updateNicknameRequest){
         userService.updateNickname(user,updateNicknameRequest);
+        return ResponseEntity.ok(MessageUtils.success());
+    }
+
+    @PatchMapping("/update/language")
+    public ResponseEntity updateLanguage(@AuthenticationPrincipal User user, @RequestBody UpdateLanguageRequest updateLanguageRequest){
+        userService.updateLanguage(user,updateLanguageRequest);
         return ResponseEntity.ok(MessageUtils.success());
     }
 
