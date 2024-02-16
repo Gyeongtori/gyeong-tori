@@ -1,6 +1,5 @@
 package org.jackpot.back.culturalHeritage.model.service;
 
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 import org.jdom2.JDOMException;
 
 import java.io.IOException;
