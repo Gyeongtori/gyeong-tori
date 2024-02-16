@@ -8,7 +8,7 @@ import html2canvas from "html2canvas";
 import Capture from "./capturePage";
 import "./camera.css";
 
-export default function Camera(props) {
+export default function FrontCamera(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -35,6 +35,16 @@ export default function Camera(props) {
   const backMap = () => {
     navigate("/maps");
   };
+
+  const toggleFacingMode = (state) => {
+    navigate('/frontcamera',{
+      state: {
+        lat: `${state.lat}`,
+        lng: `${state.lng}`,
+        address: `${state.address}`,
+        cultural_heritage_id: `${state.cultural_heritage_id}`
+    }})
+  }
 
   const stopVideo = () => {
     const { current: videoStream } = videoStreamRef;
@@ -96,11 +106,16 @@ export default function Camera(props) {
     renderer.setSize(window.innerWidth, window.innerHeight);
     rendererRef.current = renderer;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
-    const directionalLight = new THREE.DirectionalLight(0xff0000, 3);
-    directionalLight.position.copy(camera.position);
-    directionalLight.position.set(0, 10, 10);
-    directionalLight.target.position.set(0, 1, 1);
+            // 애니메이션 시작
+            animate();
+          })
+          .catch((error) => {
+            console.error("Error accessing webcam:", error);
+          });
+      } catch (error) {
+        console.error("Error accessing webcam:", error);
+      }
+    };
 
     scene.add(ambientLight);
     scene.add(directionalLight);
@@ -212,7 +227,7 @@ export default function Camera(props) {
     };
 
     window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    resizeCanvas()
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
@@ -300,7 +315,8 @@ export default function Camera(props) {
             url={capturedImageDataURL}
             state={state}
             address={state.address}
-            cultural_heritage_id={state.no}
+            no={state.no}
+            cultural_heritage_id={state.cultural_heritage_id}
             captureState={captureState}
             setCaptureState={setCaptureState}
           />

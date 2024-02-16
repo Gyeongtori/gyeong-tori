@@ -58,26 +58,23 @@ const Login = () => {
         });
         const status = res.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
-          console.log("로그인 성공!");
+          // console.log("로그인 성공!");
           getUserInfo();
           
           // 메인으로 가기
           goMain();
         }
       } catch (error) {
-        const status = error.res;
-        if(status.statusText === 'Internal Server Error') {
-          alert('아이디를 다시 확인해 주세요')
-        }else if(status.statusText === 'Unauthorized'){
-          alert('비밀번호를 다시 확인해 주세요')
-        }else{
-          navigate("/")
-        }
+        const status = error.response;
+        console.log(status)
+        // if(status.statusText === 'Internal Server Error') {
+        //   alert('아이디를 다시 확인해 주세요')
+        // }else if(status.statusText === 'Unauthorized'){
+        //   alert('비밀번호를 다시 확인해 주세요')
+        // }
       }
     }
   };
-
-  
 
   const goSignUp = () => {
     navigate("/signup" ,  {state: { language }});
