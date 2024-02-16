@@ -59,9 +59,23 @@ export default function Capture(props) {
   };
 
   return (
-    <div>
+    <div id="capture">
       {props.captureState && (
         <div>
+      
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ width: "100%", height: "90%" }}>
+              {
+                <img
+                  src={url}
+                  alt="Captured"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              }
+            </div>
+          </div>
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <button
               style={{ marginRight: "10px", marginBottom: "10px" }}
@@ -74,17 +88,6 @@ export default function Capture(props) {
             </button>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "300px", height: "642px" }}>
-              {
-                <img
-                  src={url}
-                  alt="Captured"
-                  style={{ width: "100%", height: "100%" }}
-                />
-              }
-            </div>
-          </div>
         </div>
       )}
       {/* 모달 상태가 true일 때만 모달을 렌더링 */}
