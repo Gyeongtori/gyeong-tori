@@ -1,11 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from "styled-components";
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const ProfileImg = () => {
+  const [imageUrl, setImageUrl] = useState(null);
+  const storage = getStorage()
+  const fileRef = ref(storage, uuidv4())
 
+  useEffect(() => {
+    getDownloadURL(fileRef)
+      .then((url) => {
+        setImageUrl(url);
+      })
+      .catch((error) => {
+        console.error('Error getting download URL:', error);
+      });
+  }, []);
+
+  
   return (
+
     <div>
       <Profile />
+      {imageUrl}
     </div>
     
   )

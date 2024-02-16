@@ -1,4 +1,4 @@
-package org.jackpot.back.card.model.entity;
+package org.jackpot.back.card.model.entity.kr;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jackpot.back.card.model.dto.response.CardDto;
 import org.jackpot.back.card.model.entity.enums.CardField;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
+import org.jackpot.back.culturalHeritage.model.entity.en.CulturalHeritageEN;
+import org.jackpot.back.culturalHeritage.model.entity.kr.CulturalHeritage;
 
 @Entity
 @Table(name="card")
@@ -41,7 +42,7 @@ public class Card {
     public CardDto toDto(){
         return CardDto.builder()
                 .number(number)
-                .culturalHeritage(culturalHeritage)
+                .culturalHeritage(culturalHeritage.toDto())
                 .field(field)
                 .rating(rating)
                 .build();

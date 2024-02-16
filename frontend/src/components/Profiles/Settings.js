@@ -1,12 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FiGrid } from "react-icons/fi";
 import { FiType } from "react-icons/fi";
 import { FiLock } from "react-icons/fi";
 import { FiLogOut } from "react-icons/fi";
 import { FiChevronRight } from "react-icons/fi";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
+  const navigate = useNavigate();
+
+  const goLogout = async () => {
+      try {
+          await axios.get("v1/auth/logout") ;
+          localStorage.removeItem('user')
+          alert("로그아웃 되었습니다")
+          navigate('/')
+
+        } catch (e) {
+          console.log(e.response, '로그아웃 에러');
+        }
+    }
+
     return (
         <div>
            <SettingBlock>
@@ -26,7 +41,7 @@ const Settings = () => {
            <SettingBlock>
             <FiLogOut />
             <SettingBlockContents>
-                <SettingBlockText>로그아웃</SettingBlockText>
+                <SettingBlockText onClick={goLogout}>로그아웃</SettingBlockText>
             </SettingBlockContents>
            </SettingBlock>
         </div>
@@ -43,7 +58,6 @@ const SettingBlock = styled.div`
 `;
 
 const SettingBlockText = styled.div`
-  
 `;
 
 const SettingBlockContents = styled.div`

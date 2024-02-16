@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jackpot.back.global.model.Language;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,4 +15,5 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CardIndividualReadRequest {
     Long cardNumber;
+    Language language;
 }

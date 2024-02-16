@@ -6,10 +6,7 @@ import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import lombok.extern.slf4j.Slf4j;
-import org.jackpot.back.socket.model.entity.Action;
-import org.jackpot.back.socket.model.entity.BattleQuestion;
-import org.jackpot.back.socket.model.entity.Location;
-import org.jackpot.back.socket.model.entity.Message;
+import org.jackpot.back.socket.model.entity.*;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -30,6 +27,16 @@ public class SocketModule {
         server.addEventListener("send_message", Message.class, onMessageReceived());
         server.addEventListener("send_question", BattleQuestion.class, onQuestionReceived());
         server.addEventListener("send_action", Action.class, onBattleActionReceived());
+        server.addEventListener("send_exit", BaseAction.class, onExitReceived());
+    }
+
+    private DataListener<BaseAction> onExitReceived() {
+        return (senderClient, data, ackSender) -> {
+            log.info("======== exit =========");
+            log.info(data.toString());
+            data.setSocketId(senderClient.getSessionId().toString());
+            senderClient.getNamespace().getBroadcastOperations().sendEvent("get_exit",data);
+        };
     }
 
     private DataListener<Location> onLocationReceived() {
@@ -45,7 +52,17 @@ public class SocketModule {
         return (senderClient, data, ackSender) -> {
             log.info("======== message =========");
             log.info(data.toString());
-            senderClient.getNamespace().getBroadcastOperations().sendEvent("get_message", data);
+            // 소켓 ID에 해당하는 클라이언트를 찾습니다.
+            UUID socketId=UUID.fromString(data.getOpponentSocketId());
+            SocketIOClient client = server.getClient(socketId);
+            if (client != null) {
+                // 클라이언트가 존재하면, 해당 클라이언트에게 이벤트를 전송합니다.
+                log.info("send get_message event to user {}",socketId);
+                client.sendEvent("get_message", data);
+            } else {
+                // 클라이언트를 찾을 수 없는 경우, 에러 처리나 로깅을 수행할 수 있습니다.
+                log.info("Client with socket ID {} not found",socketId);
+            }
         };
     }
     private DataListener<BattleQuestion> onQuestionReceived() {
@@ -53,7 +70,7 @@ public class SocketModule {
             log.info("======== question =========");
             log.info(data.toString());
             // 소켓 ID에 해당하는 클라이언트를 찾습니다.
-            UUID socketId=UUID.fromString(data.getSocketId());
+            UUID socketId=UUID.fromString(data.getOpponentSocketId());
             SocketIOClient client = server.getClient(socketId);
             if (client != null) {
                 // 클라이언트가 존재하면, 해당 클라이언트에게 이벤트를 전송합니다.
@@ -70,7 +87,7 @@ public class SocketModule {
             log.info("======== battle =========");
             log.info(data.toString());
             // 소켓 ID에 해당하는 클라이언트를 찾습니다.
-            UUID socketId=UUID.fromString(data.getSocketId());
+            UUID socketId=UUID.fromString(data.getOpponentSocketId());
             SocketIOClient client = server.getClient(socketId);
             if (client != null) {
                 // 클라이언트가 존재하면, 해당 클라이언트에게 이벤트를 전송합니다.

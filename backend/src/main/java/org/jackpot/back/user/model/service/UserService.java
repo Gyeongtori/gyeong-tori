@@ -1,6 +1,7 @@
 package org.jackpot.back.user.model.service;
 
 import org.jackpot.back.user.model.dto.request.RegistUserRequest;
+import org.jackpot.back.user.model.dto.request.UpdateLanguageRequest;
 import org.jackpot.back.user.model.dto.request.UpdateNicknameRequest;
 import org.jackpot.back.user.model.dto.request.UpdateProfileImageRequest;
 import org.jackpot.back.user.model.entity.User;
@@ -11,4 +12,6 @@ public interface UserService {
     void updateProfileImage(User user, UpdateProfileImageRequest updateProfileImageRequest);
 
     User findByEmail(String email);
+
+    void updateLanguage(User user, UpdateLanguageRequest updateLanguageRequest);
 }

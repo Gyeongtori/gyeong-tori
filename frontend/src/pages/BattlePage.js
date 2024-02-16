@@ -1,17 +1,21 @@
 import styled from "styled-components";
 import Radar from "../components/Battle/Radar";
-const RadarDiv = styled.div`
-  position: fixed;
-  bottom: 0px;
+import Toggle from "../components/Battle/Toggle";
+import { useState } from "react";
+const Frame = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background: #dfe7da;
 `;
-
 const BattlePage = () => {
   return (
     <>
-      <div>Main화면과 동일하게 작용해요</div>
-      <RadarDiv>
+      <Frame>
         <Radar />
-      </RadarDiv>
+        <Toggle />
+      </Frame>
     </>
   );
 };

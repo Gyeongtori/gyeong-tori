@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
+@Builder(toBuilder = true)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CardGradeDto {
     private Long cardNumber;
