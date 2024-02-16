@@ -6,6 +6,7 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import GlobalStyle from './assets/fonts'
 
 // refreshToken cookie를 주고받기 위해 설정
 axios.defaults.withCredentials = true;
@@ -14,6 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
+    <GlobalStyle  />
       <App />
     </BrowserRouter>
   </React.StrictMode>

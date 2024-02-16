@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jackpot.back.global.model.Language;
 import org.jackpot.back.user.model.entity.User;
 import org.jackpot.back.user.model.entity.enums.AuthProvider;
 import org.jackpot.back.user.model.entity.enums.UserRole;
@@ -33,6 +34,7 @@ public class RegistUserRequest {
                 .provider(AuthProvider.JACKPOT)
                 .role(UserRole.USER)
                 .status(UserStatus.ACTIVE)
+                .language(Language.KR)
                 .build();
     }
 }

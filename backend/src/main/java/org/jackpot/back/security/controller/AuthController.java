@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jackpot.back.global.utils.MessageUtils;
+import org.jackpot.back.security.exception.JwtErrorCode;
 import org.jackpot.back.security.model.dto.request.LoginRequest;
 import org.jackpot.back.security.model.dto.request.RefreshTokenRequest;
 import org.jackpot.back.security.model.dto.response.GeneratedToken;
@@ -55,34 +56,50 @@ public class AuthController {
             }
         }
         GeneratedToken newToken = tokenService.republishToken(refreshToken);
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", newToken.getRefreshToken())
-                // 토큰의 유효 기간
-                .maxAge(7 * 24 * 60 * 60) //7일
-                .path("/")
-                // https 환경에서만 쿠키가 발동합니다.
-                .secure(true)
-                // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
-                .sameSite("None")
-                .httpOnly(true)
-                // 브라우저에서 쿠키에 접근할 수 없도록 제한
-                .build();
-
-
-        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", newToken.getAccessToken())
-                // 토큰의 유효 기간
-                .maxAge(60 * 30) //30분
-                .path("/")
-                // https 환경에서만 쿠키가 발동합니다.
-                .secure(true)
-                // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
-                .sameSite("None")
-                .httpOnly(false)
-                // 브라우저에서 쿠키에 접근할 수 없도록 제한
-                .build();
-
-        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
-        response.addHeader("Set-Cookie", accessTokenCookie.toString());
-        return ResponseEntity.ok(MessageUtils.success());
+        ResponseCookie refreshTokenCookie=null;
+        ResponseCookie accessTokenCookie=null;
+        if(newToken == null){
+            refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                    // 토큰의 유효 기간
+                    .maxAge(0) //expire
+                    .path("/")
+                    // https 환경에서만 쿠키가 발동합니다.
+                    .secure(true)
+                    // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                    .sameSite("None")
+                    .httpOnly(true)
+                    // 브라우저에서 쿠키에 접근할 수 없도록 제한
+                    .build();
+            response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+            return ResponseEntity.status(JwtErrorCode.INVALID_TOKEN.getHttpStatus())
+                    .body(MessageUtils.fail(JwtErrorCode.INVALID_TOKEN.getHttpStatus().name(),JwtErrorCode.INVALID_TOKEN.getMessage()));
+        } else {
+            refreshTokenCookie = ResponseCookie.from("refreshToken", newToken.getRefreshToken())
+                    // 토큰의 유효 기간
+                    .maxAge(7 * 24 * 60 * 60) //7일
+                    .path("/")
+                    // https 환경에서만 쿠키가 발동합니다.
+                    .secure(true)
+                    // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                    .sameSite("None")
+                    .httpOnly(true)
+                    // 브라우저에서 쿠키에 접근할 수 없도록 제한
+                    .build();
+            accessTokenCookie = ResponseCookie.from("accessToken", newToken.getAccessToken())
+                    // 토큰의 유효 기간
+                    .maxAge(60 * 30) //30분
+                    .path("/")
+                    // https 환경에서만 쿠키가 발동합니다.
+                    .secure(true)
+                    // 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                    .sameSite("None")
+                    .httpOnly(false)
+                    // 브라우저에서 쿠키에 접근할 수 없도록 제한
+                    .build();
+            response.addHeader("Set-Cookie", accessTokenCookie.toString());
+            response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+            return ResponseEntity.ok(MessageUtils.success());
+        }
     }
 
     /**

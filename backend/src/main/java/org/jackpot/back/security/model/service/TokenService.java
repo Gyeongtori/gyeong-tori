@@ -66,23 +66,23 @@ public class TokenService {
             Token token = repository.findById(userId).orElseThrow(() -> new JwtException(NOT_EXISTS_TOKEN));
 //          3. 정상적으로 조회된다면 해당 user의 refresh token(value)를 가져올 수 잇다.
 //          4. Redis에서 조회한 refresh token과 클라이어트가 보낸 refresh Token을 비교한다.
-            log.debug(token.toString());
+            log.debug("refresh token : "+token.getRefreshToken());
+            log.debug("current refresh token >> "+refreshToken);
+            log.debug("access token : "+token.getAccessToken());
             if (refreshToken.equals(token.getRefreshToken())){
 //              5. 두 토큰 값이 매칭되면 정상 유저로 간주하고, access token과 refresh token을 모두 재발급한다.
                 GeneratedToken newToken = generatedToken(userId);
 //              6. Redis에 저장된 user email의 매핑 값을(새 refresh token)으로 갱신한다.
                 removeToken(userId);
+                log.debug("====remove token====");
                 repository.save(new Token(userId, newToken.getAccessToken(), newToken.getRefreshToken()));
-
+                log.debug("generated refresh token >> "+token.getRefreshToken());
+                log.debug("old refresh token >> "+refreshToken);
+                log.debug("new access token >> "+token.getAccessToken());
                 return newToken;
-            }else {
-                //사용자가 아닌 다른 사람에 의해 토큰이 변경됨
-                removeToken(userId);
-                //todo : 두 토큰 다 블랙리스트 처리 들어가야함.-> 이후 재 로그인
-
-                throw new JwtException(JwtErrorCode.INVALID_TOKEN);
             }
         }
+        log.debug("{{{{invalid token}}}}");
         throw new JwtException(JwtErrorCode.INVALID_TOKEN);
     }
 

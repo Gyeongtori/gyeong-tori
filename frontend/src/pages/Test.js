@@ -7,49 +7,92 @@ import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid'; // 랜덤 식별자를 생성해주는 라이브러리
 
 const Signup = () => {
+  const storage = getStorage();
+
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
     name: "",
     profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   });
+  
+
+
+  const [attachment, setAttachment] = useState();
+ 
+  const onFileChange = (event) => {
+    // 업로드 된 file
+    const files = event.target.files;
+    const theFile = files[0];
+  //   if(theFile){
+  //     setUserInput({profile_img :event.target.files[0],
+  //       email: userInput.email,
+  //       password: userInput.password,
+  //       name: userInput.name,})
+  // }
+ 
+    // FileReader 생성
+    const reader = new FileReader();
+ 
+    // file 업로드가 완료되면 실행
+    reader.onloadend = (finishedEvent) => {
+      // 업로드한 이미지 URL 저장
+      const result = finishedEvent.currentTarget.result;
+      setAttachment(result);
+    };
+    // 파일 정보를 읽기
+    reader.readAsDataURL(theFile);
+  };
+ 
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    const storage = getStorage();
+    const fileRef = ref(storage, uuidv4());
+    const response = await uploadString(fileRef, attachment, 'data_url');
+    console.log(response, '응답받은 onSubmit data');
+    const url = await getDownloadURL(response.ref);
+    setUserInput((prev) => ({ ...prev, profile_img: url }));
+  };
+
+ 
   const [checkPw, setCheckPw] = useState("");
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
   
-  // const [postImg, setPostImg] = useState([]);
-  // const [previewImg, setPreviewImg] = useState([]);
-    
-  // function uploadFile(e) {
-  //     let fileArr = e.target.files;
-  //     setPostImg(Array.from(fileArr));
-  //     // console.log(fileArr);
+  const fileInput = useRef(null)
 
-  //     let fileURLs = [];
-
-  //     let fileRead = new FileReader();
-  //     // console.log(fileRead);
-
-  //     fileRead.onload = function(){
-  //         setPreviewImg(fileRead.result);
-  //     };
-      
-  //     fileRead.readAsDataURL(file[0]);
-  // };
-
-
-  const [uploadedImage, setUploadedImage] = useState(null);
-
-  const onChangeImage = e => {
-    const file = e.target.files[0];
-    const imageUrl = URL.createObjectURL(file);
-    setUploadedImage(imageUrl);
-
-
-
-
+  const onChange = (e) => {
+    if(e.target.files[0]){
+        setUserInput({profile_img :e.target.files[0],
+          email: userInput.email,
+          password: userInput.password,
+          name: userInput.name,})
+    }else{ //업로드 취소할 시
+      setUserInput({profile_img: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      email: userInput.email,
+      password: userInput.password,
+      name: userInput.name,
+    })
+        return
+    }
+    //화면에 프로필 사진 표시
+      const reader = new FileReader();
+      reader.onload = () => {
+          if(reader.readyState === 2){
+            setUserInput({profile_img:reader.result,
+              email: userInput.email,
+              password: userInput.password,
+              name: userInput.name,
+            })
+          }
+      }
+      reader.readAsDataURL(e.target.files[0])
+    }
 
   const emailCheck = (email) => {
     let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -75,8 +118,15 @@ const Signup = () => {
       alert("다시 입력해주세요.");
     } else {
       //   console.log(userInput);
+      if (attachment) {
+        const storage = getStorage();
+        const fileRef = ref(storage, uuidv4());
+        const response = await uploadString(fileRef, attachment, 'data_url');
+        const url = await getDownloadURL(response.ref);
+        setUserInput((prev) => ({ ...prev, profile_img: url }));
+      }
       try {
-        const res = await axios.post("/v1/user/regist", userInput);
+        const res = await axios.post("v1/user/regist", userInput);
         const status = res.data.data_header.result_code;
         if (status === "204 NO_CONTENT") {
           alert("회원가입이 정상 등록 됐습니다. 로그인 해주세요.");
@@ -85,13 +135,14 @@ const Signup = () => {
       } catch (e) {
         console.log('e: ', e);
         const status = e.response.status;
-        const alertMSG = e.response.data.data_header.result_message;
         // console.log('alertMSG: ', alertMSG);
         // console.log('status: ', status);
         if (status === 500) {
           alert("서버오류!");
         } else if (status === 400) {
-          alert(alertMSG);
+          console.log("오류!")
+          // const alertMSG = e.response.data.data_header.result_message;
+          // alert(alertMSG);
         }
       }
     }
@@ -100,7 +151,7 @@ const Signup = () => {
   return (
     <SignupBlock>
 
-      <div style={{'margin-bottom': '0.5rem'}}>
+      <div style={{'marginBottom': '0.5rem'}}>
         <HiOutlineArrowNarrowLeft size='25' style={{marginBottom: '2rem'}}
         onClick={() => { navigate(-1); }}/>
         <TitleText>회원가입</TitleText >
@@ -108,19 +159,24 @@ const Signup = () => {
         <TitleInfo>더 많은 서비스를 즐기실 수 있습니다.</TitleInfo>
       </div>
 
-{/* 
-      <WriteInput accept=".png, .jpeg, .jpg" type="file"        
-          onChange={handleFileUpload}
-      />
-      <img alt={previewImg} src={previewImg} /> */}
-
-
-        {uploadedImage ? (
-            <MyProfileImg src={uploadedImage} alt="프로필 없을때" />
-          ) : (
-            <MyProfileImg src="./images/profile.png" alt="프로필사진" />
-          )}
-          <input type="file" onChange={onChangeImage} />
+      <ProfileIMG onSubmit={onSubmit}>
+        
+        <input
+          type='file'
+          // style={{display:'none'}}
+          accept='image/jpg,impge/png,image/jpeg'
+          name='profile_img'
+          onChange={onChange}
+          ref={fileInput}/>
+          {attachment ? (
+            <Avatar src={attachment} width="50px" height="50px" alt="" />
+          ): <Avatar
+          src={userInput.profile_img}
+          style={{margin:'20px'}}
+          size={200}
+          />}
+      </ProfileIMG>
+     
 
       <InputText>이메일</InputText>
       <ButtonBlank
@@ -135,6 +191,7 @@ const Signup = () => {
             email: email,
             password: userInput.password,
             name: userInput.name,
+            profile_img: userInput.profile_img
           })
           if (!emailCheck(email)) {
             setEmailError("이메일 형식으로 입력해주세요."); 
@@ -157,6 +214,7 @@ const Signup = () => {
             email: userInput.email,
             password: userInput.password,
             name: name,
+            profile_img: userInput.profile_img
           });
         }}
       ></ButtonBlank>
@@ -174,6 +232,7 @@ const Signup = () => {
             email: userInput.email,
             password: password,
             name: userInput.name,
+            profile_img: userInput.profile_img
           });
         }}
       ></ButtonBlank>
@@ -206,7 +265,7 @@ const Signup = () => {
       </SignupBtn>
     </SignupBlock>
   );
-}};
+};
 
 export default Signup;
 
@@ -254,26 +313,13 @@ const ErrorMSG = styled.div`
   margin: 0.3rem 0 0 1rem;
 `;
 
+const Avatar = styled.img`
+  width: 80px;
+  height: 80px;
+`;
 
-// ----------------------
-// const WriteInput = styled.input`
-//   display: none;
-// `;
-
-// label{
-//   display: inline-block;
-//   width: 90px;
-//   height: 90px;
-//   background: url('src/assets/icon-add-photo.svg') no-repeat;
-//   background-position: center;
-//   border: 1px solid ${gray4};
-//   border-radius: 10px;
-//   cursor: pointer;
-// }
-
-//-------------------------------------------
-
-const MyProfileImg = styled.img`
-  width: 50px;
-  height: 50px;
+const ProfileIMG = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
