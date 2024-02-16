@@ -17,4 +17,5 @@ import org.jackpot.back.question.model.dto.QuestionDto;
 public class BattleQuestion extends BaseAction{
     //todo 담을 내용 확정 짓기
     private QuestionDto question;
+    private String opponentSocketId;
 }

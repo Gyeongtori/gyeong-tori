@@ -19,4 +19,5 @@ public abstract class BaseModel {
     private Date createdAt;
 
 
+
 }

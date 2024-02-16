@@ -16,6 +16,8 @@ import { RiBoxingLine } from "react-icons/ri";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+
 import mapBtn from "../assets/mapBtn.png";
 import Pin from "../assets/pinPoint.png";
 const google = (window.google = window.google ? window.google : {});
@@ -25,8 +27,14 @@ const google = (window.google = window.google ? window.google : {});
 // 싸피 { lat: 35.205231, lng: 126.8117628 }
 
 export default function Maps() {
-  const [map, setMap] = useState(null);
+  // const [map, setMap] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const location = useLocation();
+  const language = location.state ? location.state.language : '한국어';
+  // console.log('지도 language: ', language);
+
+
 
   // 경주 기준점
   // const [center, setCenter] = useState({ lat: 35.831490, lng: 129.210748 });
@@ -42,13 +50,12 @@ export default function Maps() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
-    // googleMapsApiKey: "AIzaSyBZrBxO1en2t7fU6-47ooo_DxPyeTF4Xi8",
-    language: "ko",
+    language: language==='English' ? "en": "ko"
   });
 
-  const onUnmount = useCallback(function callback() {
-    setMap(null);
-  }, []);
+  // const onUnmount = useCallback(function callback() {
+  //   setMap(null);
+  // }, []);
 
   const goProfile = () => {
     navigate("/profile");
@@ -61,6 +68,13 @@ export default function Maps() {
   const goBattle = () => {
     navigate("/battle");
   };
+
+  const goRecommend = () => {
+    if (window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")) {
+      navigate('/');
+    } 
+  }
+
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -85,7 +99,7 @@ export default function Maps() {
         },
         {
           // 정확도는 높지만 배터리 소모량up
-          enableHighAccuracy: false,
+          enableHighAccuracy: true,
           maximumAge: 0,
           timeout: Infinity,
         }
@@ -108,15 +122,24 @@ export default function Maps() {
         lat: `${center.lat}`,
         lng: `${center.lng}`,
       });
+<<<<<<< HEAD
+      // console.log(res.data.data_body, '내 주변 문화재')
+      let distanceAPI = res.data.data_body
+      
+      if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)){
+        setDisApi(distanceAPI);
+      }
+      
+=======
       let distanceAPI = res.data.data_body;
 
       setDisApi(res.data.data_body);
+>>>>>>> 9b4fd3ab3c16abacdf5d3c25ffc7bde9643cff7a
     } catch (e) {
       console.log(e.response);
     }
   };
 
-  // const [address, setAddress] = useState(null)
 
   const getAddress = async (getlat, getlng) => {
     try {
@@ -137,6 +160,8 @@ export default function Maps() {
     }
   };
 
+<<<<<<< HEAD
+=======
   // 마크 클릭 이벤트
   const goGetCard = async (event) => {
 
@@ -151,6 +176,7 @@ export default function Maps() {
     });
   };
 
+>>>>>>> 9b4fd3ab3c16abacdf5d3c25ffc7bde9643cff7a
   // 문화재 요청
   const [api, setApi] = useState();
 
@@ -175,16 +201,14 @@ export default function Maps() {
     }
   };
 
-  /* {no, asno, name_kr, name_hanja, content, sido_name, gugun_name,
-             division, lng, lat, image_source, image_detail, narration, video_source} */
 
   const circleRangeOptions = {
-    strokeColor: "#FF7575",
-    strokeOpacity: 0,
-    strokeWeight: 0,
+    strokeColor: "#FFFFFF",
+    strokeOpacity: 0.35,
+    strokeWeight: 40,
     fillColor: "#F2A55D",
     fillOpacity: 0.5,
-    radius: 80,
+    zIndex: 10,
   };
 
   const markerCircleOptions = {
@@ -205,7 +229,7 @@ export default function Maps() {
           zoom={7}
           center={center}
           mapContainerClassName="map-container"
-          onUnmount={onUnmount}
+          // onUnmount={onUnmount}
           options={{
             styles: Sample1,
             // 기본 ui 요소 지우기
@@ -216,19 +240,15 @@ export default function Maps() {
           mapContainerStyle={{ width: "100%", height: "100vh" }}
         >
           {/* 중심 레이더 옵션 */}
-          <Circle
-            center={center}
-            options={circleRangeOptions}
-            style={{ zindex: 10 }}
-          />
-          <Circle center={center} options={markerCircleOptions} />
+          <Circle center={center} options={circleRangeOptions} radius={80} />
+          {/* <Circle center={center} options={markerCircleOptions} /> */}
 
           {/* 문화재 마커 */}
           <MarkerClustererF options={{}}>
             {(clusterer) => (
               <>
-                {api &&
-                  api.map((place) => (
+                {disApi &&
+                  disApi.map((place) => (
                     <MarkerF
                       key={place.no}
                       position={{
@@ -254,11 +274,10 @@ export default function Maps() {
           {/* 메인기능 버튼 */}
           <Body>
             <InfoTop center={center}></InfoTop>
-            {/* <div>{head && head }방향정보~</div>S */}
           </Body>
 
           <Body>
-            <Testt id="test1">
+            {user ? <Testt id="test1">
               <ToggleButton
                 onClick={() => setShowSemiCircle(!showSemiCircle)}
               />
@@ -277,7 +296,16 @@ export default function Maps() {
                   </SemiCircleButton>
                 </div>
               </SemiCircle>
-            </Testt>
+            </Testt> 
+            : <div>
+              <Testt>
+                <ToggleButton
+                  onClick={goRecommend}
+                  />
+              </Testt>
+            </div>
+              }
+            
           </Body>
         </GoogleMap>
       </div>

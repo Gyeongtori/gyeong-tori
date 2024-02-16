@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jackpot.back.card.model.entity.enums.CardField;
+import org.jackpot.back.global.model.Language;
 
 import java.util.List;
 
@@ -21,4 +22,5 @@ public class SearchCardRequest {
     String division; //종목
     CardField field; //속성
     int sort; //1(이름순_오름차순) or 2(이름순_내림차순) or 3(최신순)
+    Language language;
 }

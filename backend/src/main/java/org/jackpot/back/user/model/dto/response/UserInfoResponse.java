@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jackpot.back.global.model.Language;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +19,5 @@ public class UserInfoResponse {
     public String password;
     public String nickname;
     public Integer grade;
+    public Language language;
 }

@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 let SearchBar = styled.div`
   border-radius: 4rem;
-  border: solid 0.0625rem rgba(0, 0, 0, 0.3);
+  border: solid 0.15rem rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,13 +22,21 @@ let SearchBar = styled.div`
     transition: color 0.3s ease;
   }
   &:focus-within svg {
-    color: black;
+    color: rgba(117, 132, 103);
   }
   &:focus-within {
-    border: solid 0.0625rem rgba(0, 0, 0);
+    border: solid 0.2rem rgba(157, 175, 137);
   }
 `;
+
+const SearchBarBlock = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 5px;
+`;
+
 let SearchInput = styled.input`
+  font-family: 'NanumSquareNeo-Variable';
   border: none;
   font-size: 0.9375rem;
   outline: none;
@@ -100,9 +108,9 @@ const Search = (props) => {
   };
 
   return (
-    <div style={{ display: "flex", width: "100%" }}>
+    <div style={{ display: "flex", width: "100%" , fontFamily: 'NanumSquareNeo-Variable'}}>
       <SearchBar>
-        <div>
+        <SearchBarBlock>
           <FaSearch />
           <SearchInput
             ref={inputRef}
@@ -119,7 +127,7 @@ const Search = (props) => {
             }}
             onKeyDown={handleEnter}
           />
-        </div>
+        </SearchBarBlock>
         {resetBtn ? (
           <ResetBtn
             onClick={() => {
