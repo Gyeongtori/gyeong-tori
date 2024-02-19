@@ -117,6 +117,8 @@ const Card = () => {
   const setCardCount = useStore(state => state.setCardCount);
   const setListCount = useStore(state => state.setListCount);
 
+
+
   useEffect(() => {
     setCardCount(card.length);
     setListCount(list.length);
@@ -135,8 +137,10 @@ const Card = () => {
 
   const getCards = async () => {
     try {
-      const res = await axios.get("v1/card/list");
-      // console.log(res.data.data_body, '전체 데이터');
+      const user = JSON.parse(localStorage.getItem("user"));
+      console.log('user: ', (user.language));
+      const res = await axios.get(`v1/card/list?language=${user.language}`);
+      console.log(res.data.data_body, '전체 데이터');
       const data = await res.data.data_body;
       // console.log(data);
       // Firebase Img 불러오기

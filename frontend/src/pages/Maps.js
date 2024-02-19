@@ -34,14 +34,13 @@ export default function Maps() {
   const user = JSON.parse(localStorage.getItem("user"));
   
   useEffect(() => {
-    if(user){
+    if(language && user&& language==="English"){
+        user.language = "EN"
+        localStorage.setItem("user", JSON.stringify(user))
 
-      console.log(user.language)
-      (language==='English' ? user.language==="EN" : user.language==="KR")
-      console.log(language, '언어ㅓㅓㅓ')
-      
+      } 
     } 
-  },[])
+,[])
 
   // console.log('지도 language: ', language);
 

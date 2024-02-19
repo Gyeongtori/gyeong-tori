@@ -67,7 +67,7 @@ const Login = () => {
           goMain();
         }
       } catch (error) {
-        const status = error.res;
+        const status = error.response;
         if(status.statusText === 'Internal Server Error') {
           alert('아이디를 다시 확인해 주세요')
         }else if(status.statusText === 'Unauthorized'){
