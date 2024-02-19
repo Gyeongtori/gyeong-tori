@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import ButtonFull from "../components/Styles/ButtonFull";
 import ButtonBlank from "../components/Styles/ButtonBlank";
 import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
+
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,7 +12,6 @@ import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'
 import { v4 as uuidv4 } from 'uuid'; // 랜덤 식별자를 생성해주는 라이브러리
 
 const Signup = () => {
-  const storage = getStorage();
 
   const [userInput, setUserInput] = useState({
     email: "",
@@ -59,6 +59,28 @@ const Signup = () => {
     setUserInput((prev) => ({ ...prev, profile_img: url }));
   };
 
+  
+  const [disApi, setDisApi] = useState();
+
+  useEffect(() => {
+    // 내근처 문화재만 탐색
+    getDisAPI();
+  }, []);
+
+  const getDisAPI = async () => {
+    try {
+      const res = await axios.get(`v1/culturalheritage/list?language=EN`);
+      console.log(res.data, '내 주변 문화재')
+      let distanceAPI = res.data.data_body
+      
+      if (JSON.stringify(distanceAPI) !== JSON.stringify(disApi)){
+        setDisApi(distanceAPI);
+      }
+      
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
  
   const [checkPw, setCheckPw] = useState("");
   const navigate = useNavigate();
