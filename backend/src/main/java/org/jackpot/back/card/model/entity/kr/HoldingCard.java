@@ -1,14 +1,12 @@
-package org.jackpot.back.card.model.entity;
+package org.jackpot.back.card.model.entity.kr;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.jackpot.back.culturalHeritage.model.entity.CulturalHeritage;
 import org.jackpot.back.user.model.entity.User;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name="holding_card")

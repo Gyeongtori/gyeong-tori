@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jackpot.back.global.model.Language;
 
 import java.util.ArrayList;
 
@@ -16,4 +17,5 @@ import java.util.ArrayList;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class QuestionRequest {
     ArrayList<Long> cardList;
+    Language language;
 }
