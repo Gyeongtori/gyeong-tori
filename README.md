@@ -22,7 +22,7 @@
       <td align="center">
         <a href="https://github.com/kangseungwon0529">  
             <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
-              <img src="asset/ksw.jpg" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+              <img src="asset/ksw.jpg" style="width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
             </div>
             <span>강승원</span>
         </a>
@@ -30,7 +30,7 @@
       <td align="center">
         <a href="https://github.com/onyueo">  
             <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
-              <img src="asset/koy.png" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+              <img src="asset/koy.png" style="width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
             </div>
             <span>김온유</span>
         </a>
@@ -38,7 +38,7 @@
       <td align="center">
         <a href="https://github.com/RIN-1011">  
             <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
-              <img src="asset/mhr.png" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+              <img src="asset/mhr.png" style="width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
             </div>
             <span>문혜린</span>
         </a>
@@ -46,7 +46,7 @@
       <td align="center">
         <a href="https://github.com/thayoon">  
             <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
-              <img src="asset/thy.jpeg" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+              <img src="asset/thy.jpeg" style="width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
             </div>
             <span>탁하윤</span>
         </a>
@@ -54,7 +54,7 @@
       <td align="center">
         <a href="https://github.com/KimDahui42">  
             <div style="width: 200px; height: 200px; overflow: hidden; position: relative;">
-              <img src="asset/kdh.jpg" style="width: auto; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
+              <img src="asset/kdh.jpg" style="width: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="Description">
             </div>
             <span>김다희</span>
         </a>
